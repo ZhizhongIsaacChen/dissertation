@@ -1,0 +1,466 @@
+\section{Algorithm}
+\label{sec:algo}
+In this section we describe and analyze PARMA, our algorithm for extracting
+$\varepsilon$-approximations of $\FI(\Ds,\Itm,\theta)$,
+$\TOPK(\Ds,\Itm,\theta)$, and $\AR(\Ds,\Itm,\theta,\gamma)$ from samples of a dataset
+$\Ds$ with probability at least $1-\delta$. In this section we present the
+variant for $\FI(\Ds,\Itm,\theta)$. The variants for the cases of $\TOPK(\Ds,\Itm,\theta)$ and
+$\AR(\Ds,\Itm,\theta,\gamma)$ can be easily derived from the one
+we present here. We outline them in Section~\ref{sec:eapproxtopk}. Detailed
+presentations for them will appear in the full version of the paper.
+
+%\subsection{Motivation} 
+%As we said in the introduction, we start from the observation that the cost of
+%frequent itemsets mining can be split in two independent components: the
+%\emph{scanning} cost and the \emph{mining cost}. We can see the cost of a step
+%of a mining algorithm as being accounted to either of the scanning or the mining
+%component depending on the nature of the step. If the step involves looking, touching, or
+%in any way operating on a transaction in the dataset, then it gets
+%accounted to the scanning component of the cost. Examples of this type of
+%operation include the scanning of the dataset to build the FP-Tree in
+%FP-Growth~\cite{HanPY00} or to compute the actual frequencies of candidate frequent
+%itemsets in APriori~\cite{AgarwalIS93}. On the other hand, when the algorithm is
+%working on computing (candidate) frequent itemsets or their frequencies, then
+%the cost is accounted to the mining component. No access to the dataset is
+%needed in these steps. This kind of steps include all the operation performed on
+%the FP-Tree once it has been generated, and the creation of candidate itemsets
+%of length $i+1$ at the end of phase $i$ in APriori. While in APriori operations
+%of either type are heavily interleaved, in FP-Growth there is a clear separation
+%between the two: the cost of constructing the FP-Tree is accounted to the scanning component,
+%while any successive operation is part of the mining component. It is easy to
+%see this distinction, as dataset is no longer needed once the FP-Tree has been
+%built. Because of this clear separation, in this discussion we will refer to
+%FP-Growth, but a similar reasoning can be done for APriori. It is clear that the
+%scanning component of the cost is heavily dependent on the number of
+%transactions in the dataset, and independent on the other variables of the
+%instance of the problems, like the number of items, the number and distribution
+%of frequent itemsets, the frequency threshold, and the underlying process that
+%generated the transactions. On the other hand, the mining component is
+%independent on the dataset size, and instead depends on all the above
+%parameters. In particular, notice that if we keep them constant, and just
+%increase the dataset size, the mining component will not change. This is clear
+%in FP-Growth, as the number of operations performed on the FP-Tree depends on
+%the number and distribution of the frequencies of the itemsets, which were
+%fixed, but not on the size of the dataset. Because of this, as the dataset
+%grows, the scanning component of the cost becomes more and more relevant and
+%dominates the mining component. In many practical settings for FIM, the process
+%generating the data, and therefore the number and frequency distribution of the
+%frequent itemsets grows much slower than the size of the dataset. For example,
+%the number of items sold by an e-commerce website grows much slower than the
+%number of purchases by customers, each of which corresponds to a transaction.
+%Therefore the scanning component grows faster than the mining one, easily
+%becoming the dominant. In conclusion, it is of the foremost importance to cut
+%down the scanning cost in order to achieve better performances in FIM. This is
+%exactly the main design goal of PARMA. PFP~\cite{LiWZZC08} focused instead of
+%parallelizing the mining phase in order to decrease the corresponding component
+%of the cost.
+
+\subsection{Design}\label{subsec:design}
+We now present the algorithmic design framework on which we developed PARMA and some design
+decisions we made for speeding up the computation. 
+
+\paragraph*{Model}When developing solutions for any computational problem,
+the algorithm designer must always be aware of the trade-off between the available
+computational resources and the performance (broadly defined) of the algorithm.
+In the parallel computation setting, the resources are usually modeled through
+the parameters $p$ and $m$, representing respectively the number of available
+processors that can run in parallel and the amount of local memory available to
+a single processor. In our case we will express $m$ in terms of the number of
+transactions that can be stored in the main memory of a single machine.
+When dealing with algorithms that use random samples of the input, the
+performances of the algorithm are usually measured through the parameters
+$\varepsilon$ and $\delta$. The former represents the desired accuracy of the
+results, i.e., the maximum tolerable error (defined according to some distance
+measure) in the solution computed by the algorithm using the random sample
+when compared to an exact solution of the computational problem. The parameter
+$\delta$ represents the maximum acceptable probability that the previously
+defined error in the solution computed by the algorithm is greater than
+$\varepsilon$. The measure we will use to evaluate the performances of PARMA in
+our analysis is based on the concept of $\varepsilon$-approximation introduced in
+Definition~\ref{def:eapproxfi}.
+
+\paragraph*{Trade-offs} We are presented with a trade-off between the parameters
+$\varepsilon$, $\delta$, $p$, and $m$. To obtain a $\varepsilon$-approximation
+with probability at least $1-\delta$, one must have a certain amount of computational resources,
+expressed by $p$ and $m$. On the other hand, given $p$ and $m$, it is possible
+to obtain $\varepsilon$-approximations with probability at least
+$1-\delta$ only for values of $\varepsilon$ and $\delta$ larger than some
+limits. By fixing any three of the parameters, it is possible to find the
+best value for the fourth by solving an optimization problem. From
+Lemma~\ref{lem:keythmfi} we know that there is a trade-off between
+$\varepsilon$, $\delta$, and the size $w$ of a random sample from which it is
+possible to extract a $(\varepsilon,\varepsilon/2)$-approximation to
+$\FI(\Ds,\Itm,\theta)$ with probability at least $1-\delta$. If $w\le m$, then
+we can store the sample in a single machine and compute the
+$\varepsilon$-approximation there using Lemma~\ref{lem:keythmfi}. For some
+combinations of values for $\varepsilon$ and $\delta$, though, we may have that
+$w>m$, i.e. the sample would be too large to fit into the main memory of a single
+processor, defeating one of the goals of using random sampling, that is to store
+the set of transactions to be mined in main memory in order to avoid expensive disk
+accesses. To address the issue of a single sample not fitting in memory, PARMA
+works on multiple samples, say $N$ with $N\le p$, each of size $w\le m$ so that
+{\bf 1)} each sample fits in the main memory of a single processor and {\bf 2)}
+for each sample, it is possible to extract an
+$(\varepsilon,\varepsilon/2)$-approximation of $\FI(\Ds,\Itm,\theta)$ from it
+with probability at least $1-\phi$, for some $\phi>\delta$. In the first stage,
+the samples are created and mined in parallel and the so-obtained collections of
+Frequent Itemset are then aggregated in a second stage to compute the final output. This
+approach is a perfect match for the MapReduce framework, given the limited
+number of synchronization and
+communication steps that are needed. Each
+stage is performed in a single MapReduce round. The computational and data
+workflow of PARMA is presented in Figure~\ref{fig:overview}, which we
+describe in detail in the following paragraphs.
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=0.3\textwidth]{parma/overview.pdf}
+\caption{A system overview of PARMA. Ellipses represent data, squares represent
+computations on that data and arrows show the movement of data through the
+system.}
+\label{fig:overview}
+\end{figure}
+
+  \begin{comment}
+  The diagram is broken into 4 main computations which correspond to the
+  Map and Reduce phases of the two MapReduce rounds in the algorithm. In
+  the Map of Stage 1, a sample is created. In the Reduce of Stage 1, a
+  mining algorithm is run on the subset of the sample created in the Map
+  phase. This mining algorithm can be either frequent itemset mining or
+  association rule mining, and as such is generically labeled mine. In
+  the Map phase of Stage 2, the local frequent itemsets are sent to an
+  identity mapper, and finally Aggregated in the Stage 2 Reduce to get a
+  global set of frequent itemsets or assocation rules, depending on the
+  mining algorithm used.
+\end{comment}
+
+
+\paragraph*{Computing $N$ and $w$} From the above discussion it should be clear
+that, once $p$, $m$, $\varepsilon$ and $\delta$ have been fixed, there is a
+trade-off between $w$ and $N$. In the MapReduce setting, often the most expensive
+operation is the movement of data between the mappers and the reducers in the
+shuffle phase. In PARMA, the amount of data to be shuffled corresponds to the
+sum of the sizes of the samples, i.e., $Nw$, and to the amount of
+communication needed in the aggregation stage. This second quantity is dependent
+on the number of frequent itemsets in the dataset, and therefore PARMA has no
+control over it. PARMA tries to minimize the first quantity when computing $N$ and
+$w$ in order to achieve the maximum speed. It is still possible to minimize for
+other quantities (e.g. $\varepsilon$ or $\delta$ if they have not been fixed),
+but we believe the most effective and natural in the MapReduce setting is the
+minimization of the communication.  This intuition was verified in our
+experimental evaluation, where communication proved to be the dominant cost. We
+can formulate the problem of minimizing $Nw$ as the following Mixed Integer Non
+Linear Programming (MINLP) problem:
+\begin{itemize*}
+  \item {\bf Variables:} non-negative integer $N$, real $\phi\in(0,1)$,
+  \item {\bf Objective:} minimize $2N/\varepsilon^2 (d+\log(1/\phi))$.
+  \item {\bf Constraints:}
+    \begin{align}
+      &N \le p \label{eq:constr1}\\
+      &\phi \ge e^{-m\varepsilon^2/2 + d} \label{eq:constr2}\\
+      &N(1-\phi)-\sqrt{N(1-\phi)2\log(1/\delta)} \ge N/2 + 1 \label{eq:constr3}
+    \end{align}
+\end{itemize*}
+Note that, because of our requirement {\bf 2)} on $w$, the sample size $w$ is directly
+determined by $\phi$ through Lemma~\ref{lem:keythmfi}, so the trade-off is
+really between $N$ and $\phi$, while $w$ does not appear in the above problem.
+Since $\phi$ is a probability we restrict its
+domain to the interval $(0,1)$, but it must also be such that the single sample size
+$w$ is at most $m$, as required by {\bf 1)} and expressed by
+Constraint~\eqref{eq:constr2}. The limit to the number of samples $N$ is expressed by
+Constraint~\eqref{eq:constr1}. The last constraint~\eqref{eq:constr3} is a bit
+more technical and the need for it will be evident in the analysis of the
+algorithm. Intuitively, it expresses the fact that an itemset must appear in a
+sufficiently high fraction (at least 1/2, possibly more) of the collections obtained from the samples in the
+first stage in order to be included in the output collection. Due to the integrality constraint on
+$N$, this optimization problem is not convex, although when the constraint it is
+dropped the feasibility region is convex, and the objective function is convex.
+It is then relatively easy and fast to find an integer optimal solution to the
+problem using a global MINLP solver like BARON~\cite{baron}. 
+
+%\paragraph{Overview} PARMA builds on a previous work~\cite{RiondatoU11} which
+%presented algorithms to probabilistically extract $\varepsilon$-approximations
+%of FI's and AR's using a random sample of the dataset, in a sequential setting.
+%The size of the sample suggested in~\cite{RiondatoU11} work depends on the
+%desidered accuracy and probability of error parameters $\varepsilon$ and
+%$\delta$. When extremely accurate approximations are desired with a very low
+%probability of error ($\varepsilon$ and $\delta$ are very small), the resulting
+%sample may become too large to be easily handled by a single machine. By
+%exploiting the parallel/distributed architecture of MapReduce, PARMA allows to
+%obtain very high-confidence and extremely accurate approximations by first
+%creating and mining a number of smaller samples in parallel using appropriately
+%lowered frequency and confidence thresholds. For each sample, the collection
+%obtained by mining it is a $(\varepsilon,\varepsilon/2)$-approximation of the
+%desired collection of FI's or AR's with probability at least $1-\phi$, where
+%$\phi\ge\delta$. In its second phase, PARMA aggregates these collections to
+%obtain a single collection to be output. Although it can only offer the same
+%analytical guarantees, in practice PARMA can return approximations of higher
+%quality than what the sequential approach in~\cite{RiondatoU11} could do, thanks
+%to the aggregation of multiple estimations of the frequencies and the
+%confidences of the FI's and AR's. The aggregation allows for a decrease in the
+%false positives discovery rate in the output collection and in improved accuracy
+%in the estimation of the frequencies and of the confidences of FI's and AR's.
+%Figure~\ref{fig:overview} shows a system overview of PARMA. The algorithm is
+%described in details in the next few paragraphs.
+
+%\begin{figure}[t]
+%\centering
+%\includegraphics[width=0.45\textwidth]{parmm_overview}
+%\caption{A system overview of PARMM.}
+%\label{fig:overview}
+%\end{figure}
+
+%\paragraph{Parameters} PARMA has a number of input parameters, in addition
+%to the expected parameters describing the ARM task, like the dataset $\Ds$, the
+%minimum frequency threshold $\theta$ (or $K$ for Top-$K$ FI's mining) and the
+%minimum confidence threshold $\gamma$ (only for mining AR's). The accuracy and
+%the probability of error in the output of the algorithm are expressed by the two
+%parameters $\varepsilon$ and $\delta$. The algorithm will return an
+%$\varepsilon$-approximation of the desired collection of FI's or AR's with
+%probability at least $1-\delta$. There are two additional parameters $m$ and $M$
+%which control the behaviour of PARMA. They are respectively the maximum sample
+%size (in number of transactions) that can be handled by a single machine in the
+%MapReduce cluster and the maximum total sample size (i.e. the sum of the single
+%sample sizes). The parameters $m$ and $M$ try to capture the computational power
+%(more specifically the memory limitations) of the MapReduce cluster running
+%PARMA. PARMA will use samples of size $w\le m$ and a number of samples $N$ such
+%that $wN \le M$. One last parameter needed by PARMA is $d$,the maximum integer
+%such that $\Ds$ has at least $d$ transactions of length at least $d$.
+
+%We denote with $\phi$ the probability that the collection obtained from a
+%of the samples is not an $\varepsilon$-approximation to the desired collection.
+%For the case of $\FI(\Ds,\Itm,\theta)$, we can express $w$ as function of
+%$\phi$, $\varepsilon$, and $d$~\cite{RiondatoU11}: 
+%\begin{equation}\label{eq:singlesamplesize}
+%w=\frac{2}{\varepsilon^2}\left(d+\log\frac{1}{\phi}\right)
+%\end{equation}
+%Note how this expression is independent of $\theta$. Similar expressions of $w$
+%can be obtained for the case of $\TOPK(\Ds,\Itm,K)$ and
+%$\AR(\Ds,\Itm,\theta,\gamma)$~\cite{RiondatoU11}. The values for $\phi$, $w$,
+%and $N$ are computed by minimizing the total number of sampled transactions
+%$wN$, under some constraints (see below). Note that we will assume that 
+%\[ m < \frac{2}{\varepsilon^2}\left(d + \log\frac{1}{\delta}\right)\]
+%otherwise we would be able to obtain an $\varepsilon$-approximation with
+%probability $1-\delta$ by mining just one sample using Lemma~\ref{lem:keythmfi}.
+
+%\paragraph{Computing $w$ and $N$} One of the goals of PARMA is to minimize the
+%amount of data that are sent from mappers to reducers. This is equivalent to minimize
+%the total number of sampled transactions $wN$, where $w$ is the size of a single
+%sample and $N$ is the number of samples we create. We can formulate the problem
+%of minimizing $w$ as the following Mixed Integer Non Linear Programming (MINLP) 
+%problem:
+%\begin{itemize*}
+%  \item {\bf Variables:} non-negative integer $N$, real $\phi\in(0,1)$,
+%  \item {\bf Objective:} minimize $2N/\varepsilon^2 (d+\log(1/\phi))$.
+%  \item {\bf Constraints:}
+%    \begin{align}
+%      &\phi \ge e^{-m\varepsilon^2/2 + d} \label{eq:constr1}\\
+%      &2N/\varepsilon^2 (d+\log(1/\phi)) \le M \label{eq:constr2}\\
+%      &N(1-\phi)-\sqrt{N(1-\phi)2\log(1/\delta)} \ge N/2 + 1 \label{eq:constr3}
+%    \end{align}
+%\end{itemize*}
+%At a first look it may seem that $w$ does not appear in the above optimization
+%problem, but it is actually implicitly expressed through $\phi$
+%using~\eqref{eq:singlesamplesize}. Since $\phi$ is a probability we define its
+%domain to be the interval $(0,1)$, but it must also be such that the single sample size
+%$w$ is at most $m$, as expressed by Constraint~\eqref{eq:constr1}. The upper
+%bound to the total number of sampled transaction is expressed by
+%Constraint~\eqref{eq:constr2}. The last constraint is a bit more technical and
+%the need for it will be evident in the analysis of the algorithm. Intuitively, it
+%expresses the fact that an itemset must appear in the majority of the
+%collections obtained from the sample in order to be included in the output
+%collection.
+%Due to the integrality constraint on $N$, this optimization problem is not
+%convex, although when the constraint it is dropped the feasibility region is
+%convex, and the objective function is convex. This means that is relatively
+%easy to find an integer optimal solution to the problem using a global MINLP
+%solver like BARON~\cite{baron}. 
+
+\subsection{Description}
+In the following paragraphs we give a detailed description of PARMA. The reader
+is also referred to Figure~\ref{fig:overview} for a schematic representation of
+PARMA's data/computational workflow.
+
+\paragraph*{Stage 1: Sampling and Local Mining} Once $\phi$, $w$
+and $N$ have been computed, PARMA enters the first MapReduce round to create
+the $N$ samples (phase Map 1 in Figure~\ref{fig:overview}) and mine them (Reduce 1).
+We see the input of the algorithm as a sequence
+\[
+(1,\tau_1),(2,\tau_2),\cdots,(|\Ds|,\tau_{|\Ds|}),\]
+where the $\tau_i$ are transactions in $\Ds$.
+In the Map phase, the input of the {\bf map} function is a pair $(tid, \tau)$, where
+$tid$ is a natural from $1$ to $|\Ds|$ and $\tau$ is a transaction in $\Ds$. The
+map function produces in output a pair $(i,(\ell^{(i)}_\tau,\tau))$ for each
+sample $\Sam_i$ containing $\tau$. The value $\ell^{(i)}_\tau$ denotes the
+number of times $\tau$ appears in $\Sam_i$, $1\le i \le N$. We use random sampling
+with replacement and ensure that all samples have size $w$, i.e.,
+$\sum_{\tau\in\Ds}\ell^{(i)}_\tau=w$, $\forall i$. This is done by computing
+(serially) how many transactions each mapper must send to each sample. In the
+Reduce phase, there are $N$ reducers, with associated key $i$, $1\le i \le N$.
+The input to reducer $i$ is $(i,\Sam_i)$, $1\le i\le N$. Reducer $i$ mines the
+set $\Sam_i$ of transactions it receives using an exact sequential mining
+algorithm like Apriori or FP-Growth and a lowered minimum frequency threshold
+$\theta'=\theta-\varepsilon/2$ to obtain
+$\mathcal{C}_i=\FI(\Sam_i,\Itm,\theta')$. For each itemset $A\in\mathcal{C}_i$
+the Reduce function outputs a pair $(A,
+(f_{\Sam_i}(A),[f_{\Sam_i}(A)-\varepsilon/2,f_{\Sam_i}(A)+\varepsilon/2])$.
+
+\paragraph*{Stage 2: Aggregation} In the second round of MapReduce, PARMA
+aggregates the result from the first stage to obtain a
+$\varepsilon$-approximation to $\FI(\Ds,\Itm,\theta)$ with probability at least
+$1-\delta$. The Map phase (Map 2 in Figure~\ref{fig:overview}) is just the identity
+function, so for each pair 
+\[(A,
+(f_{\Sam_i}(A),[f_{\Sam_i}(A)-\varepsilon/2,f_{\Sam_i}(A)+\varepsilon/2])\]
+in the input the same pair is produced in the output. In the Reduce phase (Reduce 2) there
+is a reducer for each itemset $A$ that appears in at least one of the
+collections $\mathcal{C}_j$ (i.e., $\forall A$ such that there is a
+$\mathcal{C}_j$ containing a pair related to $A$). The reducer receives as input
+the itemset $A$ and the set $\mathcal{F}_A$ of pairs
+\[
+(f_{\Sam_i}(A),[f_{\Sam_i}(A)-\varepsilon/2,f_{\Sam_i}(A)+\varepsilon/2])\]
+for the samples $\Sam_i$ such that $A\in\mathcal{C}_i$.
+Now let
+\begin{equation}\label{eq:Rdef}
+R = N(1-\phi)-\sqrt{N(1-\phi)2\log(1/\delta)}.
+\end{equation}
+The itemset $A$ is declared
+\emph{globally frequent} and will be present in the output if and only if
+$|\mathcal{F}_A| \ge R$. If this is the case, PARMA computes, during the Reduce
+phase of the second MapReduce round, the estimation $\tilde{f}(A)$ for the
+frequency $f_\Ds(A)$ of the itemset $A$ in $\Ds$ and the confidence interval
+$\mathcal{K}_A$. The computation for $\tilde{f}(A)$ proceeds as follows. Let
+$[a_A,b_A]$ be the \emph{shortest} interval such that
+there are at least $N-R+1$ elements from $\mathcal{F}_A$ that belong to this
+interval. The estimation $\tilde{f}(A)$ for the frequency $f_\Ds(A)$ of the
+itemset $A$ is the central point of this interval:
+\[ \tilde{f}(A)=a_A+\frac{b_A-a_A}{2}\]
+The confidence interval $\mathcal{K}_A$ is defined as
+\[ \mathcal{K}_A=\left[a_A-\frac{\varepsilon}{2},b_A+\frac{\varepsilon}{2}\right].\]
+The output of the reducer assigned to the itemset $A$ is \[(A,(\tilde{f}(A),\mathcal{K}_A)).\]
+The output of PARMA is the union of the outputs from all reducers.
+
+\subsection{Analysis}
+We have the following result:
+\begin{lemma}\label{lem:multiepsapprox}
+ The output of the PARMA is an $\varepsilon$-approximation of
+ $\FI(\Ds,\Itm,\theta)$ with probability at least $1-\delta$.
+\end{lemma}
+
+\begin{proof}
+  For each sample $\Sam_i$, $1\le i\le N$ we define a random variable $X_i$ that
+  takes the value $1$ if $\mathcal{C}_i=\FI(\Sam_i,\Itm,\theta')$ is a
+  $(\varepsilon,\varepsilon/2)$-approximation of $\FI(\Ds,\Itm,\theta)$, $X_i=0$
+  otherwise. Given our choices of $w$ and $\theta'$, we can apply
+  Lemma~\ref{lem:keythmfi} and have that $\Pr(X_i=1)\ge 1-\phi$. Let
+  $Y=\sum_{r=1}^N X_r$ and let $Z$ be a random variable with binomial
+  distribution with parameters $N$ and $1-\phi$. For any constant $Q<N(1-\phi)$ we have
+  \[
+  \Pr(Y\le Q)\le\Pr(Z\le Q)\le e^{-N(1-\phi)(1-\frac{Q}{N(1-\phi)})^2/2},
+  \]
+  where the last inequality follows from an application of the Chernoff
+  bound~\cite[Chap.~4]{MitzenmacherU05}.
+  We then have, for our choice of $\phi$ and $N$ and for $Q=R$
+  (defined in Eq.~\eqref{eq:Rdef}), that with probability at least $1-\delta$,
+  at least $R$ of the collections $\mathcal{C}_i$ are
+  $(\varepsilon,\varepsilon/2)$-approximations of $\FI(\Ds,\Itm,\theta)$. Denote
+  this event as $\mathcal{G}$. For the rest of the proof we will assume that
+  $\mathcal{G}$ indeed occurs.
+
+  Then $\forall A\in\FI(\Ds,\Itm,\theta)$, $A$ belongs to at least $R$ of the
+  collections $\mathcal{C}_i$, therefore a triplet
+  $(A,\tilde{f}(A),\mathcal{K}_A)$ will be in the output of the algorithm. This
+  means that Property 1 from Def.~\ref{def:eapproxfi} holds. 
+
+  Consider now any itemset $B$ such that $f_\Ds(B)<\theta-\varepsilon$. By
+  definition of $(\varepsilon,\varepsilon/2)$-approximation we have that $B$ can
+  only appear in the collections $\mathcal{C}_i$ that are not
+  $(\varepsilon,\varepsilon/2)$-approximations. Given
+  that $\mathcal{G}$ occurs, then there are at most  $N-R$ such collections. But
+  from Constraint~\eqref{eq:constr3} and the definition of $R$
+  in~\eqref{eq:Rdef}, we have that $N-R< R$, and therefore $B$ will not be
+  present in the output of PARMA, i.e.~Property 2 from Def.~\ref{def:eapproxfi} holds.
+
+  Let now $C$ be any itemset in the output, and consider the interval
+  $S_C=[a_C,b_C]$ as computed by PARMA. $S_C$ contains at least $N-R+1$ of
+  the $f_{\Sam_i}(C)$, otherwise $C$ would not be in the output. By our
+  assumption on the event $\mathcal{G}$, we have
+  that at least $R$ of the $f_{\Sam_i}(C)$'s are such that
+  $|f_{\Sam_i}(C)-f_\Ds(C)|\le\varepsilon/2$. Then there is an index $j$ such
+  that $|f_{\Sam_j}(C)-f_\Ds(C)|\le\varepsilon/2$ and such that
+  $f_{\Sam_j}(C)\in S_C$.
+  Given also that $f_{\Sam_j}(C)\ge a_C$, then $f_\Ds(C)\ge
+  a_C-\varepsilon/2$, and analogously, given that $f_{\Sam_j}(C)\le b_C$, then
+  $f_\Ds(C)\le b_C+\varepsilon/2$. This means that
+  \begin{equation}\label{eq:singleepsapproxinterval}
+    f_\Ds(C)\in
+    \left[a_C-\frac{\varepsilon}{2},
+    b_C+\frac{\varepsilon}{2}\right]=\mathcal{K}_C,
+  \end{equation}
+  which, together with the fact that $\tilde{f}_C\in\mathcal{K}_C$ by
+  construction, proves Property 3.b from Def.~\ref{def:eapproxfi}.
+  We now give a bound to $|S_C|=b_C-a_C$. From our
+  assumption on the event $\mathcal{G}$, there are (at least) $R$ values
+  $f_{\Sam_i}(C)$ such that $|f_{\Sam_i}(C)-f_\Ds(C)|\le\varepsilon/2$, then the
+  interval $[f_\Ds(C)-\varepsilon/2,f_\Ds(C)+\varepsilon/2]$ contains (at least)
+  $R$ values $f_{\Sam_i}(C)$. Its length $\varepsilon$ is an upper bound to
+  $|S_C|$. Then the length of the interval
+  $\mathcal{K}_C=[a_C-\varepsilon/2,b_C+\varepsilon/2]$ is at most
+  $2\varepsilon$, as requested by Property 3.c from
+  Def.~\ref{def:eapproxfi}. From this, from ~\eqref{eq:singleepsapproxinterval}, and
+  from the fact that $\tilde{f}(C)$ is the center of this interval we have
+  $|\tilde{f}(C)-f_\Ds(C)|\le\varepsilon$, i.e., Property 3.a from
+  Def.~\ref{def:eapproxfi} holds.
+\end{proof}
+
+\subsection{Top-K Frequent Itemsets And Association Rules}\label{sec:eapproxtopk}
+The above algorithm can be easily adapted to computing, with probability at
+least $1-\delta$, $\varepsilon$-approximations to $\TOPK(\Ds,\Itm,K)$ and to
+$\AR(\Ds,\Itm,\theta,\gamma)$. The main difference is in the formula to compute
+the sample size $w$ (Lemma~\ref{lem:keythmfi}), and in the process
+to extract the local collections from the samples. The case of top-$K$ is
+presented in~\cite{RiondatoU11} and is a minor modification of
+Lemma~\ref{lem:keythmfi}, while for the association rule case we can use
+Lemma~\ref{lem:keythmar}. These are minimal changes to the version of
+PARMA presented here, and the modified algorithms guarantee the same levels of
+accuracy and confidence.
+
+%main difference is in the formula to compute sample size $w$
+%(Eq.~\eqref{eq:singlesamplesize}, which in this case is set to $w=8(d+\log
+%1/\phi)/varepsilon^2$, and in the work done by the reducers in the
+%first phase: using the algorithm presented in~\cite[Lemma 3]{RiondatoU11}, each
+%reducer $r$ computes, with probability at least $1-\phi$, a collection
+%$\mathcal{C}_r$ such that if we see $\TOPK(\Ds,\Itm,K)$ as
+%$\FI(\Ds,\Itm,f^{(K)}_\Ds)$, $\mathcal{C}_r$ is a
+%$(\varepsilon,\varepsilon/2)$-approximation to $\FI(\Ds,\Itm,f^{(K)}_\Ds)$. The
+%collections $\mathcal{C}_i$'s are then aggregated in the second MapReduce round
+%in the same way as for the case of FI's  described in the previous section. This
+%result is formulated in the following Lemma, whose proof will be included in the
+%full version of the paper. 
+%\begin{lemma}
+%   The output of the algorithm is an $\varepsilon$-approximation of
+%   $\TOPK(\Ds,\Itm,K)$ with probability at least $1-\delta$.
+%\end{lemma}
+%
+%\subsection{Association Rules}\label{sec:eapproxar}
+%The above algorithm can be easily adapted to computing, with probability at
+%least $1-\delta$, an $\varepsilon$-approximation to
+%$\AR(\Ds,\Itm,\theta,\gamma)$. The main differences are again in how to compute
+%the sample size $w$ (see Lemma~\ref{lem:keythmar}) and in the work done by the
+%reducers in the first phase. Using the algorithm presented in~\cite[Lemma
+%6]{RiondatoU11}, each reducer $r$ computes a collection $\mathcal{C}_r$ such
+%that $\mathcal{C}_r$ is a $(\varepsilon,\varepsilon/2)$-approximation to
+%$\AR(\Ds,\Itm,\theta,\gamma)$  with probability at least
+%$1-\phi$, The collections $\mathcal{C}_r$ are then aggregated in the second
+%MapReduce phase as described in the previous section, with the only addition of
+%computing an estimate $\tilde{g}(W)$ for the confidence $g_\Ds(W)$ of each
+%association rule $W$ in the output, and an interval $\mathcal{J}(W)$. This can be
+%done exactly in the same way as computing the estimate $\tilde{f}(W)$ for the
+%frequency $f_\Ds(W)$ and the corresponding interval $\mathcal{K}(W)$. The
+%properties of the output are formulated in the following Lemma, whose proof will
+%be included in the full version of the paper.
+%\begin{lemma}
+%   The output of the algorithm is an $\varepsilon$-approximation of
+%   $\AR(\Ds,\Itm,\theta,\gamma)$ with probability at least $1-\delta$.
+%\end{lemma}
+%

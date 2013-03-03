@@ -1,0 +1,82 @@
+\documentclass[11pt]{book}
+\usepackage[T1]{fontenc}
+\usepackage{ae,aecompl}
+\usepackage[utf8x]{inputenc}
+%\usepackage[cm]{fullpage}
+\usepackage{mdwlist}
+%\usepackage[small]{caption}
+\usepackage[sort&compress,square]{natbib}
+\usepackage{ctable}
+%\makeatletter
+%\renewcommand\bibsection%
+%{
+%  \section*{\refname
+%    \@mkboth{\MakeUppercase{\refname}}{\MakeUppercase{\refname}}}
+%}
+%\makeatother
+
+\usepackage{times}
+\usepackage{dsfont}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{multirow}
+\usepackage{bigstrut}
+\usepackage{url}
+\usepackage[ruled,linesnumbered]{algorithm2e}
+\usepackage{mathptmx}      % use Times fonts if available on your TeX system
+\DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n} % Use standard fonts for calligraphic
+\usepackage{float}
+\usepackage{xspace}
+\usepackage{verbatim}
+
+\newcommand{\Sam}{{\cal S}}
+\newcommand{\Ds}{{\cal D}}
+\newcommand{\Db}{{\cal D}}
+\newcommand{\Tab}{{\cal T}}
+\def\Itm{{\cal I}}
+\def\TOPK{\mathsf{TOPK}}
+\def\FI{\mathsf{FI}}
+\def\RFI{\mathsf{RFI}}
+\def\AR{\mathsf{AR}}
+\def\VC{\mathsf{VC}}
+\def\EVC{\mathsf{EVC}}
+\newcommand{\PARMM}{PARMA\xspace}
+\newcommand{\ie}{\emph{i.e.}\xspace}
+\newcommand{\eg}{\emph{e.g.}\xspace}
+\DeclareMathOperator{\op}{op}
+\DeclareMathOperator{\eqop}{eqop}
+\DeclareMathOperator{\bool}{bool}
+
+
+\newtheorem{corollary}{Corollary}
+\newtheorem{conj}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{claim}{Claim}
+\newtheorem{theorem}{Theorem}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+
+\author{Matteo Riondato \\ Department of Computer Science \\ Brown University}
+\title{Randomized Algorithms for Big Data Analytics}
+\begin{document}
+\maketitle
+
+\input{intro.tex}
+\input{prelims/prelims.tex}
+\input{vcmine/vcmine.tex}
+\input{parma/parma.tex}
+\input{realfis/realfis.tex}
+\input{shatterfi/shatterfi.tex}
+\input{vcfreq/vcfreq.tex}
+
+\bibliographystyle{abbrvnat}
+\bibliography{biblio/fimine,biblio/mr,biblio/mrfim,biblio/riondapubs,biblio/sperner,biblio/statisticaltesting,biblio/statsigfis,biblio/various,biblio/vcfreq,biblio/vcmine}
+
+
+\end{document}

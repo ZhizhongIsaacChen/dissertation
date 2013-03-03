@@ -1,0 +1,32 @@
+% at most 300 words
+\begin{abstract} \small\baselineskip=9pt
+   Frequent itemsets mining is a fundamental primitive in data mining, requiring to identify all itemsets that appear in a fraction at least $\theta$ of the transactional dataset. However, a transactional dataset only represents a sample from the underlying process that generates the data, the understanding of which is the ultimate goal of data mining. In general, 
+   the generative process yields transactions according to a probability distribution.
+  Therefore, the output of traditional frequent itemsets mining algorithms can
+  and typically
+  does contain a large number of spurious patterns that only happen to have a support
+  larger than the minimum threshold $\theta$ in the dataset at hand because of
+  the stochasticity inherent in the dataset generation process.  In order for the end user to take
+  informed decisions using the mining results, it is necessary that the
+  returned collection only contains \emph{Real Frequent Itemsets (RFI's)}, i.e.,
+  itemsets $A$ such that their \emph{real frequency} (the probability that
+  $A$ appear in a transaction) is greater or equal to the the minimum threshold $\theta$.
+  In this work we present an algorithm to extract a collection $C$ of RFI's
+  while keeping the probability
+  that one or more spurious itemsets are included in $C$ to within a
+  user-specified limit.  In other words, we present a statistical test for RFI's
+  for which we can guarantee that the \emph{Family-Wise Error Rate} is within
+  the user-specified limits. We use results from statistical learning theory
+  involving the Vapnik-Chervonenkis (VC) dimension of the problem at hand to
+  accomplish this goal. This allows us to achieve, on the same data, much
+  stricter bounds on the probability of a Type I error than what could be done
+  using traditional multiple hypothesis testing corrections. In our experimental
+  evaluation we show empirically that our test has very high statistical power,
+  i.e., the output collection contains a large fraction of the RFI's.
+\end{abstract}
+
+{\bf Categories and Subject Descriptors:} H.2.8 [Database Management]: Database Applications -- \emph{Data Mining}
+
+{\bf Keywords:} Frequent itemsets, Statistical test, VC-dimension, Type-1 error, Multiple
+hypothesis testing, Family-wise error rate.
+

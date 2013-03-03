@@ -1,0 +1,279 @@
+\chapter{PARMA: a parallel randomized algorithm for approximate association
+rules mining in MapReduce}\label{ch:parma}
+
+\iffalse
+\begin{abstract}
+%The task of (top-K) Frequent Itemsets (FI's) and Association Rules (AR's) mining
+%is a well-studied problem in computer science. The goal to discover a set of
+%inference rules among sets of items that make up transactions in a dataset.
+%There have been many algorithms proposed over the years to exactly solve this
+%problem, both for sequential and parallel/distributed execution.
+%The sequential algorithms suffer from a lack of scalability as the dataset size
+%increase while the parallel methods often end up replicating large amounts of
+%data in order to make the computation parallel. 
+%We present a novel randomized parallel technique for mining Frequent Itemsets
+%and Association Rules. Our algorithm, PARMA, achieves
+%near-linear speedup while avoiding costly replication of data. PARMA does this
+%by creating multiple small random samples of the transactional dataset and running
+%a mining algorithm on the samples independently and in parallel. The resulting
+%collections of Frequent Itemsets or Association Rules from each sample are aggregated and filtered to
+%provide a single collection in output. Because PARMA mines random subsets of the
+%dataset, the final result is an approximation of the exact solution. Our
+%probabilistic analysis shows that PARMA provides tight guarantees on the quality
+%of the approximation. The end user specifies accuracy and confidence parameters
+%and PARMA computes an approximation of the collection of interest that satisfies
+%these parameters. We formulated and implemented the algorithm in the MapReduce
+%parallel computation framework. Our experimental results show that in practice the
+%quality of the approximation is even higher than what can be analytically
+%guaranteed. We demonstrate the correctness and scalability of PARMA by testing
+%it on several synthetic datasets of varying size and complexity. We compare our results
+%to two previously proposed exact parallel mining algorithms in MapReduce. 
+
+Frequent Itemsets and Association Rules Mining (FIM) is a key task in knowledge
+discovery from data. As the dataset grows, the cost of solving this task is
+dominated by the component that depends on the number of transactions in the dataset.
+%Part of the cost (\emph{scanning}) is due to the number of transaction in the
+%dataset, and increases at least linearly with it. Another part (\emph{mining})
+%is due to the number of Frequent Itemsets or Association Rules in the dataset.
+%This is a caractheristic of the process that generated the data and of the
+%user-speficied frequency and confidence thresholds. If the process and the
+%thresholds do not change or change slowly, the number of FI's and AR's does not
+%change as the number of transaction in the dataset grows, and so this part of
+%the cost does not change. This implies that, as the dataset becomes larger and
+%larger, the \emph{scanning} cost becomes dominant over the \emph{mining}
+%cost.
+%Many algorithms exist to solve the FIM task using different
+%approaches, but they do not scale well on  the huge datasets available today as
+%the dependency of their running times on the size of the dataset make them
+%unsuitable for very large collections of transactions. 
+We address this issue by proposing PARMA, a parallel algorithm for the MapReduce
+framework, which scales well with the size of the dataset (as number of
+transactions) while minimizing data replication and communication cost. PARMA
+cuts down the dataset-size-dependent part of the cost by using a random sampling
+approach to FIM. Each machine mines a small random sample of the dataset, of
+size independent from the dataset size. The results from each machine are then
+filtered and aggregated to produce a single output collection. The output will
+be a very close approximation of the collection of Frequent Itemsets (FI's) or
+Association Rules (AR's) with their
+frequencies and confidence levels. The quality of the output is
+probabilistically guaranteed by our analysis to be within the user-specified
+accuracy and error probability parameters. The sizes of the random samples are
+independent from the size of the dataset, as is the number of samples. They
+depend on the user-chosen accuracy and error probability parameters and on the
+parallel computational model. We implemented PARMA in Hadoop MapReduce and show
+experimentally that it runs faster than previously introduced FIM algorithms for
+the same platform, while 1) scaling almost linearly, and 2) offering even higher
+accuracy and confidence than what is guaranteed by the analysis.
+\end{abstract} 
+\fi
+
+\input{parma/intro}
+\input{parma/related}
+\input{parma/definitions}
+\input{parma/algo}
+\input{parma/design}
+\input{parma/eval}
+\input{parma/conc}
+
+%\bibliographystyle{abbrv}
+%\bibliography{fim,mrfim,mr} 
+\iffalse
+\begin{thebibliography}{10}
+\begin{small}
+
+\vspace{7pt}
+\bibitem{AgrawalIS93}
+R.~Agrawal, T.~Imieli\'{n}ski, and A.~Swami.
+\newblock Mining association rules between sets of items in large databases.
+\newblock SIGMOD '93.
+
+\bibitem{AgrawalS94}
+R.~Agrawal and R.~Srikant.
+\newblock Fast algorithms for mining association rules in large databases.
+\newblock VLDB '94.
+
+\bibitem{Mahout}
+{Apache Mahout}.
+\newblock \url{http://mahout.apache.org/}.
+
+\bibitem{BuehrerPTKS07}
+G.~Buehrer, S.~Parthasarathy, S.~Tatikonda, T.~Kurc, and J.~Saltz.
+\newblock Toward terabyte pattern mining: an architecture-conscious solution.
+\newblock PPoPP '07.
+
+\bibitem{ChierichettiKT10}
+F.~Chierichetti, R.~Kumar, and A.~Tomkins.
+\newblock Max-cover in {Map-Reduce}.
+\newblock WWW '10.
+
+\bibitem{ChuKLYBNO06}
+C.-T. Chu, S.~K. Kim, Y.-A. Lin, Y.~Yu, G.~R. Bradski, A.~Y. Ng, and
+  K.~Olukotun.
+\newblock {Map-Reduce} for machine learning on multicore.
+\newblock NIPS '06.
+
+\bibitem{Fp}
+F.~Coenen.
+%\newblock The {LUCS-KDD FP}-growth association rule mining algorithm.
+\newblock
+\url{http://www.cxc.liv.ac.uk/~frans/KDD/Software/FPgrowth/fpGrowth.html}
+
+\bibitem{CongHHP05}
+S.~Cong, J.~Han, J.~Hoeflinger, D.~Padua.
+\newblock A sampling-based framework for parallel data mining.
+\newblock PPoPP '05.
+
+\bibitem{ARTool}
+L.~Cristofor.
+\newblock {ART}ool.
+\newblock \url{http://www.cs.umb.edu/~laur/ARtool/}, 2006.
+
+\bibitem{CryansRC10}
+J.-D. Cryans, S.~Ratt{\'e}, and R.~Champagne.
+\newblock Adaptation of {APriori} to {MapReduce} to build a warehouse of
+  relations between named entities across the web.
+\newblock DBKDA '10.
+
+\bibitem{DeanG08}
+J.~Dean and S.~Ghemawat.
+\newblock {MapReduce}: Simplified data processing on large clusters.
+\newblock {\em CACM}, 51(1):107--113, 2008.
+
+\bibitem{EHZaiane06}
+M.~El-Hajj and O.~Zaiane.
+\newblock Parallel leap: large-scale maximal pattern mining in a distributed
+  environment.
+\newblock ICPADS '06.
+
+\bibitem{FangEtAl08}
+W.~Fang, K.~K. Lau, M.~Lu, X.~Xiao, C.~K. Lam, Y.~Yang, B.~He, Q.~Luo, P.~V.
+  Sander, and K.~Yang.
+\newblock Parallel data mining on graphics processors.
+\newblock Technical Report~07, The Hong Kong University of Science {\&}
+  Technology, 2008.
+
+\bibitem{GhotingKPK11}
+A.~Ghoting, P.~Kambadur, E.~Pednault, and R.~Kannan.
+\newblock {NIMBLE}: a toolkit for the implementation of parallel data mining
+and machine learning algorithms on {MapReduce}.
+\newblock KDD '11.
+
+\bibitem{GoodrichSZ11}
+M.~T. Goodrich, N.~Sitchinava, and Q.~Zhang.
+\newblock Sorting, searching, and simulation in the {MapReduce} framework.
+\newblock {\em CoRR}, abs/1101.1902, 2011.
+
+\bibitem{Hammoud11}
+S.~Hammoud.
+\newblock {\em MapReduce Network Enabled Algorithms for Classification Based on
+  Association Rules}.
+\newblock PhD thesis, Brunel University, 2011.
+
+\bibitem{HanPY00}
+J.~Han, J.~Pei, and Y.~Yin.
+\newblock Mining frequent patterns without candidate generation.
+\newblock {\em SIGMOD Rec.}, 29:1--12, May 2000.
+
+\bibitem{LiWZZC08}
+H.~Li, Y.~Wang, D.~Zhang, M.~Zhang, and E.~Y. Chang.
+\newblock {PFP}: Parallel {FP-G}rowth for query recommendation.
+\newblock RecSys '08.
+
+\bibitem{LiZ11}
+L.~Li and M.~Zhang.
+\newblock The strategy of mining association rule based on cloud computing.
+\newblock BCGIN '11.
+
+\bibitem{LiG04}
+Y.~Li and R.~Gopalan.
+\newblock Effective sampling for mining association rules.
+\newblock AI '04.
+
+\bibitem{LinS10}
+J.~Lin and M.~Schatz.
+\newblock Design patterns for efficient graph algorithms in MapReduce.
+\newblock  MLG '10.
+
+\bibitem{LiuLZT07}
+L.~Liu, E.~Li, Y.~Zhang, Z.~Tang.
+\newblock Optimization of frequent itemset mining on multiple-core processor.
+\newblock VLDB '07.
+
+\bibitem{MannilaTV94}
+H.~Mannila, H.~Toivonen, and I.~Verkamo.
+\newblock Efficient algorithms for discovering association rules.
+\newblock KDD '94.
+
+\bibitem{MitzenmacherU05}
+M.~Mitzenmacher and E.~Upfal.
+\newblock {\em Probability and computing}.
+\newblock Cambridge University Press, 2005.
+
+\bibitem{OzkuralUA11}
+E.~Ozkural, B.~Ucar, and C.~Aykanat.
+\newblock Parallel frequent item set mining with selective item replication.
+\newblock {\em IEEE Trans. on Paral. and Distrib. Sys.},
+  22(10):1632--1640, 2011.
+
+\bibitem{Parthasarathy02}
+S.~Parthasarathy.
+\newblock Efficient progressive sampling for association rules.
+\newblock ICDM '02.
+
+\bibitem{PietracaprinaPRSU11}
+A.~Pietracaprina, G.~Pucci, M.~Riondato, F.~Silvestri, and E.~Upfal.
+\newblock Space-round tradeoffs for {MapReduce} computations.
+\newblock ICS' 12. 
+
+\bibitem{PietracaprinaRUV10}
+A.~Pietracaprina, M.~Riondato, E.~Upfal, and F.~Vandin.
+\newblock Mining top-{K} frequent itemsets through progressive sampling.
+\newblock {\em Data Min.~and Knowl.~Disc}, 21:310--326, 2010.
+
+\bibitem{RiondatoU11}
+M.~Riondato and E.~Upfal.
+\newblock Efficient discovery of association rules and frequent itemsets
+  through sampling with tight performance guarantees.
+\newblock {\em CoRR}, abs/1111.6937v3, 2012.
+
+\bibitem{JinYA05}
+J.~Ruoming, Y.~Ge, and G.~Agrawal.
+\newblock Shared memory parallelization of data mining algorithms: techniques,
+  programming interface, and performance.
+\newblock {\em IEEE Trans. on Knowl. and Data Engin.}, 17(1):71--89, 2005.
+
+\bibitem{baron}
+N.~V. Sahinidis and M.~Tawarmalani.
+\newblock {\em {BARON 9.0.4: Global Optimization of Mixed-Integer Nonlinear
+  Programs, {\em User's Manual}}}, 2010.
+
+\bibitem{Toivonen96}
+H.~Toivonen.
+\newblock Sampling large databases for association rules.
+\newblock VLDB '96.
+
+\bibitem{YangLF10}
+X.~Y. Yang, Z.~Liu, and Y.~Fu.
+\newblock {MapReduce} as a programming model for association rules algorithm on
+  {Hadoop}.
+\newblock ICIS '10.
+
+\bibitem{Zaki99}
+M.~Zaki.
+\newblock Parallel and distributed association mining: a survey.
+\newblock {\em IEEE Concurrency}, 7(4):14 --25, 1999.
+
+\bibitem{ZakiPLO97}
+M.~Zaki, S.~Parthasarathy, W.~Li, and M.~Ogihara.
+\newblock Evaluation of sampling for data mining of association rules.
+\newblock RIDE '97.
+
+\bibitem{ZhouZCLF10}
+L.~Zhou, Z.~Zhong, J.~Chang, J.~Li, J.~Huang, and S.~Feng.
+\newblock Balanced parallel {FP-Growth} with {MapReduce}.
+\newblock YC-ICT '10.
+
+\end{small}
+\end{thebibliography}
+\fi
+

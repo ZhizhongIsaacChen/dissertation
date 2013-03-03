@@ -1,0 +1,328 @@
+
+\section{Experimental evaluation}\label{sec:experiments}
+We implemented our algorithm and conducted an extensive evaluation to assess its
+practical applicability and its statistical power. In the following sections we
+describe the methodology and present the results.
+
+\subsection{Implementation}\label{sec:implementation}
+We implemented Algorithm~\ref{alg:pseudocode} in Python 3.3, except for the
+mining algorithm and the optimization problem solver. Our statistical test is
+agnostic to the choice of mining algorithm used to extract the collection of
+FI's at frequency $\theta-\varepsilon'$ (line~\ref{algline:mining} of
+Algorithm~\ref{alg:pseudocode}). We used the implementation by Grahne and
+Zhu~\citep{GrahneZ03} (written in C) available from the FIMI'03 implementation
+repository\footnote{\url{http://fimi.ua.ac.be/src/}}. Our solver of choice for
+the ASUKP's to compute the b-indexes (lines~\ref{algline:ASUKP} and~\ref{algline:empASUKP} from Algorithm~\ref{alg:pseudocode}) was
+IBM\textsuperscript{\textregistered} ILOG\textsuperscript{\textregistered}
+CPLEX\textsuperscript{\textregistered} Optimization Studio 12.3, called through
+the Python 2.7 API. We executed our experiments on a number of machines with
+x86-64 processors running GNU/Linux 2.6.32.
+
+\subsection{Datasets generation}\label{sec:dsgen}
+\sloppy
+We evaluated our statistical test using five different datasets
+(\texttt{accidents}~\citep{GeurtsWBV03}, \texttt{BMS-POS}, \texttt{kosarak},
+\texttt{pumsb\textsuperscript{*}}, and \texttt{retail}~\citep{BrijsSVW99}) from the FIMI
+repository\footnote{\url{http://fimi.ua.ac.be/data/}}. These datasets have
+different characteristics and different distribution of the frequencies of the
+itemsets~\cite{Goethals:2004:AFI:1007730.1007744}.
+
+For currently available datasets the \emph{ground truth} is not known, that is,
+we do not know the distribution $p$, hence neither the real frequencies
+$r_p(\cdot)$ of the itemsets, which we need to evaluate the performances of our
+statistical test.
+%We are not aware of any dataset for which the real probabilities $p(\cdot)$ of
+%the itemsets are available.
+Therefore to have large datasets and the corresponding 
+probabilities $r_p(\cdot)$, we created new datasets starting from the ones from
+the FIMI repository by sampling transactions uniformly at random until a desired
+size (in our case 20 million transactions) has been reached. This way, 
+the ground truth is given by the frequencies of the itemsets in the original datasets:
+%we are using the distribution of the frequencies of the itemsets in the original
+%dataset as ground truth:
+if the frequency of itemset $X$ in the original dataset was $f(X)$,
+%in the dataset we created (by sampling transactions uniformly at random)
+then we assume $r_p(X)=f(X)$.
+Notice that the expected frequency 
+%{\bf FV: probability?} No.
+of an itemset in the enlarged dataset is $r_p(X)$, independently on the
+distribution. Given that our method to control the FWER is
+distribution-independent this is a valid way to establish a ground truth.
+
+%\subsection{d-indexes, b-indexes, and offset parameters}\label{sec:vcindexeval}
+\subsection{Parameters evaluation}\label{sec:vcindexeval}
+Firstly, we evaluated the most important parameters used by our statistical
+test: the upper bound $d_1=|\Itm|-1$ to the VC-dimension of the itemsets, the
+d-index $d_2$ of the dataset (which is an upper bound to the empirical
+VC-dimension of the itemsets on the dataset), the two candidates $\varepsilon'_1$ and
+$\varepsilon'_2$ for the first offset parameter
+$\varepsilon'=\min\{\varepsilon'_1,\varepsilon'_2\}$, the non-empirical and
+empirical b-indexes
+$b_1=\mathsf{b}(\mathcal{B}^-(\RFI(p,\Itm,\theta)),\mathcal{Z})$ and
+$b_2=\mathsf{eb}(\mathcal{B}^-(\RFI(p,\Itm,\theta)),\Ds,\mathcal{Z})$, and the
+two
+candidates $\varepsilon''_1$ and $\varepsilon''_2$ for the second offset
+parameter $\varepsilon''$. The first four only depend on the ground set $\Itm$
+and on the dataset $\Ds$, while the others also depend on the minimum frequency
+threshold
+$\theta$. Table~\ref{table:vcindex} reports the value for these parameters in
+an enlarged version of the datasets from the FIMI repositories. 
+%We report both values for the offset parameters computed using the empirical
+%and non-empirical VC-dimension. 
+%The reported values are from single random runs of our methods.
+Throughout all our experiments we used $\delta=0.1$.
+
+\begin{table*}[tb]
+  \centering
+\begin{tabular}{lccccccccc}
+\toprule
+%Dataset & $\theta$ & $d_1$  & $d_2$ & $\varepsilon'_1$ & $\varepsilon'_2$ &
+%$b_1$ & $b_2$ & $\varepsilon''_1$ & $\varepsilon''_2$ \\
+Dataset & $\theta$ & $|\Itm|-1$  & $d_2$ & $\varepsilon'_1$ & $\varepsilon'_2$ &
+$\mathsf{b}(\mathcal{B}^-_\theta,\mathcal{Z})$ & $\mathsf{eb}(\mathcal{B}^-_\theta,\Ds,\mathcal{Z})$ & $\varepsilon''_1$ & $\varepsilon''_2$ \\
+\midrule
+\texttt{accidents} & 0.4 & 467 & 46 & 0.00342 & 0.01819 & 12 & 12 & 0.00061 & 0.00958 \\
+\texttt{BMS-POS} & 0.01 & 1656 & 81 & 0.00644 & 0.02394 & 13 & 13 & 0.00063 & 0.00995 \\
+\texttt{kosarak} & 0.04 & 41269 & 442 & 0.03212 & 0.05512 & 16 & 11 & 0.00068 & 0.00920 \\
+\texttt{pumsb\textsuperscript{*}} & 0.45 & 2087 & 59 & 0.00722 & 0.02052 & 12 & 10 & 0.00061 & 0.00880\\
+\texttt{retail} & 0.022 & 16469 & 58 & 0.02029 & 0.02035 & 15 & 9 & 0.00062 & 0.00838 \\
+\bottomrule
+\end{tabular}
+\caption{Bounds to (empirical) VC-dimensions and offset parameters}
+\label{table:vcindex}
+\end{table*}
+
+%{bf FV:} Are $d'_1$ and $d'_2$ switched in this paragraph? Yes, they were.
+The first interesting result is that it is clear that using the d-index of the
+dataset or the quantity $|\Itm|-1$ as upper bounds to the empirical b-index and
+to the b-index would be extremely conservative. In some cases, like for the
+\texttt{kosarak} dataset, the b-indexes are orders of magnitude smaller than the
+d-index, not to say than $|\Itm|-1$.
+
+Secondly, we can see that in most cases $d_2\ll |\Itm|-1$, and this will be especially true in datasets
+from market basket processes like those from large electronic commerce websites,
+where the number $|\Itm|$ of items is huge but most of the transactions are very
+short because the majority of customers buy a limited number of products.
+A germane example of this situation is the \texttt{retail} dataset, which
+``contains the (anonymized) retail market basket data from an anonymous Belgian
+retail store''\footnote{Quote from the dataset description on the FIMI page.}:
+for this dataset, $d_2$ is almost three orders of magnitude smaller than
+$d_1$. Despite the fact that even for this dataset we have
+$\varepsilon'_1<\varepsilon'_2$, there are indeed cases for which the opposite
+relation is true. For example, if the dataset size were 15 million transactions
+instead of 20 million, we would have, for \texttt{retail}, using the same values
+for $d_1$ and $d_2$, $\varepsilon'_1=0.02343$ and $\varepsilon'_2=0.02330$.
+\iffalse
+{\bf FV:} Is it always the case that with fewer transactions we have $\varepsilon'_2 <
+\varepsilon'_1$? If so, we should comment on this.
+{\bf MR:} If $d_2\ll d_1$ and there are fewer transactions, then it is more
+likely that $\varepsilon'_2<\varepsilon'_1$.
+\fi
+
+This points out that considering an upper bound to the empirical VC-dimension
+when computing the first offset parameters is reasonable and can be useful even
+if $\varepsilon'_2$ is more dependent on the size of the dataset than
+$\varepsilon'_1$. In any case, it is clear that the correction $\varepsilon'$
+to the minimum frequency threshold $\theta$ is, in all cases, small and thus
+practical.  %enough to be practical. 
+
+From Table~\ref{table:vcindex} it is possible to appreciate that there can be a
+gap, although small, between the non-empirical and the empirical b-indexes. The fact that the difference
+between these two parameters is small implies that $\varepsilon''_1$ is smaller
+than $\varepsilon''_2$ because, as we said before, $\varepsilon''_1$ is less dependent on the size of
+the dataset. The resulting parameter $\varepsilon''$ is very small, to the order
+of $10^{-3}$. This fact should intuitively suggests that the statistical test
+should have good statistical power. This is indeed the case as we will see
+%explain
+in Section~\ref{sec:statpow}.
+
+\subsection{Control of the FWER}
+We evaluated the capability of our method to control the FWER by first creating
+a number of enlarged datasets with 20 million transactions
+each as described in Section~\ref{sec:dsgen}, and then using
+Algorithm~\ref{alg:pseudocode} to extract a collection of RFI's using a range of
+different minimum real frequency thresholds $\theta$, with FWER $\delta=0.1$. We
+repeated each experiment multiple times on different datasets generating from the same
+distribution. In all the hundreds of runs of our algorithm, the returned
+collection of itemsets always only contained RFI's and never contained \emph{any false positives},
+suggesting therefore that not only our method can control the FWER effectively,
+but it is also more \emph{conservative} than the guarantees obtained from the theoretical analysis, since the returned collection never contained RFI's even if the upper bound $\delta$ to the probability of such event was set to $0.1$. This is
+expected as the (empirical) b-index is not always a tight bound to the
+(empirical) VC-dimension.
+
+\subsection{Statistical power}\label{sec:statpow}
+As described in Section~\ref{sec:stat_tests}, the power of a statistical test is the probability that the test will
+reject the null hypothesis when the null hypothesis is false. 
+In most cases, it is difficult to analytically quantify the
+statistical power of a test, especially in the case of multiple hypothesis
+testing when the hypotheses are correlated. This is indeed the case for the
+RFI's problem, and we therefore conducted an empirical evaluation of the statistical
+power of our method by assessing what fraction of the total number of
+RFI's is reported in output, using the procedure described in
+Section~\ref{sec:dsgen} to create datasets with 20 million transactions for which
+we know the actual distribution of RFI's. We fixed $\delta=0.1$ and repeated
+each experiment 20 times, finding very small variance in the results.
+
+We also wanted to compare our power with that of established methods
+to control the probability of Type-1 errors.
+
+A classical and widespread method to control the FWER is the \emph{Bonferroni
+correction}~\cite{DudoitSB03}. This method is extremely easy to apply and
+is also known to be excessively conservative: given a number $k$ of hypothesis
+$h_i$, $1\le i\le k$ to be tested, to ensure that the FWER is at most $\alpha$,
+one can fix, \emph{a priori}, $k$ positive weights $\alpha_i$, $1\le i\le k$,
+such that $\sum \alpha_i=\alpha$ and test each hypothesis independently using
+$\alpha_i$ as the critical value, i.e., rejecting the hypothesis if the p-value
+resulting from its testing is greater than $\alpha_i$. The most common way to
+set the weights is to have $\alpha_i=\alpha/k$. In our case, we have
+$k=2^{|\Itm|}-1$, i.e., the number of itemsets that can be built on the ground
+set $\Itm$. In most cases, especially the most
+interesting ones, $|\Itm|$ can be in the order of thousands, as can be seen from
+Table~\ref{table:vcindex} ($d'_1=|\Itm|-1$). This implies that $k$ is extremely
+high (to the order of $10^{300}$ when $|\Itm|$ is in around 1000) and conversely
+$1/k$ is extremely low ($10^{-300}$), as would be
+the weights $\alpha_i=\alpha/k$. We tried to employ the Bonferroni correction and
+the exact Binomial test on itemsets $X$ with $f_\Ds(X)\ge\theta$ using
+$r_p(X)<\theta$ as null hypothesis to extract a collection of FI's with FWER
+$\delta$ and compare the statistical power of this method with ours, but we hit
+the computational precision limits of our platform (quad-core AMD Phenom\texttrademark
+II X4 955 Processor running GNU/Linux 2.6.32-5-amd64). Specifically, double
+precision (using the GNU C Compiler \texttt{long double} type, with 80 bits precision)
+was not enough to represent the small values taken by the p-values and the
+weights. We already argued about why the weights are very small (mostly due to
+$k=2^{|\Itm|}-1$), while the p-values take very small values due to the very
+high values of $|\Ds|$, which are typically in the order of hundred of thousands
+or millions. A software implementation of quad precision (the GCC
+\texttt{\_\_float128} type, offering 128 bits of precision) made the computation
+too slow to be practical, especially due to the lack of fast numerical libraries
+supporting such high precision. Even the use of an upper bound to the number of
+potential RFI's with respect to the minimum real frequency
+threshold~\citep[Lemma 4.1]{ChakaravarthyPS09} does not help. We therefore
+conclude that the direct adjustment of weights using the Bonferroni procedure is
+not applicable for practical reasons to the case of RFI's. Similar conclusions
+can be taken for the use of the Holm-Bonferroni procedure~\citep{Holm79}, a less
+conservative variation of the one described above, with the
+additional drawback of having to compute the frequencies of all itemsets in the
+datasets, which is computationally extremely expensive. Layered Critical
+Values~\citep{Webb08}, a recently-prosed technique to control the FWER in
+pattern discovery while reaching good statistical power, suffered from the same
+computational precision issues as the Bonferroni correction, making it
+unappealing for RFI's discovery when the search space is huge (as we said,
+approx.~$10^{300}$) and there is no upper limit to the maximum size of an
+itemset.
+
+We stress again that the method
+from~\citep{Hanhijarvi11} can not be applied to our problems, as we
+mentioned in the review of the previous work in
+Section~\ref{sec:prevwork}. 
+
+We compared our algorithm with the holdout method~\citep{Webb07} that reduces the search space
+with the goal of mitigating the correction necessary for the multiple hypotheses test.
+%improving the power of the statistical test.
+%We applied the holdout method~\citep{Webb07} to reduce the search space
+%with the goal of improving the power of the statistical test.
+In the holdout
+method, the dataset is split into two portions, an \emph{exploratory} dataset
+and an \emph{evaluation} dataset. The exploratory dataset is mined and itemset
+are extracted from it, provided they pass a statistical test without any
+correction, i.e., with critical value $\alpha$. Then, these same patterns are
+tested on the evaluation dataset using a critical value $\alpha/k$ corrected for
+multiple hypotheses testing, where $k$ is the number of patterns found in the
+exploratory step. We implemented the holdout method using the exact Binomial
+test and the Bonferroni correction and compared the power of this method with
+that of our statistical test. 
+
+The results of the statistical power evaluation and of the comparison with the
+holdout method are presented in Table~\ref{table:power}. It is possible to
+appreciate that the power of Algorithm~\ref{alg:pseudocode} is very high by
+itself even when a large number of RFI's is present. In comparison with the
+holdout method, we can see that there are datasets, distributions, and
+frequencies at which the statistical test presented in this work performs better
+than the holdout, and other at which the holdout performs better than our method. The two
+approaches are therefore comparable and neither has a clear edge over the other.
+We can nevertheless see a pattern: when the number of RFI's grows, the direct
+correction applied within the holdout method becomes less and less powerful
+because it cannot take into account the many correlations between the itemsets.
+Given that in common applications the number of frequent itemsets of interest is
+large, in real scenarios our method is more effective in extracting the real
+frequent itemsets while rigorously controlling the false discoveries.
+
+We remark that even if~\citet{LiuZW11} found that the holdout method
+has less power than the direct adjustment or resampling methods, we already
+argued that these are not appliable to the RFI's problem or practical in our settings.
+
+It is also important to stress that the statistical test presented in this work
+can be applied in cases when the holdout method is not a viable option, for
+example when the dataset can not be split into two parts at random. As argued
+by~\citet{Hanhijarvi11}, this may be the case for network and spatial data.
+%{\bf FV} Add reference to paper that states this issue for the holdout.
+
+%\begin{figure*}[htb]
+%  \centering
+%   \subfloat[Statistical power]{\label{table:power}
+\begin{table}[tb]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+& & & \multicolumn{2}{c}{Statistical power (\%)} \\
+\cmidrule(l){4-5}
+Dataset & $\theta$ & RFI's & Algorithm~\ref{alg:pseudocode} & Holdout\\
+\midrule
+\texttt{accidents} & 0.4 & 32528 & 99.157 & 98.831\\
+\texttt{BMS-POS} & 0.01 & 1099 & 88.080 & 97.088 \\
+\texttt{kosarak} & 0.04 & 42 & 95.238 & 97.619 \\
+\texttt{pumsb\textsuperscript{*}} & 0.45 & 1913 & 97.680 & 97.543 \\
+\texttt{retail} & 0.022 & 47 & 95.744 & 97.872\\
+\bottomrule
+\end{tabular}
+\caption{Statistical power}
+\label{table:power}
+\end{table}
+%}
+%\hfill
+
+%\end{figure*}
+
+Note that existing methods to control the FDR~\citep{BenjaminiH95}
+would also suffer from the same issues as the Bonferroni correction, and
+therefore be too computationally expensive to be practical when only a fraction
+of all possible itemsets are RFI's.
+
+\subsection{Real frequency estimation}
+Recalling the definition of an $\varepsilon$-approximation to a range set
+$R$ (Def.~\ref{def:eapprox}) one may ask how close the frequency of
+an RFI in the sample is to its real frequency in the distribution. It is
+important to note, though, that the error bound expressed in the definition of
+an $\varepsilon$-approximation is only valid for the members of $R$. In the case
+of the RFI's, the itemsets $A$ such that $T(A)\in
+R_{\mathcal{B}^-(\RFI(p,\Itm,\theta))}$ are \emph{not} RFI's. Therefore, provided
+the dataset is an $\varepsilon''$-approximation, none of them will be included
+in the output collection of itemsets computed by our method. This implies that
+our method can not guaranteed any bound on the error $|f_\Ds(X)-r_p(X)|$ for the
+itemsets included in the output. Nevertheless, the frequencies in the sample are
+very close to the real frequencies, orders of magnitude closer than
+$\varepsilon$. In Table~\ref{table:freqapprox} we report the maximum and the
+average error $|f_\Ds(X)-r_p(X)|$ for the same datasets we used in the
+evaluation of the statistical power of our method, with $\delta=0.1$.
+
+\begin{table}[tb]
+  \centering
+% \subfloat[Absolute frequency error]{\label{table:freqapprox}
+\begin{tabular}{lccc}
+\toprule
+  & & \multicolumn{2}{c}{Real frequency estimation error} \\
+ \cmidrule(l){3-4}
+Dataset  & $\theta$ & maximum & average \\
+\midrule
+\texttt{accidents} & 0.4 & $4.3\cdot10^{-4}$ &  $9.2\cdot10^{-5}$ \\
+\texttt{BMS-POS} & 0.01 & $2.1\cdot10^{-4}$ & $2.4\cdot10^{-5}$ \\
+\texttt{kosarak} & 0.04 & $2.1\cdot10^{-4}$ & $4.6\cdot10^{-5}$ \\
+\texttt{pumsb\textsuperscript{*}} & 0.45 & $3.7\cdot10^{-4}$ & $9.7\cdot10^{-5}$ \\
+\texttt{retail} &  0.022 & $2.3\cdot10^{-4}$ & $4.0\cdot 10^{-5}$ \\
+\bottomrule
+\end{tabular}
+%}
+\caption{Real frequency estimation error}
+\label{table:freqapprox}
+\end{table}
+

@@ -1,0 +1,18 @@
+\section{Conclusions}
+\label{sec:conc}
+
+In this paper, we have described PARMA, a parallel algorithm for mining
+quasi-optimal collections of frequent itemsets and association rules in MapReduce.
+We showed through theoretical analysis that PARMA offers provable guarantees on
+the quality of the output collections. Through experimentation on a wide range
+of datasets ranging in size from 5 million to 50 million transactions,
+we have demonstrated a 30-55\% runtime improvement over PFP, the
+current state-of-the-art in exact parallel mining algorithms on MapReduce.
+Empirically we were able to verify the accuracy of the theoretical bounds, as
+well as show that in practice our results are orders of magnitude more accurate
+than is analytically guaranteed. Thus PARMA is an algorithm that can scale to
+arbitrary data sizes while simultaneously providing nearly perfect results. 
+
+\section{Acknowledgments}
+\label{sec:ack}
+The work of Riondato, DeBrabant, and Upfal was supported in part by NSF award IIS-0905553.
