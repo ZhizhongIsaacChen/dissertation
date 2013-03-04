@@ -27,7 +27,7 @@ Microsoft SQL Server.
 \end{abstract}
 \fi
 
-\section{Introduction}\label{sec:intro}
+\section{Introduction}\label{sec:vcfreqintro}
 As advances in technology allow for the collection and storage of vast
 databases, there is a growing need for advanced machine learning techniques for
 speeding up the execution of queries on such large datasets. In this work we
@@ -106,14 +106,14 @@ task). %
 %approximate query processing.
 
 \paragraph{Outline.} The rest of the paper is organized as follows. We review
-the relevant previous work in Sect.~\ref{sec:prevwork}. In
-Sect.~\ref{sec:prelim} we formulate the problem and introduce the
+the relevant previous work in Sect.~\ref{sec:vcfreqprevwork}. In
+Sect.~\ref{sec:vcfreqprelims} we formulate the problem and introduce the
 Vapnik-Chervonenkis dimension and the related tools we use in developing our
 results. Our main analytical contribution, a bound on the VC dimension  of class of queries is presented in Sect.~\ref{sec:vcdimqueries}.  The application of these results for selectivity estimation is
 given in Sect.~\ref{sec:applications}. Experiments are presented in
-Sect.~\ref{sec:experiments}. 
+Sect.~\ref{sec:vcfreqexp}. 
 
-\section{Related Work}\label{sec:prevwork}
+\section{Related Work}\label{sec:vcfreqprevwork}
 Methods to estimate the selectivity (or cardinality of the output) of queries
 have been extensively studied in the database literature primarily due to the
 importance of this task  to query plan optimization and resource allocation. A
@@ -227,7 +227,7 @@ To the best of our knowledge, our work is the first to provide explicit bounds
 on the VC-dimension of queries and to apply the results to query selectivity
 estimation.
 
-\section{Preliminaries}\label{sec:prelim}
+\section{Preliminaries}\label{sec:vcfreqprelims}
 We consider a database $\Db$ of $k$ tables $\Tab_1,\cdots,\Tab_k$. We denote a
 column $C$ of a table $\Tab$ as $\Tab.C$ and, for a tuple $t\in\Tab$, the value
 of $t$ in the column $C$ as $t.C$. We denote the domain of the values that can
@@ -417,14 +417,14 @@ An $\varepsilon$-approximation (resp.
 a relative $(p,\varepsilon)$-approximation) can be probabilistically constructed by sampling the point
 space~\citep{VapnikC71,LiLS01,HarPS11}.
 
-\begin{theorem}\label{thm:eapprox}
+\begin{theorem}\label{thm:vcfreqeapprox}
 Let $(X,R)$ be a range space of VC-dimension at most $d$,  $A$ a finite subset of $X$, and $B\subset
   A$ a random sample of $A$ of cardinality $s$. 
   \begin{enumerate}
 \item
   There is a positive constant $c$ such that for any 
   $0<\varepsilon,\delta<1$  and  
-  \begin{equation}\label{eq:eapprox}
+  \begin{equation}\label{eq:vcfreqeapprox}
   s\ge\min\left\{|A|,\frac{c}{\varepsilon^2}\left(d+\log\frac{1}{\delta}\right)\right\},
   \end{equation}  $B$ is an $\varepsilon$-approximation for $A$ with probability at least $1-\delta$.
 \item
@@ -448,7 +448,7 @@ In Sect.~\ref{sec:applications} we use an
 $\varepsilon$-approximation (or a relative $(p,\varepsilon)$-approximation)  to
 compute good estimates of the selectivities of all queries in $Q$. We obtain a
 small approximation set through probabilistic construction.
-The challenge in applying Thm.~\ref{thm:eapprox} to our setting is computing the
+The challenge in applying Thm.~\ref{thm:vcfreqeapprox} to our setting is computing the
 VC-dimension of a range space defined by a class of queries. 
 We state here a few fundamental results that will be used in our analysis. 
 
@@ -808,7 +808,7 @@ to constructing a concrete
 algorithm for selectivity estimation and query plan optimization.
 
 \subsection{The general scheme}
-Our goal is to apply Def.~\ref{definition:eapprox} and Thm.~\ref{thm:eapprox} to
+Our goal is to apply Def.~\ref{definition:eapprox} and Thm.~\ref{thm:vcfreqeapprox} to
 compute an estimate of the selectivity of SQL queries. Let $Q_{u,m,b}$ be a
 class of queries as in Theorem~\ref{thm:vcdimgenqueries}.
 %, for some parameters $u$, $m$, and $b$. 
@@ -817,7 +817,7 @@ Cartesian product of the tables involved in executing queries in $Q_{u,m,b}$,
 and $R$ is the family of all output sets of queries in $Q_{u,m,b}$. 
 %Let $VC(S)$ be the VC-dimension of $S$ and let $\Sam$ be an $\varepsilon$-approximation of
 %$X$.
-% of size $m$ as defined by Thm.~\ref{thm:eapprox}. 
+% of size $m$ as defined by Thm.~\ref{thm:vcfreqeapprox}. 
 Let $\Sam$ be an $\varepsilon$-approximation of $X$ and
 let $r$ be the output set
 of a query $q\in Q_{u,m,b}$ when executed on the original dataset, then $X\cap
@@ -838,7 +838,7 @@ plan. Corresponding results are obtained by using a relative
   $(p,\varepsilon)$-approximation for $X$.
   
 \subsection{Building and using the sample representation}\label{sec:building}
-We apply Thm.~\ref{thm:eapprox} to probabilistically construct an $\varepsilon$-approximation of $X$.
+We apply Thm.~\ref{thm:vcfreqeapprox} to probabilistically construct an $\varepsilon$-approximation of $X$.
 A technical difficulty in algorithmic application of the theorem is that it is proven  for
 a uniform sample of the Cartesian product
 of all the tables in the database, while
@@ -944,7 +944,7 @@ the total execution time on the sample. The significant improvement in the
 selectivity estimates in complex queries well compensates for the extra work in
 computing the selectivity estimates.
 
-\section{Experiments}\label{sec:experiments}
+\section{Experiments}\label{sec:vcfreqexp}
 This section presents the results of the experiments we run to validate our
 theoretical results and to compare our selectivity estimation
 method with standard techniques implemented in PostgreSQL and in
@@ -957,7 +957,7 @@ of the each query in the random samples as an estimator for the selectivity in
 the large database with the adjustments for join operations, as
 described in the previous Section. We compute the error between the
 estimate and the actual selectivity to show that the thesis of
-Thm.~\ref{thm:eapprox} is indeed valid in practice. The use of a large number
+Thm.~\ref{thm:vcfreqeapprox} is indeed valid in practice. The use of a large number
 of queries and of a variety of parameters allows us to evaluate the error
 rate as a function of the sample size. We then compare our
 method with the commonly used selectivity estimation based  on precomputed
@@ -1032,7 +1032,7 @@ Sect.~\ref{sec:building}.
 
 For each table in the original database we create many sample tables of
 different sizes. The sizes are either fixed arbitrarily or computed
-using~\eqref{eq:eapprox} from Thm.~\ref{thm:eapprox}. The arbitrarily sized
+using~\eqref{eq:vcfreqeapprox} from Thm.~\ref{thm:vcfreqeapprox}. The arbitrarily sized
 sample tables contain between $10000$ and $1.5$ million tuples. To compute the
 VC-dimension-dependent sample size, we fixed $\varepsilon=0.05$,
 $\delta=0.05$, and $c=0.5$. The parameter $d$ was set to the best bound to the
@@ -1040,7 +1040,7 @@ VC-dimension of the range space of the queries we were running, as obtained from
 our theoretical results. If we let $m$ be the number of columns involved in the
 selection predicate of the queries and $b$ be the number of Boolean clauses in
 the predicate, we have that $d$ depends directly on $m$ and $b$, as does the
-sample size $s$ through \eqref{eq:eapprox} in Thm.~\ref{thm:eapprox}. For
+sample size $s$ through \eqref{eq:vcfreqeapprox} in Thm.~\ref{thm:vcfreqeapprox}. For
 selection queries, we used $m=1,2$ and $b=1,2,3,5,8$, with the addition of the
 combination $m=5$, $b=5$. We run experiments on join queries only for some
 combinations of $m$ and $b$ (i.e. for $m=1$ and $b=1,2,5,8$) due to the large
@@ -1144,7 +1144,7 @@ and~\ref{fig:T_k2_correl_k2_b8_errperc} that both the average and the standard
 deviation of the percentage error of the prediction obtained with our method
 decrease as the sample size grows (the rightmost plotted
 sample size is the one from Table~\ref{tab:samplesize}, i.e., the one computed 
-in~Thm.\ref{thm:eapprox}. More interesting is the comparison in those figures between the performance of the
+in~Thm.\ref{thm:vcfreqeapprox}. More interesting is the comparison in those figures between the performance of the
 histograms and the performance of our techniques in predicting selectivities. When
 the assumptions of the histograms hold, as is the case for the data plotted in
 %Figures~\ref{fig:T_k5_u200k_unif_k5_b5_errperc} and
@@ -1226,7 +1226,7 @@ in two different ways: the ``theoretically correct'' way that makes use of the
 number of pairs of tuples with the same value in the $sampleindex$ column and
 the ``practitioner'' way which uses the size of the output of the join operation
 in the sample, therefore ignoring the $sampleindex$ column. Recall that we had
-to add the $sampleindex$ column because Thm.~\ref{thm:eapprox} requires a
+to add the $sampleindex$ column because Thm.~\ref{thm:vcfreqeapprox} requires a
 uniform sample of the Cartesian product of the input tables.
 As it is evident from Fig.~\ref{fig:join_k1_b1_errperc}, the ``practitioner''
 way of predicting selectivity gives very good results at small sample sizes
@@ -1258,7 +1258,7 @@ using online sampling.
 %results in Fig.~\ref{fig:join_k1_b1_errperc} shows, i.e., the bounds to the
 %sample size may be such that a certain level of non-uniformity in the sampling
 %process may be accommodated. It may even well be that the entire
-%Thm.~\ref{thm:eapprox}, does not need the sample to be a uniform sample of the
+%Thm.~\ref{thm:vcfreqeapprox}, does not need the sample to be a uniform sample of the
 %set of points.
 %
 \section{Conclusions}\label{sec:compar}
@@ -1267,7 +1267,7 @@ it on a concise, properly selected, sample of the database. We present a
 rigorous analysis of our method and extensive experimental results demonstrating
 its efficiency and the accuracy of its predictions.
 
-%As we discussed in Section~\ref{sec:prevwork},
+%As we discussed in Section~\ref{sec:vcfreqprevwork},
 Most commercial databases use histograms built on a single column, for selectivity
 estimation. There has also been significant research on improving the estimate
 using multidimensional

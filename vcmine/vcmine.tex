@@ -2,7 +2,7 @@
 sampling with tight performance guarantees}\label{ch:vcmine}
 BLA
 
-\section{Introduction}\label{sec:intro}
+\section{Introduction}\label{sec:vcmineintro}
 Discovery of frequent itemsets and association rules is a fundamental
 computational primitive with application in data mining (market basket
 analysis), databases (histogram construction), networking (heavy hitters) and
@@ -15,7 +15,7 @@ dataset, possibly multiple times. For large datasets that do not fit in main
 memory, this can be prohibitively expensive. Furthermore, such extensive
 computation is often unnecessary, since high quality approximations are
 sufficient for most practical applications.  Indeed, a number of recent
-papers (see~\ref{sec:prevwork}) for more details)
+papers (see~\ref{sec:vcmineprevwork}) for more details)
 %~\citep{MannilaTV94,Toivonen96,ZakiPLO97,JiaL05,LiG04,ZhangZW03,ZhaoZZ06,BronnimanCDHS03,ChandraB11,ChenHS02,ChenHH11,ChuangCY05,HuY06,HwangK06,JiaG05,JohnL96,MahafzahABAZ09,Parthasarathy02,WangDC05,ChuangHC08,ChakaravarthyPS09,PietracaprinaV07,WangHLT05,PietracaprinaRUV10,SchefferW02,VasudevanV09}
 explored the application of sampling for approximate solutions to these
 problems. However, the efficiency and practicality of the sampling approach
@@ -45,7 +45,7 @@ In this work we circumvent this problem
 through a novel application of the \emph{Vapnik-Chervonenkis (VC)} dimension
 concept, a fundamental tool in statistical learning theory.  Roughly speaking,
 the VC-dimension of a collection of indicator functions (a range space) is a
-measure of its complexity or expressiveness (see Sect.~\ref{sec:prelvcdim} for
+measure of its complexity or expressiveness (see Sect.~\ref{sec:vcmineprelvcdim} for
 formal definitions). A major result~\citep{VapnikC71} relates the VC-dimension of
 a range space to a sufficient size for a random sample to simultaneously
 approximate all the indicator functions within predefined parameters. The main
@@ -136,17 +136,17 @@ exploited in other data mining problems.
 
 %\subsection{Outline} 
 \paragraph{Outline}
-We review relevant previous work in Sect.~\ref{sec:prevwork}. In
-Sect.~\ref{sec:prelim} we formally define the problem
+We review relevant previous work in Sect.~\ref{sec:vcmineprevwork}. In
+Sect.~\ref{sec:vcmineprelim} we formally define the problem
 and our goals, and introduce definitions and lemmas used in the analysis. The
 main part of the analysis with derivation of a strict bound to the VC-dimension
 of association rules is presented in Sect.~\ref{sec:vcdimar}, while our
 algorithms and sample sizes for mining FI's, top-$K$ FI's, and association rules
-through sampling are in Sect.~\ref{sec:approx}. Section~\ref{sec:exp} contains
+through sampling are in Sect.~\ref{sec:approx}. Section~\ref{sec:vcmineexp} contains
 an extensive experimental evaluation of our techniques. A discussion of our
-results and the conclusions can be found in Sect.~\ref{sec:concl}.
+results and the conclusions can be found in Sect.~\ref{sec:vcmineconcl}.
 
-\section{Related Work}\label{sec:prevwork}
+\section{Related Work}\label{sec:vcmineprevwork}
 \citet{AgrawalIS93} introduced the problem of mining association
 rules in the basket data model, formalizing a fundamental task of information
 extraction in large datasets. Almost any known algorithm for the problem starts
@@ -283,7 +283,7 @@ use inside a parallel/distributed algorithm for FI's and AR's
 mining~\citep{RiondatoDFU12} for the MapReduce~\citep{DeanS04} platform that we
 describe in the conclusions.
 
-\section{Preliminaries}\label{sec:prelim}
+\section{Preliminaries}\label{sec:vcmineprelim}
 
 This section introduces basic definitions and properties that will be used in later sections.
 
@@ -302,7 +302,7 @@ $T_\Ds(A)$, is the set of transactions in $\Ds$ that contain $A$. The
 in $\Ds$ that contains $A$, and the \emph{frequency} of $A$, $f_\Ds(A)=
 |T_\Ds(A)|/|\Ds|$, is the fraction of transactions in $\Ds$ that contain
 $A$.
-\begin{definition}\label{def:minethreshold}
+\begin{definition}\label{def:vcmineminethreshold}
   Given a \emph{minimum frequency
   threshold} $\theta$, $0<\theta\le 1$, the \emph{FI's mining task with respect
   to $\theta$} is finding all itemsets with frequency $\geq\theta$, i.e., the
@@ -423,7 +423,7 @@ of the frequencies (and confidences) in addition to the approximation of
 the collection of itemsets or association rules (Property 3 in Def.~\ref{def:approxfi} and properties
 3 and 5 in Def.~\ref{def:approxar}).
 
-\subsection{VC-Dimension}\label{sec:prelvcdim}
+\subsection{VC-Dimension}\label{sec:vcmineprelvcdim}
 The Vapnik-Chernovenkis (VC) Dimension of a space of points is a measure of the
 complexity or expressiveness of a family of indicator functions (or equivalently
 a family of subsets) defined on that space~\citep{VapnikC71}. A finite bound on
@@ -431,7 +431,7 @@ the VC-dimension of a structure implies a bound on the number of random samples
 required for approximately learning that structure. We outline here some basic
 definitions and results and refer the reader to the works
 of~\citet[Sec.~14.4]{AlonS08},~\citet{DevroyeGL96} and~\citet{Vapnik99} for more details
-on VC-dimension. See Sec.~\ref{sec:prevwork} for applications of VC-dimension in 
+on VC-dimension. See Sec.~\ref{sec:vcmineprevwork} for applications of VC-dimension in 
 computer science.
 
 %VC-dimension is defined on {\em range spaces}:
@@ -507,12 +507,12 @@ $(p,\varepsilon)$-approximation) can be constructed by random sampling points of
 the point space~[\cite{HarPS11}, Thm.~2.12 (resp.~2.11), see
 also~\citep{LiLS01}].
 
-\begin{theorem}\label{thm:eapprox}
+\begin{theorem}\label{thm:vcmineeapprox}
   There is an absolute positive constant $c$ (resp. $c'$)
   such that if $(X,R)$ is a range-space of VC-dimension at most $d$, $A\subset
   X$ is a finite subset and $0<\varepsilon,\delta<1$ (resp.~and $0<p<1$), then a
   random subset $B\subset A$ of cardinality $m$, where
-  \begin{equation}\label{eq:eapprox}
+  \begin{equation}\label{eq:vcmineeapprox}
     m\ge\min\left\{|A|,\frac{c}{\varepsilon^2}\left(d+\log\frac{1}{\delta}\right)\right\},
   \end{equation}
   (resp.
@@ -526,7 +526,7 @@ replacement if $m<|A|$ (otherwise the sample is exactly the set $A$).  The
 constants $c$ and $c'$ are absolute and do not depend on the range space or on
 any other parameter. \citet{LofflerP09} showed experimentally that the absolute
 constant $c$ is at most $0.5$. No upper bound is currently known for $c'$.
-Up to a constant, the bounds presented in Thm.~\ref{thm:eapprox} are
+Up to a constant, the bounds presented in Thm.~\ref{thm:vcmineeapprox} are
 tight~\cite[Thm.~5]{LiLS01}. 
 
 It is also interesting to note that an
@@ -538,7 +538,7 @@ $O(d^{3d}(\varepsilon^{-2}(\log d-\log\varepsilon))^d|X|)$
 
 \section{The Dataset's Range Space and its VC-dimension}\label{sec:vcdimar}
 Our next step is to define a range space of the dataset and the itemsets. We
-will use this space together with Theorem~\ref{thm:eapprox} to compute the bounds to
+will use this space together with Theorem~\ref{thm:vcmineeapprox} to compute the bounds to
 sample sizes sufficient to compute approximate solutions for the various tasks
 of market basket analysis. 
 
@@ -1078,7 +1078,7 @@ frequency threshold, as formalized in the following lemma.
 
 \begin{proof}
   Suppose that $\Sam$ is a $\varepsilon/2$-approximation of the range space $(X,R)$ corresponding
-  to $\Ds$. From Thm.~\ref{thm:eapprox} we know that this happens with probability at least $1-\delta$.  
+  to $\Ds$. From Thm.~\ref{thm:vcmineeapprox} we know that this happens with probability at least $1-\delta$.  
   This means that for all $X\subseteq\Itm$,
   $f_\Sam(X)\in[f_\Ds(X)-\varepsilon/2,f_\Ds(X)+\varepsilon/2]$.
   This holds in particular for the itemsets in
@@ -1102,7 +1102,7 @@ to be rebuilt if we want to mine it with a threshold $\theta$ first and with
 another threshold $\theta'$ later.
 
 It is important to note that the VC-dimension of a dataset, and therefore the
-sample size from~\eqref{eq:eapprox} needed to probabilistically obtain an
+sample size from~\eqref{eq:vcmineeapprox} needed to probabilistically obtain an
 $\varepsilon$-approximation, is independent from the size (number of
 transactions) in $\Ds$ and also of the size of $\FI(\Sam,\Itm,\theta)$. It
 only depends on the quantity $d$, which is always less or equal to the length
@@ -1125,7 +1125,7 @@ need to add a dependency on $\theta$ as shown in the following Lemma.
 
 \begin{proof}
   Let $p=\theta(2-\varepsilon)/(2+\varepsilon)$. From
-  Thm.~\ref{thm:eapprox}, the sample $\Sam$ is a relative
+  Thm.~\ref{thm:vcmineeapprox}, the sample $\Sam$ is a relative
   $(p,\varepsilon/2)$-approximation of the range space associated to $\Ds$ with
   probability at least $1-\delta$. For any itemset $X$ in
   $\FI(\Ds,\Itm,\theta)$, we have $f_\Ds(X)\ge\theta>p$, so
@@ -1169,7 +1169,7 @@ Lemma~\ref{lem:absapproxtopk} formalizes this intuition.
 
 \begin{proof}
   Suppose that $\Sam$ is a $\varepsilon/4$-approximation of the range
-  space $(X,R)$ corresponding to $\Ds$. From Thm.~\ref{thm:eapprox} we know that
+  space $(X,R)$ corresponding to $\Ds$. From Thm.~\ref{thm:vcmineeapprox} we know that
   this happens with probability at least $1-\delta$. This means that for all
   $Y\subseteq\Itm$,
   $f_\Sam(Y)\in[f_\Ds(Y)-\varepsilon/4,f_\Ds(Y)+\varepsilon/4]$.
@@ -1229,7 +1229,7 @@ for this case are presented in Lemma~\ref{lem:relapproxtopk}.
   Assume that $\Sam_1$ is a $\varepsilon/\sqrt{2\phi}$-approximation for
   $\Ds$ and $\Sam_2$ is a relative $(p,\varepsilon/2)$-approximation for $\Ds$.
   The probability of these two events happening at the same time is at least
-  $1-\delta$, from Thm.~\ref{thm:eapprox}.
+  $1-\delta$, from Thm.~\ref{thm:vcmineeapprox}.
 
   Following the steps of the proof of Lemma~\ref{lem:absapproxtopk} we can
   easily get that, from the properties of $\Sam_1$,
@@ -1280,7 +1280,7 @@ while Lemma~\ref{lem:absapproxar} deals with the \emph{absolute} one.
 
 \begin{proof}
   Suppose $\Sam$ is a relative $(p,\eta)$-approximation for the range space
-  corresponding to $\Ds$. From Thm.~\ref{thm:eapprox} we know this happens with
+  corresponding to $\Ds$. From Thm.~\ref{thm:vcmineeapprox} we know this happens with
   probability at least $1-\delta$.
 
  Let $W\in\AR(\Ds,\Itm,\theta,\gamma)$ be the association rule ``$A\Rightarrow
@@ -1354,7 +1354,7 @@ approximations to $\AR(\Ds,\Itm,\theta,\gamma)$ depends on $\theta$ and
 $\gamma$, which was not the case for absolute $\varepsilon$-close approximations
 to $\FI(\Ds,\Itm,\theta)$ and $\TOPK(\Ds,\Itm,K)$.
 
-\section{Experimental Evaluation}\label{sec:exp}
+\section{Experimental Evaluation}\label{sec:vcmineexp}
 In this section we present an extensive experimental evaluation of
 our methods to extract approximations of $\FI(\Ds,\Itm,\theta)$, $\TOPK(\Ds,\Itm,K)$, and
 $\AR(\Ds,\Itm,\theta,\gamma)$.
@@ -1606,7 +1606,7 @@ d-index $d$ for real datasets}
 \end{tabular}
 \end{table}
 
-\section{Conclusions}\label{sec:concl}
+\section{Conclusions}\label{sec:vcmineconcl}
 In this paper we presented a novel technique to derive random sample sizes
 sufficient to easily extract high-quality approximations of the (top-$K$)
 frequent itemsets and of the collection of association rules. The sample size

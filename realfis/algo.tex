@@ -4,7 +4,7 @@ while guaranteeing that the FWER is within the user-specified parameter
 $\delta$. We use results from statistical learning theory to achieve this goal.
 We define two range sets made of subsets of transactions associated to two different
 collections of itemsets, and we give upper bounds to their (empirical)
-VC-dimensions. In Section~\ref{sec:algo}, we
+VC-dimensions. In Section~\ref{sec:realfisalgo}, we
 present our algorithm to mine a collection of RFI's with FWER at most $\delta$.
 
 \subsection{The range set of itemsets}\label{sec:rangeitemsets}
@@ -99,7 +99,7 @@ $R_{\mathcal{B}^-_\theta}$ with probability at least $1-\delta$ for some
 user-specified parameter $\delta$. Now, if $\Ds$ is indeed a
 $\varepsilon$-approximation to $R_{\mathcal{B}^-_\theta}$, then no itemset
 $A\in\mathcal{B}^-_\theta$ can have a frequency $f_\Ds(A)$ in $\Ds$ greater than
-$\theta+\varepsilon$. We will prove this formally in Sec.~\ref{sec:algo} and
+$\theta+\varepsilon$. We will prove this formally in Sec.~\ref{sec:realfisalgo} and
 use this fact as the core step in the analysis of the correctness of our method
 to compute a collection of RFI's with FWER at most $\delta$.
 
@@ -293,7 +293,7 @@ given that the original optimal solutions are feasible solutions of the modified
 problems. 
 
 Assume that we can compute a superset $B$ of $\mathcal{B}^-_\theta$ (we will
-show how to do it in Section~\ref{sec:algo}). One drawback with the approach we
+show how to do it in Section~\ref{sec:realfisalgo}). One drawback with the approach we
 just outlined would be that the resulting bound to the (empirical) VC-dimension
 could be much larger than the original bound. This is due to the fact that we
 are not enforcing an additional constraint on the desired structure of the
@@ -371,7 +371,7 @@ have the following results, showing that the bound is optimal for a family\dots
 \end{proof}
 \fi
 
-\subsection{The statistical test}\label{sec:algo}
+\subsection{The statistical test}\label{sec:realfisalgo}
 In this section we present our method to compute a collection of RFI's while
 controlling its FWER. We then prove its correctness using the concepts and
 results defined in the previous section.
