@@ -77,27 +77,30 @@ of sampling techniques to speed up the extraction of the frequent subgraphs at
 the cost of accepting an approximation, not always well defined, of the
 collection~\cite{KashtanIMA04}. Sampling from graphs is a difficult problem by
 itself, especially if one is interested in sampling according to a specific
-distribution~\citep{LeskovecF06,ZouH10}. The problem has been studied in the
-literature and a number of algorithms were introduced to sample according to some
-distributions~\citep{LeeXE12}. Some of these works are especially interesting
-for us because they deal with the problem of uniformly sampling connected
-subgraphs of a specific size from the graph~\citep{Wernicke06,RibeiroS10,LuB12}.
-There are however two main issues with the algorithms suggested in these works.
-The first issue of these and many other works dealing with sampling of subgraphs
-is that there is currently no known method to compute the sample size sufficient
-to achieve a well-defined approximation of the collection of frequent subgraphs,
-or in other words, sufficient to control all the deviations of the unbiased
-estimators of the concentrations of the subgraphs from their expectation, a
-condition sufficient to ensure that it is possible to mine a good, parametrized,
-and well defined approximation of the collection of frequent subgraphs.  The
-second issue is that none of them offers a clear method to extract sample
-exactly $n$ connected subgraphs of a fixed size uniformly at random from the set
-of all subgraphs of a given size, because in these works, the size of the sample
-is itself a random variable and it appears that one can only easily control its
-expectation. This is due to the fact that the subgraphs sampled by these
-algorithms correspond to the last generation in a branching process that walk
-along a tree data structure that allow for the efficient generation of all
-subgraphs. 
+distribution~\citep{LeskovecF06,ZouH10}. The most simple approaches, like
+sampling vertices or edges and considering the corresponding graph, or
+performing some variant of a random walk along the graph, either do not return
+connected subgraphs or do not return a uniform sample. The problem has been
+studied in the literature and a number of algorithms were introduced to sample
+according to some distributions~\citep{LeeXE12}. Some of these works are
+especially interesting for our work because they deal with the problem of
+uniformly sampling connected subgraphs of a specific size from the
+graph~\citep{Wernicke06,RibeiroS10,LuB12}. There are however two main issues
+with the algorithms suggested in these works. The first issue of these and many
+other works dealing with sampling of subgraphs is that there is currently no
+known method to compute the sample size sufficient to achieve a well-defined
+approximation of the collection of frequent subgraphs, or in other words,
+sufficient to control all the deviations of the unbiased estimators of the
+concentrations of the subgraphs from their expectation, a condition sufficient
+to ensure that it is possible to mine a good, parametrized, and well defined
+approximation of the collection of frequent subgraphs. The second issue is that
+none of them offers a clear method to extract sample exactly $n$ connected
+subgraphs of a fixed size uniformly at random from the set of all subgraphs of a
+given size, because in these works, the size of the sample is itself a random
+variable and it appears that one can only easily control its expectation. This
+is due to the fact that the subgraphs sampled by these algorithms correspond to
+the last generation in a branching process that walk along a tree data structure
+that allow for the efficient generation of all subgraphs. 
 
 We want to address both issues in this work, as they both revolve around the
 sample size, and indeed they both need a clear solution if we want to obtain an
