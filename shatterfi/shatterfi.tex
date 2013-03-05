@@ -1,4 +1,62 @@
 \chapter{A progressive sampling algorithm for efficiently mining frequent
 itemsets and association rules}\label{ch:shatterfi}
-BLA
+\chaptermark{Mining frequent itemsets through progressive sampling}
+
+In this chapter we will present an algorithm based on progressive sampling to
+extract an approximate collection of the frequent itemsets from a very large
+dataset. For an introduction to the problem of frequent itemsets mining, see
+Section~\ref{sec:preldm}.
+
+In the setting of frequent itemsets mining, progressive sampling algorithms work
+by starting from a small random sample of the dataset, checking for some
+condition (stopping rule) which may or may not require the extraction of
+frequent itemsets from the sample, and accordingly decide whether to stop and
+return the collection of frequent itemsets from the sample or compute a larger
+sample according to a predefined or dynamic sample size schedule.
+
+The main issue in developing progressive sampling algorithms is the definition
+of the stopping rule. Ideally, it should be efficient to evaluate and it should
+suggest to stop the process as soon as possible. Moreover, it should be such
+that the collection of frequent itemsets extracted from the last sample should
+offer some quality guarantees in order to be a good approximation of the
+original collection. 
+It is not easy to develop a stopping rule achieving all these goals, and indeed
+many stopping rules in the literature do not succeed. They either
+require an expensive mining of frequent itemsets from the current
+sample, do not offer guarantees on the quality of the approximation, or
+both~\citep{BronnimanCDHS03,ChandraB11,ChenHH11,ChenHS02,ChuangCY05,HuY06,HwangK06,JiaG05,MahafzahABAZ09,Parthasarathy02,PietracaprinaRUV10,SchefferW02,WangDC05}.
+This is due to the fact that most of them compare the frequencies of the
+itemsets in the current sample with those from the previous sample, in order to
+understand whether they are converging to their expectations, i.e., to their
+frequencies in the dataset. In terms of the sample schedule, \citet{JohnL96}
+showed that a geometrically increasing sample schedule is optimal up to a
+constant factor.
+
+Our goal is to develop a stopping rule that satisfies all the three goals
+mentioned before and potentially an adaptive sampling schedule based on the
+stopping rule that can, if not provably, at least experimentally achieve a
+stopping sample size smaller than that suggested by the geometric schedule.
+The algorithm will not need to mine the frequent itemsets from the current
+sample in order to evaluate the stopping rule. To develop and analyze our
+stopping rule, we will use \emph{data-dependent bounds} on the deviations of all
+the frequencies in the sample from their real values. These bounds, based on
+\emph{Rademacher averages} are a recent development in statistical learning
+theory~\citep{BoucheronBL05,Kaariainen04,KaariainenME04,KoltchinskiiAADP00,Koltchniskii01}
+and have already been successfully employed in a progressive sampling algorithm
+for a different problem~\citep{ElomaaK02}. We believe the practicality of these
+bounds has not been fully exploited yet. The major difficulty in using these
+bounds is the development of an easy-to-compute upper bound to a characteristic
+combinatorial quantity of the sample. This upper bound is known as the
+\emph{Vapnik-Chervonenkis shatter
+coefficient}~\citep{BoucheronBL05,DevroyeGL96}. From an initial study, we
+believe that the VC shatter coefficient for the problem at hand will depend on
+the distribution of the lengths of the transactions in the sample. We already
+saw in Chapter~\ref{ch:vcmine} that the VC-dimension of a dataset is 
+bounded above by a quantity, the d-index, that depends on the
+distribution of lengths of the longest transactions in the dataset. This,
+together with other insights based on the definition of VC shatter coefficient
+give us reasons to believe that the ``right'' bound should depend on the entire
+distribution. We will conduct an extensive experimental evaluation of our
+algorithms on real and artificial dataset, comparing its performances with other
+progressive and static sampling algorithms.
 
