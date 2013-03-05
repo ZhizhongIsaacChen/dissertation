@@ -1,3 +1,109 @@
-\chapter{Mining frequent subgraph through sampling}\label{ch:graphmine}
-BLA
+\chapter{Mining frequent subgraphs through sampling}\label{ch:graphmine}
+Very large graphs with millions if not billions of nodes are available today and
+are studied by researchers in multiple disciplines.
+The complexity inherent in the combinatorial nature of many problems defined on
+graphs makes efficient analysis of these huge networks a hard problem. 
+
+In this chapter we will develop an algorithm to extract a collection of frequent
+subgraphs up to a specified size from a very large graph. Finding this
+collection is a key problem of many applications to a number of fields, including
+computational biology, social network analysis, the study of electronic
+circuits, and the behavior and structure of software.
+
+\section{Problem definition}\label{sec:graphminesettings}
+Let $G=(V,E)$ be a graph which can be either directed or
+undirected. For any graph we define the size of the graph as the number of
+vertices of the graph. An induced subgraph $G'$ of $G$  is a graph $G'=(V',E')$
+such that $V'\subseteq V$ and $E'\subseteq E$ such that if $u,v\in V'$ and
+$(u,v)\in E$, then $(u,v)\in E'$. Given two graphs $H=(V_H,E_H)$ and
+$K=(V_K,E_K)$, they are said to be isomorphic if it is possible to define a
+one-to-one function $f:V_H\rightarrow V_K$ such that $(u,v)\in E_H$ if and only
+if $(f(u),f(v))\in E_K$.
+
+Given an integer $k>0$ and a set $\mathcal{S}$ of
+non-isomorphic connected subgraphs of size $k$, let $S\in\mathcal{S}$ be a
+subgraph and let $N(S)$ be the number of induced subgraphs of $G$ that are
+isomorphic to $S$. We define the concentration of $S$ in $G$ with respect to
+$\mathcal{S}$ as
+\[
+C(S,\mathcal{S})=\frac{N(S)}{\sum_{R\in\mathcal{S}}N(R)}.\]
+The notation for $N(\cdot)$ and $C(\cdot)$ do not include a specification of the
+graph $G$ because this will always be clear from the context and $G$ is
+considered fixed. We will drop the specification of the set $\mathcal{S}$ from
+the notation of $C(\cdot)$ when the set $\mathcal{S}$ is clear from the context.
+
+Given a collection $\mathcal{C}$ of connected subgraphs, potentially of
+different sizes, and a real parameter $\theta\in(0,1)$, we are interested in
+finding the collection $\mathsf{FS}(G,\theta,\mathcal{C})$ of frequent subgraphs from
+$\mathcal{C}$ that have concentration at least $\theta$ in $G$. Formally,
+\[
+\mathsf{FS}(G,\theta,\mathcal{C})=\{S\in\mathcal{C} ~:~ C(S,\mathcal{S})\ge\theta\}.\]
+We will drop the specification of $\mathcal{C}$ and $G$ from $\mathsf{FS}(\cdot)$ when
+it is clear from the context.
+
+Given two graphs $H$ and $K$, finding whether $H$ has an induced subgraph
+isomorphic to $K$ is an NP-complete problem, which implies that finding the
+collection of frequent subgraphs is also computationally hard.
+
+In this work we are interested in efficiently extract an approximation of the
+set of frequent subgraphs, defined as follows:
+\begin{definition}\label{def:grapheapprox}
+  Given a graph $G$, a collection of connected graphs $\mathcal{C}$, a minimum
+  concentration frequency $\theta\in(0,1)$ and an error-controlling parameter
+  $\varepsilon\in(0,1)$, an $\varepsilon$-approximation of the set
+  $\mathsf{FS}(G,\theta,\mathcal{C})$ is a collection $\mathcal{R}$ of pairs
+  $(H,\phi)$ where $H\in\mathcal{C}$ and $\phi\in(0,1)$. The collection
+  $\mathcal{R}$ is such that
+  \begin{itemize}
+    \item For all graphs $H\in\mathcal{C}$ with $c(H)\ge\theta$ there is a pair
+      $(H,\phi)$ in $\mathcal{R}$.
+    \item $\mathcal{R}$ contains no pair $(H,\phi)$ for any $H$ such that
+      $c(H)<\theta-\varepsilon$.
+    \item For all pairs $(H,\phi)\in\mathcal{R}$ we have $|c(H)-\phi|\le\varepsilon$.
+  \end{itemize}
+\end{definition}
+Our algorithm will sample connected subgraphs from $G$ uniformly at random and
+return an $\varepsilon$-approximation with probability at least $1-\delta$, for
+a user-supplied value $\delta\in(0,1)$.
+
+\section{Proposed work}\label{sec:graphimineproposal}
+A number of previous works explored the task of efficiently compute the set of
+frequent subgraphs. They developed exact methods and heuristics to avoid the
+issue of finding subgraph
+isomorphisms~\citep{BaskervilleP06,GrochowK07,OmidiSMN09}. Some of them make use
+of sampling techniques to speed up the extraction of the frequent subgraphs at
+the cost of accepting an approximation, not always well defined, of the
+collection~\cite{KashtanIMA04}. Sampling from graphs is a difficult problem by
+itself, especially if one is interested in sampling according to a specific
+distribution~\citep{LeskovecF06,ZouH10}. The problem has been studied in the
+literature and a number of algorithms were introduced to sample according to some
+distributions~\citep{LeeXE12}. Some of these works are especially interesting
+for us because they deal with the problem of uniformly sampling connected
+subgraphs of a specific size from the graph~\citep{Wernicke06,RibeiroS10,LuB12}.
+There are however two main issues with the algorithms suggested in these works.
+The first issue of these and many other works dealing with sampling of subgraphs
+is that there is currently no known method to compute the sample size sufficient
+to achieve a well-defined approximation of the collection of frequent subgraphs,
+or in other words, sufficient to control all the deviations of the unbiased
+estimators of the concentrations of the subgraphs from their expectation, a
+condition sufficient to ensure that it is possible to mine a good, parametrized,
+and well defined approximation of the collection of frequent subgraphs.  The
+second issue is that none of them offers a clear method to extract sample
+exactly $n$ connected subgraphs of a fixed size uniformly at random from the set
+of all subgraphs of a given size, because in these works, the size of the sample
+is itself a random variable and it appears that one can only easily control its
+expectation. This is due to the fact that the subgraphs sampled by these
+algorithms correspond to the last generation in a branching process that walk
+along a tree data structure that allow for the efficient generation of all
+subgraphs. 
+
+We want to address both issues in this work, as they both revolve around the
+sample size, and indeed they both need a clear solution if we want to obtain an
+$\varepsilon$-approximation of the set of frequent subgraphs by extracting
+sample subgraphs. For the issue of determining the sample size, we plan to use
+the tools offered by statistical learning theory like the VC-dimension to bound
+all concentration deviations simultaneously. In order to study how to better
+control the size of the sample obtained from the methods presented in the
+literature, we will study the theory of branching processes in order to find the
+right distribution(s) to control the sampling along the three data structure.
 
