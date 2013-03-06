@@ -19,51 +19,57 @@
 \begin{document}
 \maketitle
 \thispagestyle{empty}
-Recent advancements in technology and in data storage allow for the collection
-of larger and larger datasets about all kinds of human activities and nature
+%Recent
+Advancements in technology %and in data storage 
+allow for the collection of larger and larger  amount of data regarding all kinds of human
+and natural %activities and nature
 phenomena.
 %However, recording and storing these huge amounts of data are just
 %two terms of a more complex equation whose result should be the understanding of
 %the complex phenomena that generated the data.
 Analytics, also known as \emph{knowledge discovery}, is the process of extracting
-information about these phenomena from available data. The scale of today's
-datasets, their diverse origins and representations, the plethora of questions
-that can be asked about the phenomena they are related to, all make the analysis
-of these datasets a challenging computational problem that goes under the name
-of \emph{Big Data analytics}. In this thesis we start from the observation that
-analyzing the entire available dataset is not always the right choice as it can
-be extremely time consuming. The additional information obtained by
-\emph{mining} the entire dataset can be minimal when compared to the large gain in
-efficiency obtained by analyzing a small random fraction of it.
-Moreover, even the largest dataset can often be seen as being just a collection of
-samples from the process generating the data. The real goal of knowledge
-discovery is understanding of this process, which can be done through an
-analysis of the statistical significance of the results. We develop algorithms
-to extract high-quality approximations of the collections of interesting patterns
-from random samples of transactional datasets and large graphs and to analyze
-the statistical significance of the patterns. Our algorithms make use of tools
-developed in the area of \emph{statistical learning theory}, part of mathematical
-statistics. These tools have often been considered only of theoretical
-significance. Contrary to this belief, we already successfully applied some of
-these (\emph{VC-dimension}) to a very important problem in knowledge discovery, namely
-the extraction of frequent itemsets and association rules from a sample of the
-dataset. The resulting algorithm was a huge improvement over existing algorithms
-and turned out to be extremely efficient in practice. A byproduct of this
-thesis will therefore be evidence for the high practical relevance of results
-from statistical learning theory.
+information about these phenomena from data (\emph{mining}). 
+%The scale of today's
+%datasets, their diverse origins and representations, the plethora of questions
+%that can be asked about the phenomena, %they are related to
+%all 
+The scale, diversity, and complexity of today's datasets make their analysis a
+challenging computational problem known as \emph{Big Data
+analytics}.
 
-In the talk, I will present a recently developed statistical test for the
-significance of frequent itemsets.
+Mining the whole dataset is not always the right choice. %as it can be
+%extremely time consuming
+The additional information obtained by analyzing the whole data can be
+minimal when compared to the large return in efficiency
+gained from mining only a small random fraction of it. Moreover, %even the largest 
+%a dataset can often be seen as a collection of samples from the process
+%generating the data. 
+the real goal of knowledge discovery is understanding of the phenomena behind 
+the data, evaluating the statistical significance of the mining
+results. In the thesis, we start from these observations and develop algorithms
+to extract high-quality approximations of collections of interesting
+patterns from random samples of very large transactional datasets and graphs and to
+analyze their statistical significance. Our analysis uses 
+tools developed in the area of \emph{statistical learning theory}. %, part of mathematical statistics.  %These tools have often been considered only of theoretical significance. Contrary to this belief, 
+We already successfully applied some of them (e.g., \emph{VC-dimension}) 
+%a very important problem in knowledge discovery, namely the 
+to mine frequent itemsets and association rules from a
+sample. % of the dataset. %The resulting algorithm is a huge improvement over
+%existing algorithms and %turned out to be 
+%extremely efficient in practice.
+A byproduct of this thesis will be the evidence for the high practical relevance
+of results from statistical learning theory.
+
+In the talk, I will present a statistical test for the significance of frequent itemsets.
 %which goes in the direction of shifting the
 %focus from the available dataset to the data generating process.
-It uses VC-dimension together with optimization to find the itemsets that are
-frequent according to the unknown distribution from the data generating process.
-This is joint work with Prof.~Fabio Vandin. I will then present the proposed
+It uses VC-dimension and optimization techniques to find the itemsets that are
+frequent according to the unknown data generating distribution.
+This is joint work with Prof.~Fabio Vandin. I will then introduce the proposed
 work: the development of a sampling-based algorithm to extract network motifs
-from large graphs, an important problem in computational biology and network
-characterization, and the use of very recently developed tools from statistical
-learning theory (data-dependent bounds derived from \emph{Rademacher averages})
-to develop an efficient progressive sampling algorithm to mine frequent itemsets
-and association rules.
+from large graphs, an important problem in computational biology, %and network characterization
+and the use of data-dependent bounds derived from \emph{Rademacher averages}, a
+recent result from statistical learning theory, to develop an efficient
+progressive sampling algorithm to mine frequent itemsets and association rules.
 \end{document}
 
