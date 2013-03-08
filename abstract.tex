@@ -4,26 +4,27 @@
   %challenge in many disciplines is the \emph{analysis} of data rather than the
   %collection of it. 
   The huge volume, high variety of origins and formats, and
-  ever-increasing velocity at which today's datasets must be looked at, make the
+  ever-increasing velocity requested when reporting results, make the
   task of analyzing the data a complex computational problem known as \emph{Big
   Data Analytics}. Traditional techniques developed in statistics are often
   insufficient, lacking scalability (\emph{volume}), speed (\emph{velocity}), or
-  applicability (\emph{variety}). This thesis argues for the use of modern
-  techniques from \emph{statistical learning theory} to develop and
-  analyze of efficient randomized algorithms for extracting collections of
-  interesting patterns from large transactional datasets and huge graphs,
-  addressing volume, velocity, and variety issues. Particular emphasis is put on
-  exploiting the trade-off between \emph{speed} and \emph{accuracy} by
-  developing algorithms that only analyze small random samples of the original
-  data, and on assessing the \emph{statistical significance} of the extracted
-  patterns by developing statistical tests that can be applied in a multiple
-  hypothesis testing setting. Studied problems include frequent itemsets and
+  applicability (\emph{variety}). The thesis of this work is that it is possible
+  to address these issues by using modern techniques from \emph{statistical learning
+  theory} to develop and analyze of efficient randomized algorithms for
+  extracting collections of interesting patterns from large transactional
+  datasets and huge graphs. Problems of interest include frequent itemsets and
   association rules mining, frequent subgraphs extraction, and database queries
-  selectivity estimation. The analysis of the algorithms uses tools from
-  statistical learning theory like \emph{VC-dimension} and \emph{Rademacher
-  averages}. A byproduct of this thesis is the evidence that these tools, often
-  considered only of theoretical interest, can be of great use in practice.
-  Each proposed algorithm is analyzed in terms of correctness and output quality
-  guarantees, and its performances assessed through an extensive empirical
-  evaluation on real and artificial benchmark datasets.
+  selectivity estimation. The two main lines of research involve exploiting the
+  trade-off between \emph{speed} and \emph{accuracy} by developing algorithms
+  that only analyze small random samples of the original data, and assessing the
+  \emph{statistical significance} of the extracted patterns by creating
+  statistical tests that can be applied in a multiple hypothesis testing
+  setting. The analysis of the algorithms uses tools from statistical learning
+  theory like \emph{VC-dimension}, \emph{shatter coefficients}, and
+  \emph{Rademacher averages}. A byproduct of this thesis is the evidence that
+  these tools, often considered only of theoretical interest, can be of great
+  use in practice. For each proposed algorithm, an extensive empirical
+  evaluation assess its performances on real and artificial benchmark datasets,
+  showing that their output is often of quality higher than what the theoretical
+  analysis could guarantee.
 \end{abstract}
