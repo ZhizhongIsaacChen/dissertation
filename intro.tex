@@ -1,3 +1,149 @@
 \chapter{Introduction}\label{ch:intro}
-BLA
+It is the analysis of data through the use of inductive reasoning combined with
+tools developed by the deductive mathematical disciplines that allows mankind
+not to sit still in the dark of a cave. Whether science actually helped in
+giving mankind a direction to move along, and whether walking down the direction
+chosen by mankind, actually constitutes progress and advancement is open for
+discussion, but one can argue that it is probably better than sitting still
+in the dark. No science can be done without data analysis and traditionally
+scientists have been the only one interested in empirical evaluation of
+models and in the formulation of models according to empirical evidence, that
+is, to data. In recent years, a paradigm shift occurred and the value of data
+collection and analysis has been recognized by businesses owners, social
+scientists, medical doctors, and even entities traditionally distant from
+quantitative assessments like governments in order to understand and improve, by
+taking data-driven decisions, the parts of life and society they are mostly
+interested in.
+
+Advancements in technology allow for the collection and storage of larger and
+larger amounts of data regarding almost all aspects of human life and many
+natural phenomena. Collecting and storing data is however only one part of the
+equation to understand the processes regulating human life and nature. The
+other part, known as \emph{analytics}, consists in analyzing the data to
+discover \emph{information} about these processes. In the same way as books are
+nothing but objects made of paper and ink as long as one does not read them,
+find correlations between one book and another, and discover the references and
+the allusions, data are nothing but long sequences of zeroes and ones as long as
+one does not analyze them, find correlations between data and their generating
+process, discover the patterns and the connections. A bibliophile may admire a
+book even just as the result of craftsmanship, but rarely can a scientist
+appreciate a dataset just for the patterns of zeroes and ones forming it. Data
+is useless until it is analyzed and information is extracted from it, to
+\emph{discover knowledge}.
+
+The huge improvements in the possibility to store and retrieve data have
+not always been parallelled by adequate progress in techniques to process it.
+\emph{Big Data} is an umbrella term for a number of issues and problems in the
+management, process, and analysis of data that arise due to the huge
+\emph{volume} of current datasets, their increasing \emph{variety} in terms of
+origin, format, and representation, and the required \emph{velocity} in
+analyzing them. The ``three V's of Big Data'' are the main causes of the
+complexity of modern analytics. New techniques must be introduced to address the
+tree V's because the methods developed in traditional statistics often fall short in
+terms of scalability as function of the data size (volume), applicability to
+diverse data formats like graphs and structured text (variety), and intrinsic
+speed of analysis (velocity).
+
+The subject of investigation of this dissertation is the use of techniques from
+\emph{statistical learning theory}, a modern branch of mathematical statistics,
+to address the three V's of Big Data by developing randomized algorithms and
+statistical tests to extract and evaluate collections of interesting patterns
+from very large transactional datasets and huge graphs, and accurately perform
+important tasks in database management. 
+
+Statistical learning theory deals with the problem of making inference and
+drawing conclusions from ``small samples'', a non-asymptotic setting that
+assumes that only a limited amount of data is
+available~\cite{Vapnik98,Vapnik99}. The apparent clash between this ``data
+scarcity'' assumption and the issues arising in Big Data analytics disappears
+when one considers that traditional mathematical statistics techniques have
+mostly been studied ``in the limit'', i.e., assuming an infinite amount of
+available data, while statistical learning theory is concerned with the
+development of methods to analyze finite datasets, even when they are very
+large. The set of tools developed in this field is large but received limited
+application, mostly due to the fact that it was often considered of being of
+mostly of theoretical interest. The results of the work presented here show
+instead that there is a large space of applicability of these techniques as
+they often outperform traditional approaches in terms of efficiency and
+scalability.
+
+Problems of interest examined in this body of works include the extraction
+(\emph{mining}) of frequent itemsets and association rules, the extraction of
+frequent subgraphs, and the computation of the selectivity (size of the output)
+of SQL database queries. These are fundamental tasks in knowledge discovery and
+database management and have been extensively studied in the literature. The
+algorithms we developed offer new insights on these problems through the use of
+statistical learning theory, and at the same time solve them more efficiently
+than previous contributions. The algorithms trade off a small amount of accuracy
+for a large gain in speed by only mining a small random sample of the dataset.
+The main challenge in the development of these algorithms is to understand the
+behavior of the accuracy of the results obtained by mining the sample as
+function of the sample size. We use a tools from statistical learning theory
+known as VC-dimension and results related to it to model this behavior and
+compute the sample size as function of the desired accuracy and confidence, and
+of a characteristic quantity of the dataset that measures the complexity of the
+task at hand. The empirical evaluation shows that the algorithms we developed
+outperform existing methods.
+
+Despite the apparent ``obsession'' with data that seems to be intrinsic in
+analytics, the real goal of knowledge discovery is to and understand the
+\emph{process generating the data}. As the dataset is only but a collection of
+samples from this unknown random process, it only partially reflects the
+process, and can contain noise that can lead to false conclusions about it. It
+is necessary to conduct an assessment of the validity of the results obtained
+during the mining phase by performing a \emph{statistical test of the
+significance of the patterns}. The huge number of potential patterns makes the
+development of such tests a complex matter due to the need of correct for
+\emph{multiple hypotheses} in order to control the probability of misclassifying
+some pattern as significant when it is not. Multiple hypothesis testing has been
+the subject of a large amount of work in the literature. We develop a test that
+use VC-dimension together with optimization techniques
+to find patterns that are frequent according to the unknown distribution of the
+data generating process. We show that the test has high statistical power and
+it is competitive with other existing methods.
+
+\paragraph*{}
+Chapter~\ref{ch:prelims} formally presents the settings and the problems of
+interest, the related works in the scientific literature. It also introduces
+statistical learning theory and the mathematical tools used in the development
+and analysis of algorithms in later chapters.
+
+Chapter~\ref{ch:vcmine} is concerned with a first algorithm to extract frequent itemsets
+and association rules from a single static random sample of a very large
+transactional dataset. The algorithm uses VC-dimension and related techniques to
+compute the sample size sufficient to guarantee a desired level of accuracy and
+confidence.
+
+Chapter~\ref{ch:parma} expands the results from
+Chapter~\ref{ch:vcmine} as a building block a parallel/distributed algorithm
+that exploits the MapReduce platform to achieve higher accuracy and confidence
+in the results of mining frequent itemsets and association rules from random
+samples. It combines sampling, optimization, and parallel/distributed execution
+to use the available computational resources in an optimal way.
+
+Chapter~\ref{ch:shatterfi} proposes the development of a progressive sampling
+algorithm to extract frequent itemsets. The algorithm will start from a small
+sample and enlarge it as it is needed according to a stopping rule developed
+using the VC shatter coefficient of the dataset. This is proposed work.
+
+Chapter~\ref{ch:realfis} presents a statistical test in the multiple hypothesis
+testing setting to compute the \emph{real frequent itemsets}, that is, itemsets
+that are frequent according to the unknown distribution generating the data.
+Mixed integer optimization together with VC-dimension techniques allow for the
+control of the Family-Wise Error Rate of the test, that is, the probability of
+mislabelling an itemset as real frequent when it is not.
+
+Chapter~\ref{ch:graphmine} deals with the extraction of frequent connected
+subgraphs from huge graphs using random samples. One of the main challenge in
+this setting is the design of sampling procedure from a uniform
+distribution among connected subgraphs of a given size. The algorithm we aim to
+develop will solve this problem by considering the theory behind branching
+processes and VC-dimension to compute the sufficient sample size. This is
+proposed work.
+
+Chapter~\ref{ch:vcfreq} shows the application of VC-dimension to solve the
+important database management problem of query selectivity estimation. We show a
+connection between statistical learning theory and the class of SQL database
+queries and develop an algorithm to estimate the selectivity using a very small
+sample of the original database.
 
