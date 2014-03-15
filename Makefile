@@ -1,12 +1,13 @@
 LATEX = pdflatex
 MAINFILE = dissertation
-UPLOADURI = ssh.cs.brown.edu:public_html/
+UPLOADHOST = ssh.cs.brown.edu
+UPLOADURI = public_html/dissertation
 
 .PHONY: all archive check clean osx pdf upload view
 
-all : archive
+all : upload
 
-$(MAINFILE).aux: *.tex $(wildcard *.eps)
+$(MAINFILE).aux: *.tex prelims/*.tex vcmine/*.tex parma/*.tex realfis/*.tex vcfreq/*.tex $(wildcard *.eps)
 	$(LATEX) $(MAINFILE).tex
 
 $(MAINFILE).bbl: *.tex  biblio/*.bib
@@ -22,11 +23,11 @@ $(MAINFILE).tar.bz2: $(MAINFILE).pdf
 archive: $(MAINFILE).tar.bz2
 
 check: *.tex
-	$(LATEX) $(MAINFILE).tex | grep -s -e "multiply" -e "undefined"
+	($(LATEX) $(MAINFILE).tex | grep -s -e "multiply" -e "undefined") || echo "all OK"
 
 clean:
 	-/bin/rm -f $(MAINFILE).pdf $(MAINFILE).tar.bz2 *.dvi *.aux *.ps *~
-	-/bin/rm -f *.log *.lot *.lof *.toc *.blg *.bbl *.out 
+	-/bin/rm -f *.log *.lot *.lof *.toc *.blg *.bbl *.idx *.out 
 
 pdf: $(MAINFILE).pdf
 
@@ -34,7 +35,9 @@ osx: pdf
 	open $(MAINFILE).pdf
 
 upload: pdf
-	scp $(MAINFILE).pdf $(UPLOADURI)
+	scp $(MAINFILE).pdf $(UPLOADHOST):$(UPLOADURI)
+	ssh $(UPLOADHOST) chmod o+r $(UPLOADURI)/$(MAINFILE).pdf
+
 
 view: pdf
 	acroread  -geometry 1000x1000 $(MAINFILE).pdf

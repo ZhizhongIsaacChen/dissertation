@@ -1,39 +1,36 @@
-\iffalse
-\begin{abstract}
-We develop a novel method, based on the statistical concept of the
-\emph{Vapnik-Chervonenkis dimension}, to evaluate the selectivity (output
-cardinality) of SQL queries -- a crucial step in optimizing the execution of
-large scale database and data-mining operations.  The major theoretical
-contribution of this work, which is of independent interest, is an explicit
-bound to the VC-dimension of a range space defined by all possible outcomes of a
-collection (class) of queries. We prove that the VC-dimension is a function of
-the maximum number of Boolean operations in the selection predicate and of the
-maximum number of select and join operations in any individual query in the
-collection, but it is neither a function of the number of queries in the
-collection nor of the size (number of tuples) of the database.  We leverage on
-this result and develop a method that, given a class of queries, builds a
-concise random sample of a database, such that with high probability the
-execution of \emph{any} query in the class on the sample provides an accurate
-estimate for the selectivity of the query on the original large database. The
-error probability holds \emph{simultaneously} for the selectivity estimates of
-\emph{all} queries in the collection, thus the same sample can be used to
-evaluate the selectivity of multiple queries, and the sample needs to be
-refreshed only following major changes in the database. The sample
-representation computed by our method is typically sufficiently small to be
-stored in main memory. We present extensive experimental results, validating our
-theoretical analysis and demonstrating the advantage of our technique when
-compared to complex selectivity estimation techniques used in PostgreSQL and the
-Microsoft SQL Server.
-\end{abstract}
-\fi
-
 \chapter{The VC-dimension of SQL queries and selectivity estimation through sampling}\label{ch:vcfreq}
 \chaptermark{SQL queries and selectivity estimation}
 
+\todo{Move the following to the appropriate place.
+
+In our setting, for a class of select queries $Q$ on a table $\Tab$, $X$ is the
+set of all tuples in the input table, and $R$ the family of the outputs (as sets
+of tuples) of the queries in $Q$ when run on 
+%$X$, i.e. on 
+$\Tab$. For a class
+$Q$ of queries combining select and join operations, $X$ is the Cartesian
+product of the associated tables and $R$ is the family of outcomes of queries in
+$Q$, seen as $\ell$-uples of tuples, if $\ell$ tables are involved in the
+queries of $Q$.  When the context is clear we identify the family $R$ with a
+class of queries.
+
+When the ranges represent all the possible outputs of queries in a class $Q$
+applied to database tables $\Db $, the VC-dimension of the range space is the maximum
+number of tuples such that any subset of them is the output of a query in $Q$.
+
+In Sect.~\ref{sec:vcfreqapplications} we use an
+$\varepsilon$-approximation (or a relative $(p,\varepsilon)$-approximation)  to
+compute good estimates of the selectivities of all queries in $Q$. We obtain a
+small approximation set through probabilistic construction.
+The challenge in applying Thm.~\ref{thm:eapprox} to our setting is computing the
+VC-dimension of a range space defined by a class of queries. 
+
+}
+
 \section{Introduction}\label{sec:vcfreqintro}
 As advances in technology allow for the collection and storage of vast
-databases, there is a growing need for advanced machine learning techniques for
-speeding up the execution of queries on such large datasets. In this work we
+databases, there is a growing need for \emph{advanced machine learning
+techniques} for speeding up the execution of queries on such large datasets. In this work we
 focus on the fundamental task of estimating the selectivity, or output size, of
 a database query, which is a crucial step in a number of query processing tasks
 such as execution plan optimization and resource allocation in parallel and
@@ -55,19 +52,21 @@ computational efficiency of using pre-collected data and the provable accuracy
 of estimates obtained by running a query on a properly sized random sample of
 the database.
 
-We apply the statistical concept of VC-dimension~\citep{VapnikC71} to develop and
-analyze a novel technique to generate accurate estimates of query
-selectivity. Roughly speaking, the VC-dimension of a collection of indicator
-functions (hypotheses) is a measure of its complexity or expressiveness (see
-Sect.~\ref{sec:vcdim} for formal definitions). A major theoretical contribution
-of this work, which is of independent interest, is an explicit bound to the
-VC-dimension of any class of queries, viewed as indicator functions on the
-Cartesian product of the database tables. In particular, we show that the
-VC-dimension of a class of queries is a function of the maximum number of
+We apply the statistical concept of Vapnik-Chervonenkis (VC)
+dimension~\citep{VapnikC71} to develop and analyze a novel technique to generate
+accurate estimates of query selectivity. Roughly speaking, the VC-dimension of a
+collection of indicator functions (hypotheses) is a measure of its complexity or
+expressiveness. A major
+theoretical contribution of this work, which is of independent interest, is an
+explicit bound to the VC-dimension of various classes of queries, viewed as
+indicator functions on the
+Cartesian product of the database tables. In particular, we show an upper bound
+to the 
+VC-dimension of a class of queries that is a function of the maximum number of
 Boolean, select and join operations in any query in the class, but it is not
 a function of the number of different queries in the class. By adapting a
 fundamental result from the VC-dimension theory to the database setting, we
-develop a method that for any class of queries, defined by its VC-dimension,
+develop a method that for any family of queries, defined by its VC-dimension,
 builds a concise sample of the database, such that with high probability, the
 execution of \emph{any} query in the class on the sample provides an accurate
 estimate for the selectivity of the query on the original large database. The
@@ -78,19 +77,19 @@ refreshed only following major changes in the database. The size of the sample
 does not depend on the size (number of tuples) in the database, just on the
 complexity of the class of queries we plan to run, measured by its VC-dimension.
 Both the analysis and the experimental results show that accurate selectivity
-estimates can be obtained using a sample of a surprising small size (see
+estimates can be obtained using a sample of a surprisingly small size (see
 Table~\ref{tab:samplesize} for concrete values), which can then reside in main
 memory, with the net result of a significant speedup in the execution of
 queries on the sample. 
 
 A technical difficulty in applying the VC-dimension results to the database
-setting is that they assumes the availability of a uniform sample of the
+setting is that they assume the availability of a uniform sample of the
 Cartesian product of all the tables, while in practice it is more efficient to
 store a sample of each table separately and run the queries on the Cartesian
 product of the samples, which has a different distribution than a sample of the
 Cartesian product of the tables. We develop an efficient  procedure for
 constructing a sample that circumvents this problem (see
-Sect.~\ref{sec:applications}).
+Sect.~\ref{sec:vcfreqapplications}).
 
 We present extensive experimental results that validate our theoretical analysis
 and demonstrate the advantage of our technique when compared to complex
@@ -102,19 +101,18 @@ techniques like multidimensional histograms or join synopses are accurate only
 for the queries for which they are built.
 
 Note that we are only concerned with estimating the selectivity of a query, not
-with approximating the query answer using a sample of the database
-(Das~\citeyearpar{Das09} presents a survey of the possible solutions to this latter
-task). %
+with approximating the query answer using a sample of the database.
+\citet{Das09} presents a survey of the possible solutions to this latter task. %
 %In the future, we will investigate on the application of VC-dimension to
 %approximate query processing.
 
 \paragraph{Outline.} The rest of the paper is organized as follows. We review
 the relevant previous work in Sect.~\ref{sec:vcfreqprevwork}. In
-Sect.~\ref{sec:vcfreqprelims} we formulate the problem and introduce the
+Sect.~\ref{sec:vcfreqprelim} we formulate the problem and introduce the
 Vapnik-Chervonenkis dimension and the related tools we use in developing our
-results. Our main analytical contribution, a bound on the VC dimension  of class of queries is presented in Sect.~\ref{sec:vcdimqueries}.  The application of these results for selectivity estimation is
-given in Sect.~\ref{sec:applications}. Experiments are presented in
-Sect.~\ref{sec:vcfreqexp}. 
+results. Our main analytical contribution, a bound on the VC dimension  of class of queries is presented in Sect.~\ref{sec:vcfreqvcdimqueries}.  The application of these results for selectivity estimation is
+given in Sect.~\ref{sec:vcfreqapplications}. Experiments are presented in
+Sect.~\ref{sec:vcfreqexperiments}. 
 
 \section{Related Work}\label{sec:vcfreqprevwork}
 Methods to estimate the selectivity (or cardinality of the output) of queries
@@ -142,38 +140,37 @@ to identify early stopping conditions. These include sequential sampling
 analysis~\citep{HouOD91,HaasS92}, keeping additional statistics to improve the
 estimation~\citep{HaasS95}, labelling the tuples and using label-dependent
 estimation procedures~\citep{GangulyGMS96}, or applying the cumulative distribution
-function inversion procedure~\citep{WuAE01}. Some work also looked at nonuniform
+function inversion procedure~\citep{WuAE01}. Some works also looked at non-uniform
 sampling~\citep{BabcockCD03,EstanN06} and stratified
 sampling~\citep{ChaudhuriDN07,JoshiJ08}. Despite all these relevant
 contributions, online sampling is still considered too expensive for most
-applications. An offline sampling approach was explored by
-Ngu~et~al.~\citeyearpar{NguHS04}, who used systematic sampling (requiring the tuples in
-a
+applications. An off-line sampling approach was explored by~\citet{NguHS04}, who
+used systematic sampling (requiring the
+tuples in a
 table to be sorted according to one of the attributes) with a
-sample size dependent on the number of tuples in the table. The paper does
-not give any explicit guarantee on the accuracy of their predictions.
-Chaudhuri~et~al.~\citeyearpar{ChaudhuriDN07} present an approach which uses
+sample size dependent on the number of tuples in the table. Their work does
+not give any explicit guarantee on the accuracy of the predictions.
+~\citet{ChaudhuriDN07} present an approach which uses
 optimization techniques to identify suitable strata before sampling. The
 obtained sample is such that the mean square error in estimating the selectivity
 of queries belonging to a given workload is minimized, but there is no quality
-guarantee on the maximum error. Haas~\citeyearpar{Haas96} developed Hoeffding
+guarantee on the maximum error. \citet{Haas96} developed Hoeffding
 inequalities to bound the probability that the selectivity of a query estimated
 from a sample deviates more than a given amount from its expectation.
 However, to estimate the selectivity for multiple queries and obtain a given
 level accuracy for all of them, simultaneous statistical inference techniques
 like the union bound should be used, which are known to be overly conservative
-when the number of queries is large~\citep{Miller81}. On the contrary, our result
-will hold simultaneously for \emph{all} queries within a given complexity (VC
-dimension). 
+when the number of queries is large~\citep{Miller81}. In contrast, our result
+holds simultaneously for \emph{all} queries within a given complexity (VC-dimension). 
 
 A technical problem arises when combining join operations and sampling. As
-pointed out by Chaudhuri~et~al.~\citeyearpar{ChaudhuriMN99}, the Cartesian
+pointed out by \citet{ChaudhuriMN99}, the Cartesian
 product of uniform samples of a number of tables is different from a uniform sample of the
 Cartesian product of those tables. Furthermore, given a size $s$, it is
 impossible to a priori determine two sample sizes $s_1$ and $s_2$ such that
 uniform samples of these sizes from the two tables will give, when joined
 together along a common column, a sample of the join table of size $s$. In
-Sect.~\ref{sec:applications} we explain why only the first issue is of concern
+Sect.~\ref{sec:vcfreqapplications} we explain why only the first issue is of concern
 for us and how we circumvent it.
 
 In practice most database systems use pre-computed statistics to predict query
@@ -181,13 +178,12 @@ selectivity~\citep{HouOT88,GibbonsM98,GantiLR00,JinGJA06,LarsonLZZ07}, with
 histograms being the most commonly used representation. The construction,
 maintenance, and use of histograms were thoroughly examined in the
 literature~\citep{JagadishKMPSS98,IoannidisP95,MatiasVW98,PoosalaHIS96}, with
-both theoretical and experimental results. In particular
-Chaudhuri~et~al.~\citeyearpar{ChaudhuriMN98} rigorously evaluated the size of the
+both theoretical and experimental results. In particular~\citet{ChaudhuriMN98}
+rigorously evaluated the size of the
 sample needed for
 building a histogram providing good estimates for the selectivities of a large
-group of (select only, in their case) queries.
-Kaushik~et~al.~\citeyearpar{KaushikNRC05} extensively compared histograms and sampling
-from a
+group of (select only, in their case) queries.  \citet{KaushikNRC05} extensively compared histograms and
+sampling from a
 space complexity point of view, although their sample-based estimator did not
 offer a uniform probabilistic guarantee over a set of queries and they only
 consider the case of foreign-key equijoins. We address both these points in our
@@ -211,36 +207,76 @@ analyzed in the database
 literature~\citep{BrownH06,GemullaLH06,GemullaLH07,HaasK04,JermainePA04}.
 
 The {\em Vapnik-Chervonenkis dimension} was first introduced in a seminal
-article~\citep{VapnikC71} on the convergence of probability distributions, but it
-was only with the work of Haussler and Welzl~\citeyearpar{HausslerW86} and 
-Blumer~et~al.~\citeyearpar{BlumerEHW89} that it was applied to computational sampling
-and learning theory. Since then, VC-dimension has encountered
-enormous success and application in the fields of computational
-geometry~\citep{Chazelle00,Matousek02} and machine learning~\citep{AnthonyB99} but
+article~\citep{VapnikC71} on the convergence of sample averages to their
+expectations, but it was only with the work of~\citet{HausslerW86}
+and~\citet{BlumerEHW89} that it was applied to learning. Since then,
+VC-dimension has encountered enormous success and application in the fields of
+computational geometry~\citep{Chazelle00,Matousek02} and machine
+learning~\citep{AnthonyB99,MohriRT12} but
 its use in system-related fields is not as widespread. In the database
 literature, it was used in the context of constraint databases to compute good
 approximations of aggregate operators~\citep{BenediktL02}. VC-dimension-related
-results were also recently applied in the field of database privacy by Blum,
-Ligett, and Roth~\citeyearpar{BlumLR08} to show a bound on the number of queries needed
-for an attacker to learn a private concept in a database.
-Gross-Amblard~\citeyearpar{Gross11} showed that content with unbounded VC-dimension can
-not be watermarked for privacy purposes. 
+results were also recently applied in the field of database privacy
+by~\citet{BlumLR08} to show a bound on the number of queries needed
+for an attacker to learn a private concept in a database. \citet{Gross11} showed
+that content with unbounded VC-dimension can not be watermarked for privacy
+purposes. \citet{RiondatoU12} used VC-dimension to compute a sample size
+sufficient for computing high-quality approximations of the collections of
+Frequent Itemsets and Association Rules in a transactional dataset.
 
 To the best of our knowledge, our work is the first to provide explicit bounds
-on the VC-dimension of queries and to apply the results to query selectivity
+on the VC-dimension of SQL queries and to apply the results to query selectivity
 estimation.
 
-\section{Preliminaries}\label{sec:vcfreqprelims}
-We consider a database $\Db$ of $k$ tables $\Tab_1,\cdots,\Tab_k$. We denote a
+\section{Preliminaries}\label{sec:vcfreqprelim}
+In this Section, we introduce the necessary terminology, concepts, and tools
+that we will use to develop our results in the following Sections.
+
+\subsection{Database Queries and Selectivity}
+We outline here some basic definitions about databases, queries, and
+selectivity. We refer the reader to complete textbooks for additional
+information~\citep{GarciaMolinaUW02}.
+We consider a \emph{database} $\Db$ of $k$ tables $\Tab_1,\dotsc,\Tab_k$. 
+A \emph{table} is a two-dimensional representation of data. Its rows are called
+\emph{tuples} and it can have multiple \emph{columns}.  We denote a
 column $C$ of a table $\Tab$ as $\Tab.C$ and, for a tuple $t\in\Tab$, the value
 of $t$ in the column $C$ as $t.C$. We denote the domain of the values that can
-appear in a column $\Tab.C$ as $D(\Tab.C)$. Our focus is on queries that combine
-select and join operations, defined as follows. We do not take projection
-operations into consideration because their selectivities have no impact on
-query optimization.
+appear in a column $\Tab.C$ as $D(\Tab.C)$. Table~\ref{tab:example} shows two
+examples of database tables, \texttt{Customers} and \texttt{CarColors}. Our
+focus is on queries that combine select and join operations, defined as follows.
+We do not take projection operations into consideration because their
+selectivities have no impact on query optimization.
+
+\begin{table}[htb]
+  \centering
+  \begin{tabular}{c|c|c|c}
+    %\toprule
+    \multicolumn{4}{c}{\emph{Customers}} \\
+    \midrule
+    \emph{Name} & \emph{Street} & \emph{ZipCode} & \emph{PhoneNumber} \\
+    \midrule
+    \texttt{John Doe} & \texttt{Pratt Av.} & \texttt{02906} & \texttt{401-1234567} \\
+    \texttt{Jim Clark} & \texttt{Morris Rd.} & \texttt{02906} & \texttt{502-8902134} \\
+    \texttt{Greta Garbo} & \texttt{Pitman St.} & \texttt{05902} & \texttt{853-9876543} \\
+    \bottomrule
+  \end{tabular}
+  \hfill
+  \begin{tabular}{c|c}
+    \multicolumn{2}{c}{\emph{CarColor}} \\
+    \midrule
+    \emph{Name} & \emph{Color} \\
+    \midrule
+    \texttt{John Doe} & \texttt{Blue} \\
+    \texttt{Jane Doe} & \texttt{Red} \\
+    \texttt{Greta Garbo} & \texttt{Red}\\ 
+    \bottomrule
+  \end{tabular}
+  \caption{Example of database tables.}
+  \label{tab:example}
+\end{table}
 
 \begin{definition}\label{def:selectquery}
-  Given a table $\Tab$ with columns $\Tab.C_1,\cdots,\Tab.C_\ell$, a
+  Given a table $\Tab$ with columns $\Tab.C_1,\dotsc,\Tab.C_\ell$, a
   \emph{selection query} $q$ on $\Tab$ is an operation which returns a subset
   $S$ of the tuples of $\Tab$ such that a tuple $t$ of $\Tab$ belongs to $S$ if
   and only if the values in $t$ satisfy a condition $\mathcal{C}$
@@ -251,15 +287,22 @@ query optimization.
   $\Tab.C_i$.
 \end{definition}
 
+As an example, the selection query 
+\[
+\mbox{\texttt{SELECT} } * \mbox{ \texttt{FROM} \emph{Customers},  \texttt{WHERE}
+\emph{Customers.ZipCode}} = 02906
+\]
+would return the first and second row of Table~\ref{tab:example}.
+
 We assume that all $D(\Tab.C_i)$ are such that it is possible to build total
 order relations on them. This assumptions does not exclude categorical domains
 from our discussion, because the only meaningful values for ``$\op$'' for such
-domains are ``$=$'' and ``$\neq$'', so we can just assume an arbitrary but fixed
+domains are ``$=$'' and ``$\neq$'', so we can just assume an arbitrarily but fixed
 order for the categories in the domain.
 
 \begin{definition}\label{def:joinquery}
   Given two tables $\Tab_1$ and $\Tab_2$, a $\emph{join query}$ $q$ on a common
-  column $C$ (i.e. a column present both in $\Tab_1$ and $\Tab_2$) is an
+  column $C$ (i.e., a column present both in $\Tab_1$ and $\Tab_2$) is an
   operation which returns a subset of the Cartesian product of the tuples in
   $\Tab_1$ and $\Tab_2$. The returned subset is defined as the set
   \[
@@ -267,9 +310,21 @@ order for the categories in the domain.
   where ``$\op$'' is one of $\{<,>,\ge,\le,=,\neq\}$.
 \end{definition}
 
+An example of a join query is the following:
+\[
+\mbox{\texttt{SELECT} } * \mbox{ \texttt{FROM} \emph{Customers}, \emph{CarColors} \texttt{WHERE}
+\emph{Customers.Name}} = \mbox{\emph{CarColors.Name}}
+\]
+This query would return the following tuples:
+\begin{align*}
+  &(\mbox{John Doe}, \mbox{Pratt Av.}, \mbox{02906}, \mbox{401-1234567}, \mbox{Blue}), \\
+  &(\mbox{Greta Garbo}, \mbox{Pitman St.}, \mbox{05902}, \mbox{853-9876543}, \mbox{Red})
+\end{align*}
+The column \emph{Name} is reported only once for clarity.
+
 Our definition of a join query is basically equivalent to that of a
 \emph{theta-join}~\citep[Sect.5.2.7]{GarciaMolinaUW02}, with the limitation that
-the join condition $\mathcal{C}$ can only contain a single clause, i.e. a single
+the join condition $\mathcal{C}$ can only contain a single clause, i.e., a single
 condition on the relationship of the values in the shared column $C$ and only
 involve the operators $\{<,>,\ge,\le,=,\neq\}$ (with their meaning on $D(C)$).
 The pairs of tuples composing the output of the join in our definition have a
@@ -277,17 +332,28 @@ one-to-one correspondence with the tuples in the output of the corresponding
 theta-join.
 
 \begin{definition}\label{def:general query}
-  Given a set of $\ell$ tables $\Tab_1,\cdots,\Tab_\ell$, a
+  Given a set of $\ell$ tables $\Tab_1,\dotsc,\Tab_\ell$, a
   \emph{combination of select and join operations} is a query returning a subset
-  of the Cartesian product of the tuples in the sets $S_1,\cdots,S_\ell$, where
+  of the Cartesian product of the tuples in the sets $S_1,\dotsc,S_\ell$, where
   $S_i$ is the output of a selection query on $\Tab_i$. The returned set is
   defined by the selection queries and by a set of join queries on
-  $S_1,\dots,S_\ell$.
+  $S_1,\dotsc,S_\ell$.
 \end{definition}
+As an example, the query 
+\begin{align*}
+\mbox{\texttt{SELECT} } &* \mbox{ \texttt{FROM} \emph{Customers},
+\emph{CarColors} \texttt{WHERE} 
+\emph{Customers.Name}} = \mbox{\emph{CarColors.Name}} \\
+& \mbox{\texttt{AND} \emph{Customers.ZipCode}}=02906 \mbox{ \texttt{AND}
+\emph{CarColors.Color}}=\mbox{\emph{Red}}
+\end{align*}
+combines select and joins operations. It returns no tuple (empty answer), as
+there is no individual reported in both tables with zipcode $02906$ and a red
+car.
 
 \begin{definition}\label{def:exectree}
   Given a query $q$, a \emph{query plan} for $q$ is a directed binary tree
-  $T_q$ whose nodes are the elementary (i.e. select or join) operations into
+  $T_q$ whose nodes are the elementary (i.e., select or join) operations into
   which $q$ can be decomposed. There is an edge from a node $a$ to a node $b$ if
   the output of $a$ is used as an input to $b$. The operations on the leaves of
   the tree use one or two tables of the database as input. The output of the
@@ -307,215 +373,33 @@ Two crucial definitions that we use throughout the work are the
 
 \begin{definition}\label{def:cardsel}
   Given a query $q$ and a database $\Db$, the \emph{cardinality} of its output
-  is the number of elements (tuples if $q$ is a selection queries, pairs of
+  is the number of elements (tuples if $q$ is a selection query, pairs of
   tuples if $q$ is a join query, and $\ell$-uples of tuples for combinations of
   join and select involving $\ell$ tables) in its output, when run on $\Db$. The
   \emph{selectivity} $\sigma(q)$ of $q$ is the ratio between its cardinality and
   the product of the sizes of its input tables.
  \end{definition}
 
-Our goal is to store a succint representation (sample) $\Sam$ of
+Our goal is to store a succinct representation (sample) $\Sam$ of
 the database $\Db$ such that an execution of a query on the sample $\Sam$ will
 provide an accurate estimate for the selectivity of
 each operation in the query plan when executed on the database $\Db$. 
 
-\subsection{VC-Dimension}\label{sec:vcdim}
-The Vapnik-Chernovenkis (VC) Dimension of a family of indicator functions (or
-equivalently a family of subsets) on a space of points is a measure of
-the complexity or expressiveness of  set of functions in that structure~\citep{VapnikC71}. A finite bound
-on the VC-dimension of a structure implies a bound on the number of random
-samples required for approximately learning that structure. We outline here some
-basic definitions and results and their adaptation to the specific setting of
-queries. We refer the reader to the works of Alon and
-Spencer~\citeyearpar[Sect.~14.4]{AlonS08}, Chazelle~\citeyearpar[Chap.~4]{Chazelle00}, and
-Vapnik~\citeyearpar{Vapnik99} for an in-depth discussion of the VC-dimension theory.
-
-VC-dimension is defined on {\em range spaces}:
-
-\begin{definition}\label{definition:rangespace}
-  A {\em range space} is a pair $(X,R)$ where $X$ is a (finite or infinite) set
-  and $R$ is a (finite or infinite) family of subsets of $X$. The members of $X$
-  are called {\em points} and those of $R$ are called {\em ranges}.
-\end{definition}
-
-In our setting, for a class of select queries $Q$ on a table $\Tab$, $X$ is the
-set of all tuples in the input table, and $R$ the family of the outputs (as sets
-of tuples) of the queries in $Q$ when run on 
-%$X$, i.e. on 
-$\Tab$. For a class
-$Q$ of queries combining select and join operations, $X$ is the Cartesian
-product of the associated tables and $R$ is the family of outcomes of queries in
-$Q$, seen as $\ell$-uples of tuples, if $\ell$ tables are involved in the
-queries of $Q$.  When the context is clear we identify the family $R$ with a
-class of queries.
-
-To define the VC-dimension of a range space we consider the projection of the
-ranges into a set of points:
-
-\begin{definition}\label{definition:proj}
-  Let $(X,R)$ be a range space and $A\subset X$. The {\em projection} of $R$ on
-  $A$ is defined as $P_R(A)=\{r\cap A ~:~ r\in R\}$.
-\end{definition}
-
-A set is said to be shattered if all its subsets are defined by the range space:
-
-\begin{definition}\label{definition:shatter}
-  Let $(X,R)$ be a range space and $A\subset X$. If $|P_R(A)|=2^A$, then $A$ is
-  said to be {\em shattered by $R$}.
-\end{definition}
-
-The VC-dimension of a range space is the cardinality of the largest set
-shattered by the space:
-
-\begin{definition}\label{definition:VCdim}
-  Let $S=(X,R)$ be a range space. The {\em Vapnik-Chervonenkis} dimension (or
-  {\em VC-dimension}) of $S$, denoted as $VC(S)$ is the maximum cardinality of a
-  shattered subset of $X$. If there are arbitrary large shattered subsets, then
-  $VC(S)=\infty$.
-\end{definition}
-
-When the ranges represent all the possible outputs of queries in a class $Q$
-applied to database tables $\Db $, the VC-dimension of the range space is the maximum
-number of tuples such that any subset of them is the output of a query in $Q$.
-
-Note that a range space $(X,R)$ with an arbitrary large set of points $X$ and
-an arbitrary large family of ranges $R$ can have a bounded VC-dimension. A simple
-example is the family of intervals in $[0,1]$ (i.e. $X$ is all the points in
-$[0,1]$ and $R$ all the intervals $[a,b]$, such that $0\leq a\leq b\leq 1$). Let
-$A=\{x,y,z\}$ be the set of three points $0<x<y<z<1$. No interval in $R$ can
-define the subset $\{x,z\}$ so the VC-dimension of this range space is $< 3$.
-This observation is generalized in the following result~\citep[Lemma
-10.3.1]{Matousek02}:
-
-\begin{lemma}\label{lem:matousek}
-  The VC-Dimension of the range space $(\mathbb{R}^d, X)$, where $X$ is the set
-  of all half-spaces in $\mathbb{R}^d$ equals $d+1$.
-\end{lemma}
-
-The main application of VC-dimension in statistics and learning theory is its
-relation to the minimum size sample needed for approximate learning of a
-set of indicator functions or hypothesis. 
-
-\begin{definition}\label{definition:eapprox}
-  Let $(X,R)$ be a range space and let $A$ be a finite subset of $X$. 
-  \begin{enumerate}
-  \item 
-  For
-  $0<\varepsilon<1$, a subset $B\subset A$ is an
-  $\varepsilon${\em-approximation}
-  for $A$ in $(X,R)$  if $\forall r\in R$, we have  $\left|\frac{|A\cap
-  r|}{|A|}-\frac{|B\cap r|}{|B|}\right| \leq \varepsilon$.
-   \item For
-  $0<p,\varepsilon<1$, a subset $B\subset A$ is a \emph{relative}
-  $(p,\varepsilon)$\emph{-approximation}
-  for $A$ in $(X,R)$ if for any range $r\in R$ such that 
-  $\frac{|A\cap r|}{|A|}\geq p$ we have $\left|\frac{|A\cap r|}{|A|}-\frac{|B\cap
-  r|}{|B|}\right| \leq \varepsilon\frac{|A\cap r|}{|A|}$ and for any range $r\in R$ such that 
-  $\frac{|A\cap r|}{|A|}< p$ we have $\frac{|B\cap r|}{|B|} \leq (1+\varepsilon)p$.
-\end{enumerate}
-\end{definition}
-
-
-An $\varepsilon$-approximation (resp.
-a relative $(p,\varepsilon)$-approximation) can be probabilistically constructed by sampling the point
-space~\citep{VapnikC71,LiLS01,HarPS11}.
-
-\begin{theorem}\label{thm:vcfreqeapprox}
-Let $(X,R)$ be a range space of VC-dimension at most $d$,  $A$ a finite subset of $X$, and $B\subset
-  A$ a random sample of $A$ of cardinality $s$. 
-  \begin{enumerate}
-\item
-  There is a positive constant $c$ such that for any 
-  $0<\varepsilon,\delta<1$  and  
-  \begin{equation}\label{eq:vcfreqeapprox}
-  s\ge\min\left\{|A|,\frac{c}{\varepsilon^2}\left(d+\log\frac{1}{\delta}\right)\right\},
-  \end{equation}  $B$ is an $\varepsilon$-approximation for $A$ with probability at least $1-\delta$.
-\item
-There is a positive constant $c'$ such that for any $0<p<1$ and
-  $$s\ge\min\left\{|A|,\frac{c'}{\varepsilon^2p}\left(d\log{\frac{1}{p}}+\log\frac{1}{\delta}\right)\right\}$$
-  $B$ is a relative
-  $(p,\varepsilon)$-approximation for $A$ with probability at least $1-\delta$.
-  \end{enumerate}
-\end{theorem}
-
-L\"offler and Phillips~\citeyearpar{LofflerP09} showed experimentally that the constant
-$c$ is approximately $0.5$. It is also interesting to note that an
-$\varepsilon$-approximation of size
-$O(\frac{d}{\varepsilon^2}\log{\frac{d}{\varepsilon}})$ can be built
-\emph{deterministically} in time
-$O(d^{3d}(\frac{1}{\varepsilon^2}\log{\frac{d}{\varepsilon}})^d|X|)$~\citep{Chazelle00}.
-
-%\subsection{Product Spaces and Boolean composition of
-%ranges}\label{sec:prodspaces}
-In Sect.~\ref{sec:applications} we use an
-$\varepsilon$-approximation (or a relative $(p,\varepsilon)$-approximation)  to
-compute good estimates of the selectivities of all queries in $Q$. We obtain a
-small approximation set through probabilistic construction.
-The challenge in applying Thm.~\ref{thm:vcfreqeapprox} to our setting is computing the
-VC-dimension of a range space defined by a class of queries. 
-We state here a few fundamental results that will be used in our analysis. 
-
-First, it is
-clear that if the VC-dimension of a range space $(X,R)$ is $d$ then $2^d\leq
-|R|$ since all subsets of some set of size $d$ are defined by members of $R$.
-Next we define for integers $n>0$ and $d>0$ the {\em growth function}
-$g(d,n)$ as
-  \[
-  g(d,n)=\sum_{i=0}^d\binom{n}{i} < n^d .\]
-
-The growth function is used in the following results~\citep[Sect.~14.4]{AlonS08}.
-\begin{lemma}[Sauer's Lemma]\label{lem:sauer}
-  If $(X,R)$ is a range space of VC-dimension $d$ with $|X|=n$ points, then
-  $|R|\le g(d,n) $.
-\end{lemma}
-
-\begin{corollary}\label{corol:SauerProj}
-  If $(X,R)$ is a range space of VC-dimension $d$, then for every finite
-  $A\subset X$, $|P_R(A)|\le g(d,|A|)$.
-\end{corollary}
-
-Our analysis in Sect.~\ref{sec:vcdimqueries} uses the following bound which is an extension
-of~\citep[Corol.~14.4.3]{AlonS08} to arbitrary combinations of set operations.
-
-\begin{lemma}\label{lem:genboolcomp}
-   Let $(X,R)$ be a range space of VC-dimension $d\ge 2$ and let $(X,R_h)$ be the
-  range space on $X$ in which $R_h$ include all possible combinations of 
-    union and intersections of $h$ members of $R$. Then $VC(X,R_h)\le
-  3dh\log(dh)$.
-\end{lemma}
-
-\begin{proof}
-  Let $A$ be an arbitrary subset of cardinality $n$ of $X$. We have $|P_R(A)|\le
-  g(d,n) \le n^d$. There are 
-  \[
-  \binom{|P_R(A)|}{h}\le \binom{g(d,n)}{h}\le n^{dh} \]
-  possible choices of $h$ members of $P_R(A)$, and there are no more
-  than 
-  \[
-  h! 2^{h-1} C_{h-1}\leq h^{2h} \]
-  Boolean combinations using unions and intersections of the $h$ sets, where
-  $C_{h-1}$ is the $(h-1)^{\mathrm{th}}$ Catalan number
-  ($C_i=\frac{1}{i+1}\binom{2i}{i}$). If 
-  \[ 
-  2^n> h^{2h}n^{dh} \geq |P_{R_h}(A)|\]
-  then $A$ cannot be shattered. This inequality holds for $n\ge 3dh\log(dh)$
-\end{proof}
-
-\section{The VC-dimension of Classes of Queries}\label{sec:vcdimqueries}
-In this section we develop a general bound on the VC-dimension of classes of
+\section{The VC-dimension of Classes of Queries}\label{sec:vcfreqvcdimqueries}
+In this section we develop a general bound to the VC-dimension of classes of
 queries. We start by computing the VC-dimension of simple select queries on one
-column and then move to more complex types of queries (multi-attributes select
+column and then move to more complex queries (multi-attributes select
 queries, join queries). We then extend our bounds to general queries that are
 combinations of multiple select and join operations.
 
-\subsection{Select Queries}\label{sec:vcdimselqueries}
+\subsection{Select Queries}\label{sec:vcfreqvcdimselqueries}
 Let $\Tab$ be a table with $m$ columns $\Tab.C_1,\dotsc,\Tab.C_m$, and $n$
 tuples. For a fixed column $\Tab.C$, consider the set $\Sigma_C$ of the
 selection queries in the form 
-\begin{equation}\label{eq:select}
+\begin{equation}\label{eq:vcfreqselect}
 \mbox{\texttt{SELECT }} *\mbox{\texttt{ FROM }} \Tab \mbox{\texttt{ WHERE }}
 \Tab.C_i \op a \end{equation}
-where $\op$ is an inequality operator (i.e., either ``$\ge$'' or
+where $\op$ is an \emph{inequality} operator (i.e., either ``$\ge$'' or
 ``$\le$'')\footnote{The operators
 ``$>$'' and ``$<$'' can be reduced to ``$\ge$'' and ``$\le$'' respectively.} and
 $a\in D(\Tab.C)$. 
@@ -525,8 +409,8 @@ $q_2$ (and denote this fact as $q_1=q_2$) if their outputs are identical, i.e.,
 they return the same set of tuples when they are run on the same database. Note
 that $q_1=q_2$ defines a proper equivalence relation. 
 
-Let $\Sigma^*_C \subseteq \Sigma_C$ be the maximum subset of $\Sigma_C$ that
-contains no equivalent queries, i.e. it contains one query from each equivalent
+Let $\Sigma^*_C \subseteq \Sigma_C$ be a maximum subset of $\Sigma_C$ that
+contains no equivalent queries, i.e., it contains one query from each equivalent
 class.
 %
 %the set of queries built as follows. Let
@@ -562,15 +446,18 @@ class.
 
 \begin{proof}
   We can view the tuples of $\Tab$ as points in the $m$-dimensional space
-  $\Delta=D(\Tab.C_1)\times D(\Tab.C_2) \times \cdots\times D(\Tab.C_m)$. A tuple
+  $\Delta=D(\Tab.C_1)\times D(\Tab.C_2) \times \dotsc\times D(\Tab.C_m)$. A tuple
   $t\in\Tab$ such that $t.C_1=a_1, t.C_2=a_2, \ldots, t.C_m=a_m$ is represented
-  on the space by the point $(a_1,a_2,\cdots,a_m)$.
+  on the space by the point $(a_1,a_2,\dotsc,a_m)$.
 
   The queries in $\Sigma^*_\Tab$ can be seen as half spaces of $\Delta$. In
-  particular any query in $\Sigma^*_\Tab$ is defined as in~\eqref{eq:select}
-  and can be seen as the half space $\{(x_1,\cdots,x_i,\cdots,x_m) ~:~ x_j\in
-  D(\Tab_j)\mbox{ for } j\neq i, \mbox{ and } x_i \op a\}\subseteq \Delta.$ It
-  then follows from Lemma~\ref{lem:matousek} that $VC(S)\le m+1$.
+  particular any query in $\Sigma^*_\Tab$ is defined as in~\eqref{eq:vcfreqselect}
+  and can be seen as the half space 
+  \[
+  \{(x_1,\dotsc,x_i,\dotsc,x_m) ~:~ x_j\in D(\Tab_j)\mbox{ for } j\neq i, \mbox{
+  and } x_i \op a_i\}\subseteq \Delta\enspace.\
+  \]
+  It then follows from Lemma~\ref{lem:matousek} that $\VC(S)\le m+1$.
 \end{proof}
 
 We now extend these result to general selection queries. Consider the set
@@ -594,7 +481,7 @@ a selection predicate of two clauses using ``$\ge$'' and ``$\le$'' joined by
 either $AND$ (in the case of ``$=$'') or $OR$ (in the case of ``$\neq$'').
 
 By applying Lemma~\ref{lem:genboolcomp}, we have that the VC-dimension of the
-range space $(\Tab,\Sigma^{2*}_\Tab)$ is at most $2(m+1)2\log((m+1)2)$, where
+range space $(\Tab,\Sigma^{2*}_\Tab)$ is at most $3(m+1)2\log((m+1)2)$, where
 $m$ is the number of columns in the table $\Tab$.
 
 We can generalize this result to $b$ Boolean combinations of selection
@@ -618,19 +505,19 @@ represented as a collection of half spaces. Thus, we need to apply a different t
 
 \begin{proof} 
  The output of a query $q$ in $\Sigma^{b^*}_\Tab$ can be seen as the Boolean
- combination (i.e. union and intersection) of the outputs of at most $b$
+ combination (i.e., union and intersection) of the outputs of at most $b$
  "simple" select queries $q_i$ from $\Sigma^{*}_\Tab$ where each of these
- queries $q_i$ is as in~\eqref{eq:select}. An \texttt{AND} operation in the
+ queries $q_i$ is as in~\eqref{eq:vcfreqselect}. An \texttt{AND} operation in the
  predicate of $q$ implies an intersection of the outputs of  the corresponding
  two queries $q_i$ and $q_j$, while an \texttt{OR} operation implies a union of
- the outputs. By applying Lemma~\ref{lem:genboolcomp}, we obtain the result.
+ the outputs. The thesis follows by applying Lemma~\ref{lem:genboolcomp}.
 \end{proof}
 
-\subsection{Join Queries}\label{sec:vcdimjoinqueries}
+\subsection{Join Queries}\label{sec:vcfreqvcdimjoinqueries}
 Let $\Tab_1$ and $\Tab_2$ be two distinct tables, and let $R_1$ and $R_2$
 be two families of (outputs of) select queries on the tuples of $\Tab_1$ and
 $\Tab_2$ respectively. Let $S_1=(\Tab_1,R_1)$, $S_2=(\Tab_2,R_2)$ and let
-$VC(S_1),VC(S_2)\geq 2$. Let $C$ be a column along which $\Tab_1$ and $\Tab_2$
+$\VC(S_1),\VC(S_2)\geq 2$. Let $C$ be a column along which $\Tab_1$ and $\Tab_2$
 are joined, and let $T_J=\Tab_1\times\Tab_2$ be the Cartesian product of the two
 tables.
 
@@ -641,29 +528,31 @@ r_1, t_2\in r_2, t_1.C \op t_2.C\},\]
 where $\op\in\{>,<,\ge,\le,=,\neq\}$. $J^{\op}_{r_1,r_2}$ is the set of ordered pairs of
 tuples (one from $\Tab_1$ and one from $\Tab_2$ that forms the output of the
 join query 
-\begin{equation}\label{eq:joinq}
+\begin{equation}\label{eq:vcfreqjoinq}
 \mbox{\texttt{SELECT }} *\mbox{\texttt{ FROM }} \Tab_1,\Tab_2 \mbox{\texttt{
-WHERE }} r_1 \mbox{\texttt{ AND }} r_2.
+WHERE }} r_1 \mbox{\texttt{ AND }} r_2 \mbox{\texttt{ AND }} \Tab_1.C \op
+\Tab_2.C\enspace.
 \end{equation}
 Here we simplify the notation by identifying select queries with
 their predicates. We have $J^{\op}_{r_1,r_2}\subseteq
 r_1\times r_2$ and $J^{\op}_{r_1,r_2}\subseteq T_J$. Let 
-\[ J_C =\{J^{\op}_{r_1,r_2}~|~r_1\in R_1, r_2,R_2, \op\in\{>,<,\ge,\le,=,\neq\}
+\[ J_C =\{J^{\op}_{r_1,r_2}~|~r_1\in R_1, r_2\in R_2, \op\in\{>,<,\ge,\le,=,\neq\}
 \}.\]
-$J_C$ i the set of outputs of all join queries like the one in~\eqref{eq:joinq},
+$J_C$ is the set of outputs of all join queries like the one in~\eqref{eq:vcfreqjoinq},
 for all pairs of queries in $R_1\times R_2$ and all values of ``$\op$''. We
 present here an upper bound to the VC-dimension of the range space
 $S_J=(T_J,J_C)$.
 
 \begin{lemma}\label{lem:vcdimjoin}
-  $VC(S_J)\leq 3(VC(S_1)+VC(S_2))\log ((VC(S_1)+VC(S_2))).$
+  $\VC(S_J)\leq 3(\VC(S_1)+\VC(S_2))\log ((\VC(S_1)+\VC(S_2))).$
 \end{lemma}
 
 \begin{proof}
-  Let $v_1=VC(S_1)$ and $v_2=VC(S_2)$. Assume that a set $A\subseteq T_J$ is
+  Let $v_1=\VC(S_1)$ and $v_2=\VC(S_2)$. Assume that a set $A\subseteq T_J$ is
   shattered by $J_C$, and $|A|=v$.  Consider the two cross-sections $A_1 =
   \{x\in \Tab_1 ~:~ (x,y)\in A\}$ and $A_2 = \{y\in \Tab_2 ~:~ (x,y)\in A\}$.
-  Note that $|A_1|\leq v$ and $|A_2|\leq v$ and by~\ref{corol:SauerProj}
+  Note that $|A_1|\leq v$ and $|A_2|\leq v$ and
+  by~\citep[Corol.~14.4.3]{AlonS08}, %~\ref{corol:SauerProj}
   $|P_{R_1} (A_1)|\leq g(v_1,v)\le v^{v_1}$ and $|P_{R_2}
   (A_2)|\leq g(v_2,v) \le v^{v_2}$. For each set $r \in
   P_{J_C}(A)$ (i.e., for each subset $r\subseteq A$, given that
@@ -690,12 +579,13 @@ $S_J=(T_J,J_C)$.
   value of ``$\op$''.  
 
   Thus,$ |P_{J_C} (A)|\leq 6|P_{R_1} (A_1)|\cdot |P_{R_2} (A_2)|.$ $A$ could not
-  be shattered if $|P_{J_C}(A)|< 2^v$, i.e., if
+  be shattered if $|P_{J_C}(A)|< 2^v$. Since 
   \[
   |P_{J_C}(A)|\leq 6|P_{R_1} (A_1)|\cdot |P_{R_2} (A_2)|\leq
-  6g(v_1,v)g(v_2,v)\leq 6v^{v_1+v_2} < 2^v.
+  6g(v_1,v)g(v_2,v)\leq 6v^{v_1+v_2}, %< 2^v.
   \]
-  The rightmost inequality holds for $v> 3(v_1+v_2)\log(v_1+v_2)$.
+  it is sufficient to have $6v^{v_1+v_2}\le 2^v$, which holds for $v>
+  3(v_1+v_2)\log(v_1+v_2)$.
 \end{proof}
 
 %The relative complexity of this proof is due to the fact that the result of a
@@ -721,7 +611,7 @@ operations. As we said earlier, such a tree exists for any query.
   Consider the class $Q$ of queries that can be seen as combinations of select
   and joins on $u>2$ tables $\Tab_1,\dots,\Tab_u$. Let $S_i=(\Tab_i,R_i)$,
   $i=1,\dots,u$ be the range space associated with the select queries on the $u$
-  tables. Let $v_i=VC(S_i)$. Let $m$ be the maximum number of columns in a table
+  tables. Let $v_i=\VC(S_i)$. Let $m$ be the maximum number of columns in a table
   $\Tab_i$. We assume $m\le \sum_i v_i$.\footnote{The assumption $m\le \sum_i
   v_i$ is reasonable for any practical case.} Let $S_Q = (\Tab_1\times\dots\times
   \Tab_u, R_Q)$ be the range space associated with the class $Q$. The range set
@@ -734,19 +624,21 @@ operations. As we said earlier, such a tree exists for any query.
   (t_1,\dots,t_u) \mbox{ satisfies } \omega\}.\]
   $R_Q$ is the set of all possible $J^\omega_{\rho}$. Then,
   \[
-  VC(S_Q)\leq 4u(\sum_i VC(S_i))\log(u\sum_i VC(S_i)).
+  \VC(S_Q)\leq 4u(\sum_i \VC(S_i))\log(u\sum_i \VC(S_i)).
   \]
 \end{lemma}
 
 Note that this Lemma is not just an extension of Lemma~\ref{lem:vcdimjoin}
-to join queries between multicolumns tables. Instead, it is an extension to
-queries containing multiple joins (possibly between multicolumns tables).
+to join queries between two multicolumns tables. Instead, it is an extension to
+queries containing joins between multiple tables (possibly between multicolumns
+tables).
 
 \begin{proof}
 Assume that a set $A\subseteq T_J$ is shattered by $R_Q$, and $|A|=v$. Consider
 the cross-sections $A_i=\{x\in\Tab_i ~:~
 (y_1,\dots,y_{i-1},x,y_{i+1},\dots,y_u)\in A\}, 1\le i\le u$.  Note that
-$|A_i|\leq v$ and by~\ref{corol:SauerProj} $|P_{R_i} (A_i)|\leq g(v_i,v)
+$|A_i|\leq v$ and by~\citep[Coroll.~14.4.3]{AlonS08} %~\ref{corol:SauerProj} 
+$|P_{R_i} (A_i)|\leq g(v_i,v)
  \le v^{v_i}$. For each set $r \in P_{J_C}(A)$
 (i.e., for each subset $r\subseteq A$, given that $P_{J_C}(A)=2^A$)  there is a
 sequence $\rho=(r_1,\dots,r_u)$, $r_i\in R_i$, and there is an $\omega$, such
@@ -768,11 +660,11 @@ A_i,\mbox{ s.t. } (t_1,\dots,t_u) \mbox{ satisfies } \omega\}$. Analogously the
 set $s_2$ can be seen as $\{(t_1,\dots, t_u) ~:~ t_i\in b_i\cap A_i, \mbox{ s.t.
 } (t_1,\dots,t_u) \mbox{ satisfies } \omega\}$. But given that $a_i\cap A_i =
 b_i\cap A_i$, this leads to $s_1=s_2$, a contradiction. Hence, a vector 
-$(c_1,\dots,c_u)$, $c_i\in P_{R_i}(A_i)$, can only be identified at most $\ell$
-times, one for each different $\omega$. For each of the $u-1$ join conditions
+$(c_1,\dots,c_u)$, $c_i\in P_{R_i}(A_i)$, can only be identified at most a
+finite number $\ell$ of times, once for each different $\omega$. For each of the $u-1$ join conditions
 composing $\omega$ we need to choose a pair $(\Tab_1.A,\Tab_1.B)$ expressing the
 columns along which the tuples should be joined. There are at most $g=\binom{um}{2}$
-such pairs (some of them cannot actually be chosen, e.g. those of the type
+such pairs (some of them cannot actually be chosen, e.g., those of the type
 $(\Tab_1.A, \Tab_1.B)$). There are then $\binom{g}{u-1}$ ways of choosing these
 $u-1$ pairs. For each choice of $u-1$ pairs, there are $6^{(u-1)}$ ways of
 choosing the operators in the join conditions ($6$ choices for $\op$ for each
@@ -781,51 +673,55 @@ pair). We have
 \ell\le \binom{\binom{um}{2}}{u-1}\cdot6^{(u-1)}\le (mu)^{2u}.
 \]
 Thus, $|P_{J_C} (A)|\leq \ell|P_{R_1} (A_1)|\cdot \dots \cdot|P_{R_u} (A_u)|$.
-$A$ could not be shattered if $|P_{J_C}(A)|< 2^v$, i.e. if
+$A$ could not be shattered if $|P_{J_C}(A)|< 2^v$. Since we have
+\begin{align*}
+|P_{J_C} (A)| &\leq \ell\cdot|P_{R_1} (A_1)|\cdot \dots\cdot |P_{R_u} (A_u)|\leq
+\ell\cdot g(v_1,v)g(v_2,v)\dots g(v_u,v) \leq \\
+&\leq (mu)^{2u} \cdot v^{v_1+\dots+v_u}, %2^v.
+\end{align*}
+then it is sufficient to have 
 \[
-|P_{J_C} (A)| \leq \ell\cdot|P_{R_1} (A_1)|\cdot \dots\cdot |P_{R_u} (A_u)|\leq
-\ell\cdot g(v_1,v)g(v_2,v)\dots g(v_u,v) \leq \leq (mu)^{2u} \cdot
-v^{v_1+\dots+v_u}< 2^v.
+(mu)^{2u}v^{\sum_{i=1}^v vi}\le 2^v,
 \]
-The rightmost inequality holds for $v> 4u\left(\sum_i v_i\right)\log (u\sum_i v_i)$.
+which holds for $v> 4u\left(\sum_i v_i\right)\log (u\sum_i v_i)$.
 \end{proof}
 
-\subsection{General Queries}\label{sec:vcdimgenqueries}
+\subsection{General Queries}\label{sec:vcfreqvcdimgenqueries}
 Combining the above results we prove:
-\begin{theorem}\label{thm:vcdimgenqueries}
+\begin{theorem}\label{thm:vcfreqvcdimgenqueries}
 Consider a class $Q_{u,m,b}$ of all queries with up to $u-1$ join and $u$ select
 operations, where each select operation involves no more than $m$ columns and $b$
 Boolean operations, then 
 \[
-VC(Q_{u,m,b}) \leq
+\VC(Q_{u,m,b}) \leq
 12u^2(m+1)b\log((m+1)b)\log(3u^2(m+1)b\log((m+1)b)).\]
 \end{theorem}
 
-Note that Theorem~\ref{thm:vcdimgenqueries} gives an upper bound to the
+Note that Thm.~\ref{thm:vcfreqvcdimgenqueries} gives an upper bound to the
 VC-dimension. Our experiments suggest that in most cases the VC-dimension and
 the corresponding minimum sample size are even smaller.
 
-\section{Estimating Query Selectivity}\label{sec:applications}
-We applying the theoretical result on the VC-dimension of queries 
+\section{Estimating Query Selectivity}\label{sec:vcfreqapplications}
+We apply the theoretical result on the VC-dimension of queries 
 to constructing a concrete
 algorithm for selectivity estimation and query plan optimization.
 
 \subsection{The general scheme}
-Our goal is to apply Def.~\ref{definition:eapprox} and Thm.~\ref{thm:vcfreqeapprox} to
+Our goal is to apply Def.~\ref{def:eapprox} and Thm.~\ref{thm:eapprox} to
 compute an estimate of the selectivity of SQL queries. Let $Q_{u,m,b}$ be a
-class of queries as in Theorem~\ref{thm:vcdimgenqueries}.
+class of queries as in Thm.~\ref{thm:vcfreqvcdimgenqueries}.
 %, for some parameters $u$, $m$, and $b$. 
 The class $Q_{u,m,b}$ defines a range space $S=(X,R)$ such that $X$ is the
 Cartesian product of the tables involved in executing queries in $Q_{u,m,b}$,
 and $R$ is the family of all output sets of queries in $Q_{u,m,b}$. 
-%Let $VC(S)$ be the VC-dimension of $S$ and let $\Sam$ be an $\varepsilon$-approximation of
+%Let $\VC(S)$ be the VC-dimension of $S$ and let $\Sam$ be an $\varepsilon$-approximation of
 %$X$.
-% of size $m$ as defined by Thm.~\ref{thm:vcfreqeapprox}. 
+% of size $m$ as defined by Thm.~\ref{thm:eapprox}. 
 Let $\Sam$ be an $\varepsilon$-approximation of $X$ and
 let $r$ be the output set
 of a query $q\in Q_{u,m,b}$ when executed on the original dataset, then $X\cap
 r=r$ and $r\cap \Sam$ is the output set when the query is executed on the sample
-(see details below). Thus, by Def.~\ref{definition:eapprox},
+(see details below). Thus, by Def.~\ref{def:eapprox},
 \[
 \left|\frac{|X\cap r|}{|X|} - \frac{|\Sam\cap r|}{|\Sam|}\right|=
 |\sigma_\Db(q)-\sigma_\Sam(q)| \le\varepsilon,
@@ -840,8 +736,8 @@ estimates for the selectivity of all the subqueries defined by its execution
 plan. Corresponding results are obtained by using a relative
   $(p,\varepsilon)$-approximation for $X$.
   
-\subsection{Building and using the sample representation}\label{sec:building}
-We apply Thm.~\ref{thm:vcfreqeapprox} to probabilistically construct an $\varepsilon$-approximation of $X$.
+\subsection{Building and using the sample representation}\label{sec:vcfreqbuilding}
+We apply Thm.~\ref{thm:eapprox} to probabilistically construct an $\varepsilon$-approximation of $X$.
 A technical difficulty in algorithmic application of the theorem is that it is proven  for
 a uniform sample of the Cartesian product
 of all the tables in the database, while
@@ -854,7 +750,8 @@ tables is not a uniform sample of the Cartesian product of the
 tables~\citep{ChaudhuriMN99}. We developed the following procedure to circumvent
 this problem. Assume that we need a uniform sample of size $t$ from
 $\mathbf{D}$, which is the Cartesian product of $\ell$ tables
-$\Tab_1,\dotsc,\Tab_\ell$. We then sample $t$ tuples uniformly at random from
+$\Tab_1,\dotsc,\Tab_\ell$. We then sample $t$ tuples uniformly at random (with
+replacement) from
 each table $\Tab_i$, to form a sample table $\Sam_i$. We add an attribute
 $sampleindex$ to each $\Sam_i$ and we set the value in the added attribute for each tuple in
 $\Sam_i$ to a unique value in $[1,t]$. Now, each sample table will contain $t$ tuples,
@@ -882,7 +779,7 @@ $\Sam_j\leftarrow\emptyset$\;
 \For{$i\leftarrow 1$ \KwTo $s$}{
 \For{$j\leftarrow 1$ \KwTo $k$}{
 $t\leftarrow$ \drawRandomTuple{$\Tab_j$}\;
-$s.sampleindex_j\leftarrow i$\;
+$t.sampleindex_j\leftarrow i$\;
 $\Sam_j \leftarrow \Sam_j \cup \{t\}$\;
 }
 }
@@ -893,7 +790,7 @@ $\Sam_j \leftarrow \Sam_j \cup \{t\}$\;
 \SetKwInOut{Input}{input}
 \SetKwInOut{Output}{output}
 \SetKwFunction{executeOperation}{executeOperation}
-\Input{database operation $op$, sample database $S=(\Sam_1,\dots,\Sam_k)$ of
+\Input{elementar database operation $op$, sample database $S=(\Sam_1,\dots,\Sam_k)$ of
 size $s$.}
 \Output{the selectivity of $op$.}
 $O_{op} \leftarrow \executeOperation{S, op}$\;
@@ -908,12 +805,12 @@ $selectivity \leftarrow i/s$\;
 \caption{$\mathtt{ComputeSelectivity}(\Sam,op)$}\label{alg:ComputeSel}
 \end{algorithm}
 
-\begin{lemma}\label{lem:ComputeSel}
+\begin{theorem}\label{lem:ComputeSel}
 The $\mathtt{ComputeSelectivity}$ procedure (in Alg.~\ref{alg:ComputeSel})
 executes a query on the Cartesian product of independent random samples of the
 tables but outputs the selectivity that corresponds to executing the query on a
 random sample of the Cartesian product of the original tables. 
-\end{lemma}
+\end{theorem}
 
 \begin{proof}
 The $CreateSample$ procedure chooses from each table a random sample of
@@ -925,7 +822,7 @@ $t$ elements (as in $ComputeSelectivity$) gives the result.
 \end{proof}
 
 Note that our method circumvent the major difficulty pointed out
-by Chaudhuri~et~al.~\citeyearpar{ChaudhuriMN99}. They also proved that, in general, it
+by~\citet{ChaudhuriMN99}. They also proved that, in general, it
 is impossible to predict sample sizes for given two tables such that the join of
 the samples of two tables will result in a sample of a required size out of the
 join of the two tables. Our method does not require a sample of a given size
@@ -947,7 +844,7 @@ the total execution time on the sample. The significant improvement in the
 selectivity estimates in complex queries well compensates for the extra work in
 computing the selectivity estimates.
 
-\section{Experiments}\label{sec:vcfreqexp}
+\section{Experiments}\label{sec:vcfreqexperiments}
 This section presents the results of the experiments we run to validate our
 theoretical results and to compare our selectivity estimation
 method with standard techniques implemented in PostgreSQL and in
@@ -955,22 +852,22 @@ Microsoft SQL Server.
 
 \paragraph{Goals.} The first goal of the experiments is to evaluate the practical
 usefulness of our theoretical results. To assess this, we run queries on a large
-database and on random samples of it of different sizes. We use the selectivity
+database and on random samples of different sizes. We use the selectivity
 of the each query in the random samples as an estimator for the selectivity in
 the large database with the adjustments for join operations, as
 described in the previous Section. We compute the error between the
 estimate and the actual selectivity to show that the thesis of
-Thm.~\ref{thm:vcfreqeapprox} is indeed valid in practice. The use of a large number
+Thm.~\ref{thm:eapprox} is indeed valid in practice. The use of a large number
 of queries and of a variety of parameters allows us to evaluate the error
 rate as a function of the sample size. We then compare our
 method with the commonly used selectivity estimation based  on precomputed
-histograms (briefly described in Sect.~\ref{sec:selhist}). We use histograms
+histograms (briefly described in Sect.~\ref{sec:vcfreqselhist}). We use histograms
 with a different number of buckets to show that, no matter how fine-grained the
 histograms might be, as soon as the inter-column and intra-bucket assumptions
 are no longer satisfied, our approach gives better selectivity
 estimates.
 
-\subsection{Selectivity Estimation with Histograms}\label{sec:selhist}
+\subsection{Selectivity Estimation with Histograms}\label{sec:vcfreqselhist}
 In many modern database systems, the query optimizer relies on
 histograms for computing data distribution statistics to help determine the most
 efficient query plans. In particular, PostgreSQL 
@@ -992,7 +889,7 @@ columns of a table are built using a random sample of the tuples of the table. T
 histograms and the MCV list for all columns of a table are based on the same
 sample tuples (and are therefore correlated).  The sample size is computed for
 each column using a formula based on the table size, histogram size, and a
-target error probability developed by Chaudhuri~et~al.~\citeyearpar{ChaudhuriMN98}  and the largest sample size required by
+target error probability developed by~\citet{ChaudhuriMN98}  and the largest sample size required by
 the columns of a table is used to set the sample size of the table. 
 
 Finally, the join selectivity of multiple constraints are computed using
@@ -1031,11 +928,11 @@ each tuple such that each tuple drawn from the same base table has a different
 value in the additional column and with tuples from different tables forming an
 element of the sample (of the Cartesian product of the base tables) if they have
 the same value in this additional column, as described in
-Sect.~\ref{sec:building}.
+Sect.~\ref{sec:vcfreqbuilding}.
 
 For each table in the original database we create many sample tables of
 different sizes. The sizes are either fixed arbitrarily or computed
-using~\eqref{eq:vcfreqeapprox} from Thm.~\ref{thm:vcfreqeapprox}. The arbitrarily sized
+using~\eqref{eq:vceapprox} from Thm.~\ref{thm:eapprox}. The arbitrarily sized
 sample tables contain between $10000$ and $1.5$ million tuples. To compute the
 VC-dimension-dependent sample size, we fixed $\varepsilon=0.05$,
 $\delta=0.05$, and $c=0.5$. The parameter $d$ was set to the best bound to the
@@ -1043,39 +940,45 @@ VC-dimension of the range space of the queries we were running, as obtained from
 our theoretical results. If we let $m$ be the number of columns involved in the
 selection predicate of the queries and $b$ be the number of Boolean clauses in
 the predicate, we have that $d$ depends directly on $m$ and $b$, as does the
-sample size $s$ through \eqref{eq:vcfreqeapprox} in Thm.~\ref{thm:vcfreqeapprox}. For
+sample size $s$ through \eqref{eq:vceapprox} in Thm.~\ref{thm:eapprox}. For
 selection queries, we used $m=1,2$ and $b=1,2,3,5,8$, with the addition of the
 combination $m=5$, $b=5$. We run experiments on join queries only for some
-combinations of $m$ and $b$ (i.e. for $m=1$ and $b=1,2,5,8$) due to the large
+combinations of $m$ and $b$ (i.e., for $m=1$ and $b=1,2,5,8$) due to the large
 size of the resulting sample tables. Table~\ref{tab:samplesize} shows the sample
 sizes, as number of tuples, for the combinations of parameters we used in our
 experiments.
 
-\begin{table}[ht]
+\begin{table}[htb]
   \centering
-  \begin{tabular}{|c|c|cc|cc|}
-    \cline{3-6}
-    \multicolumn{2}{c}{$ $} &
-    \multicolumn{2}{|c}{Select} &
-    \multicolumn{2}{|c|}{Join} \\
-    \hline
-    $m$ & $b$ & VC-dim & Sample size & VC-dim & Sample size \\
-    \hline
+  %\tbl{Sample sizes}{
+  \begin{tabular}{cccccc}
+    %\cline{3-6}
+    \toprule
+    & & \multicolumn{4}{c}{Query type} \\
+    \cmidrule(l){3-6}
+    & &
+    \multicolumn{2}{c}{Select} &
+    \multicolumn{2}{c}{Join} \\
+    \cmidrule(l){3-4} \cmidrule(l){5-6} 
+    Columns ($m$) & Boolean clauses ($b$) & VC-dim & Sample size & VC-dim & Sample size \\
+    \midrule
     \multirow{5}{*}{1} & 1 & 2 & 1000 & 4 & 1400\\
      & 2 & 4 & 1400 & 16 & 3800\\
      & 3 & 6 & 2800 & 36 & 7800 \\
      & 5 & 10 & 2600 & 100 & 20600\\
      & 8 & 16 & 3800 & 256 & 51800\\
-    \hline
+     \midrule
     \multirow{4}{*}{2} & 2 & 31 & 6800  & & \\
      & 3 & 57 & 12000 & & \\
      & 5 & 117 & 24000 & & \\
      & 8 & 220 & 44600 & & \\
-    \hline
+     \midrule
     5 & 5 & 294 & 59400 & & \\
-    \hline
+    \bottomrule
   \end{tabular}
-  \caption{Sample Sizes}
+  %}
+  \caption{VC-Dimension bounds and samples sizes, as number of tuples, for the
+  combinations of parameters we used in our experiments. }
   \label{tab:samplesize}
 \end{table}
  
@@ -1114,7 +1017,7 @@ possible queries.
 
 \subsection{Results}
 \paragraph{Selection Queries.} The first result of our experiments is that, for
-all the queries we run, on all the sample tables, the estimate of the
+all the queries we ran, on all the sample tables, the estimate of the
 selectivity computed using our method was within
 $\varepsilon$ ($=0.05$) from the real selectivity. The same was not true for the
 selectivity computed by the histograms. As an example, in the case of $m=2$,
@@ -1127,52 +1030,54 @@ holds (e.g., for $m=2$, $b=5$ the default histograms gave a better prediction
 than our technique in 11 out of 100 cases). Similar situations also arise for
 SQLServer.
 
-\begin{figure}[ht]
+\begin{figure}[tp]
   \centering
-  \includegraphics[scale=0.35]{vcfreq/T_k5_u200k_unif_k2_b5_errperc}
+  \includegraphics[scale=0.30]{vcfreq/T_k5_u200k_unif_k2_b5_errperc}
   %\vspace{-0.3cm}
-  \caption{Select -- Uniform Independent Columns -- $m=2$, $b=5$}
-  \label{fig:T_k5_u200k_unif_k2_b5_errperc}
+  \caption{Selectivity prediction error for selection queries on a table with
+  uniform independent columns -- Two columns ($m=2$), five Boolean clauses ($b=5$).}
+  \label{fig:vcfreqT_k5_u200k_unif_k2_b5_errperc}
 \end{figure}
 
 Since the selectivity estimated by the our method was always within $\varepsilon$
-from the actual, we report the actual percent error, i.e. the quantity
+from the actual, we report the actual percent error, i.e., the quantity
 $e_\%=\frac{100|p(\sigma_q)-\sigma_\Db(q)|}{\sigma_\Db(q)}$ where $p(\sigma_q)$
 is the predicted selectivity. We analyze the average and the standard deviation
 of this quantity on a set of queries and the evolution of these measures as
 the sample size increases. We can see from
-Fig.~\ref{fig:T_k5_u200k_unif_k2_b5_errperc}
-%~\ref{fig:T_k5_u200k_unif_k5_b5_errperc},
-and~\ref{fig:T_k2_correl_k2_b8_errperc} that both the average and the standard
+Fig.~\ref{fig:vcfreqT_k5_u200k_unif_k2_b5_errperc}
+%~\ref{fig:vcfreqT_k5_u200k_unif_k5_b5_errperc},
+and~\ref{fig:vcfreqT_k2_correl_k2_b8_errperc} that both the average and the standard
 deviation of the percentage error of the prediction obtained with our method
 decrease as the sample size grows (the rightmost plotted
 sample size is the one from Table~\ref{tab:samplesize}, i.e., the one computed 
-in~Thm.\ref{thm:vcfreqeapprox}. More interesting is the comparison in those figures between the performance of the
+in~Thm.\ref{thm:eapprox}. More interesting is the comparison in those figures between the performance of the
 histograms and the performance of our techniques in predicting selectivities. When
 the assumptions of the histograms hold, as is the case for the data plotted in
-%Figures~\ref{fig:T_k5_u200k_unif_k5_b5_errperc} and
-Fig.~\ref{fig:T_k5_u200k_unif_k2_b5_errperc}, the predictions obtained from the
+%Figures~\ref{fig:vcfreqT_k5_u200k_unif_k5_b5_errperc} and
+Fig.~\ref{fig:vcfreqT_k5_u200k_unif_k2_b5_errperc}, the predictions obtained from the
 histograms are good. 
 
-\begin{figure}[ht]
+\begin{figure}[tp]
   \centering
-  \includegraphics[scale=0.35]{vcfreq/T_k2_correl_k2_b8_errperc}
+  \includegraphics[scale=0.3]{vcfreq/T_k2_correl_k2_b8_errperc}
   %\vspace{-0.3cm}
-  \caption{Select -- Correlated Columns -- $m=2$, $b=8$}
-  \label{fig:T_k2_correl_k2_b8_errperc}
+  \caption{Selectivity prediction error for selection queries on a table with
+  correlated columns -- Two columns ($m=2$), eight Boolean clauses ($b=8$).}
+  \label{fig:vcfreqT_k2_correl_k2_b8_errperc}
 \end{figure}
 
 But as soon as the data are
-correlated (Fig.~\ref{fig:T_k2_correl_k2_b8_errperc}), our sampling method gives better
+correlated (Fig.~\ref{fig:vcfreqT_k2_correl_k2_b8_errperc}), our sampling method gives better
 predictions than the histograms even at the smallest sample sizes and keeps
 improving as the sample grows larger. It is also interesting to observe how the
 standard deviation of the prediction error is much smaller for our method than
 for the histograms, suggesting a much higher consistency in the quality of the
-predictions. In Fig.~\ref{fig:T_k2_correl_k2_b8_errperc} we do not show multiple
+predictions. In Fig.~\ref{fig:vcfreqT_k2_correl_k2_b8_errperc} we do not show multiple
 curves for the different PostgreSQL histograms because increasing the number of
 buckets had very marginal impact on the quality of the estimates, sometimes even
 in the negative sense (i.e., an histogram with more buckets gave worse
-predictions than an histogram with less buckets), a fact that can be explained
+predictions than an histogram with fewer buckets), a fact that can be explained
 with the variance introduced by the sampling process used to create the
 histograms. For the same reason we do not plot multiple lines for the
 prediction obtained from the multi-columns and single-column statistics of SQL
@@ -1187,17 +1092,18 @@ always within $\varepsilon$ from the real values, even at the smallest sample
 sizes, but the same was not true for histograms. For example, in the case of
 $m=1$ and $b=5$, $135$ out of $300$ predictions from the histograms were more
 than $\varepsilon$ off from the real selectivities.
-Figure~\ref{fig:join_k1_b1_errperc} shows the comparison between the average and
+Figure~\ref{fig:vcfreqjoin_k1_b1_errperc} shows the comparison between the average and
 the standard deviation of the percentage error, defined in the previous
 paragraph, for the histograms and our method. The numbers include predictions
 for the selection operations at the leaves of the query tree.
 
-\begin{figure}[ht]
+\begin{figure}[tp]
   \centering
-  \includegraphics[scale=0.35]{vcfreq/join_k1_b1_errperc}
+  \includegraphics[scale=0.3]{vcfreq/join_k1_b1_errperc}
   %\vspace{-0.3cm}
-  \caption{Join -- $m=1$, $b=1$}
-  \label{fig:join_k1_b1_errperc}
+  \caption{Selectivity prediction error for join queries queries. One column
+  ($m=1$), one Boolean clause ($b=1$).}
+  \label{fig:vcfreqjoin_k1_b1_errperc}
 \end{figure}
 
 Again,
@@ -1206,7 +1112,7 @@ buckets because the quality of the predictions did not improve as the histograms
 became more fine-grained. To understand the big discrepancy between the accurate
 predictions of our method and the wrong estimates computed by the histograms in
 PostgreSQL  we note that  for some join queries, the
-histograms predicted an output size on the order of the hundreds of thousands
+histograms predicted an output size on the order of the hundreds of thousands of
 tuples but the actual output size was zero or a very small number of tuples.
 Observing the curves of
 the average and the standard deviation of the percentage error for the
@@ -1215,27 +1121,27 @@ the quality of the predictions only improves minimally with the sample size.
 This is due to the fact that at small sizes our prediction for the join
 operation is very often zero or very close to zero, because the output of the
 query does not contain enough pairs of tuples from the sample of the Cartesian
-product of the input table (i.e. pairs of tuples with the same value in the
+product of the input table (i.e., pairs of tuples with the same value in the
 $sampleindex$ column). In these cases, the prediction can not be accurate at all
-(i.e. the error is 100\% if the original output contained some tuples, or 0\% if
+(i.e., the error is 100\% if the original output contained some tuples, or 0\% if
 the query returned an empty set in the large databases). As soon as the sample
 size grows more, we can see first a jump to higher values of the percentage
 error, which then behaves as expected, i.e., decreasing as the sample size
 increases. 
 
-In Fig.~\ref{fig:join_k1_b1_errperc} we also show a
+In Fig.~\ref{fig:vcfreqjoin_k1_b1_errperc} we also show a
 comparison between the percentage error of predictions obtained using our method
 in two different ways: the ``theoretically correct'' way that makes use of the
 number of pairs of tuples with the same value in the $sampleindex$ column and
 the ``practitioner'' way which uses the size of the output of the join operation
 in the sample, therefore ignoring the $sampleindex$ column. Recall that we had
-to add the $sampleindex$ column because Thm.~\ref{thm:vcfreqeapprox} requires a
+to add the $sampleindex$ column because Thm.~\ref{thm:eapprox} requires a
 uniform sample of the Cartesian product of the input tables.
-As it is evident from Fig.~\ref{fig:join_k1_b1_errperc}, the ``practitioner''
+As it is evident from Fig.~\ref{fig:vcfreqjoin_k1_b1_errperc}, the ``practitioner''
 way of predicting selectivity gives very good results at small sample sizes
 (although it does not offer theoretical guarantees). These results are similar
-in spirit, although not equivalent, to the theoretical conclusions presented by
-Haas~et~al.~\citeyearpar{HaasNSS96} in the setting of selectivity estimation
+in spirit, although not equivalent, to the theoretical conclusions presented
+by~\citet{HaasNSS96} in the setting of selectivity estimation
 using online sampling.
 
 %\paragraph{Comments.} From the experiments we ran we can conclude that our
@@ -1258,13 +1164,13 @@ using online sampling.
 %selectivity predictions for queries whose complexity is greater than what the
 %histogram could handle. Another interesting fact pointed out by our experiments
 %is that a sample of the Cartesian product may not actually be needed, as the
-%results in Fig.~\ref{fig:join_k1_b1_errperc} shows, i.e., the bounds to the
+%results in Fig.~\ref{fig:vcfreqjoin_k1_b1_errperc} shows, i.e., the bounds to the
 %sample size may be such that a certain level of non-uniformity in the sampling
 %process may be accommodated. It may even well be that the entire
-%Thm.~\ref{thm:vcfreqeapprox}, does not need the sample to be a uniform sample of the
+%Thm.~\ref{thm:eapprox}, does not need the sample to be a uniform sample of the
 %set of points.
 %
-\section{Conclusions}\label{sec:compar}
+\section{Conclusions}\label{sec:vcfreqcompar}
 We develop a novel method for estimating the selectivity of queries by executing
 it on a concise, properly selected, sample of the database. We present a
 rigorous analysis of our method and extensive experimental results demonstrating
@@ -1277,11 +1183,11 @@ using multidimensional
 histograms~\citep{BrunoCG01,PoosalaI97,SrivastavaHMKT,WangS03} and join
 synopses~\citep{AcharyaGPR99}. The main advantage of our method is that it gives
 uniformly accurate estimates for the selectivity of any query within a predefined
-VC-dimension range. Method that collect and store pre-computed statistics gives
+VC-dimension range. Methods that collect and store pre-computed statistics give
 accurate estimates only for the relations captured by the collected statistics,
-while estimates of any other relation relies on an independence assumption.
-, which give probabilistic guarantees on the error of the predicted
-selectivity,%
+while estimate of any other relation relies on an independence assumption.
+%, which give probabilistic guarantees on the error of the predicted
+%selectivity,%
 %Flexibility is one of the major aspects making our approach more suitable for
 %practical implementation than the above advanced techniques (which, despite
 %being presented some years ago, still have to be implemented in widespread
@@ -1296,7 +1202,7 @@ selectivity,%
 %predicate are connected with Boolean operators. This make our approach extremely
 %flexible.  
 
-To match the accuracy of our new method with histograms and  join synopses
+To match the accuracy of our new method with histograms and join synopses
 one would need to create, for each table, a multidimensional histogram where the
 number of dimensions is equal to the number of columns in the tables. The space
 needed for a multidimensional histogram is exponential in the number of
@@ -1313,472 +1219,614 @@ analysis problem.
 %VC-dimension theory to solve the problem of computing good approximations of the
 %results of aggregate functions applied to the outputs of database queries.
 
+\section*{Acknowledgements}
+This work was supported in part by the National Science Foundation, under grant
+IIS-0905553.
 
-%\bibliographystyle{acmsmall}
-%\bibliography{jacm}
+\vskip 0.2in
+%\bibliography{vcfreq,vcmine,riondapubs}
 
 \iffalse
-\begin{thebibliography}{}
+\begin{thebibliography}{67}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
 
-\bibitem[\protect\citeauthoryear{Acharya, Gibbons, Poosala, and
-  Ramaswamy}{Acharya et~al\mbox{.}}{1999}]{AcharyaGPR99}
-{\sc Acharya, S.}, {\sc Gibbons, P.~B.}, {\sc Poosala, V.}, {\sc and} {\sc
-  Ramaswamy, S.} 1999.
+\bibitem[Acharya et~al.(1999)Acharya, Gibbons, Poosala, and
+  Ramaswamy]{AcharyaGPR99}
+Swarup Acharya, Phillip~B. Gibbons, Viswanath Poosala, and Sridhar Ramaswamy.
 \newblock Join synopses for approximate query answering.
-\newblock {\em SIGMOD Rec.\/}~{\em 28}, 275--286.
+\newblock \emph{SIGMOD Rec.}, 28:\penalty0 275--286, June 1999.
+%\newblock ISSN 0163-5808.
+%\newblock \doi{http://doi.acm.org/10.1145/304181.304207}.
+%\newblock URL \url{http://doi.acm.org/10.1145/304181.304207}.
 
-\bibitem[\protect\citeauthoryear{Alon and Spencer}{Alon and
-  Spencer}{2008}]{AlonS08}
-{\sc Alon, N.} {\sc and} {\sc Spencer, J.~H.} 2008.
-\newblock {\em The Probabilistic Method\/} third Ed.
+\bibitem[Alon and Spencer(2008)]{AlonS08}
+Noga Alon and Joel~H. Spencer.
+\newblock \emph{The Probabilistic Method}.
 \newblock Interscience Series in Discrete Mathematics and Optimization. John
-  Wiley {\&} Sons, Hoboken, NJ, USA.
+  Wiley {\&} Sons, Hoboken, NJ, USA, third edition, 2008.
 
-\bibitem[\protect\citeauthoryear{Anthony and Bartlett}{Anthony and
-  Bartlett}{1999}]{AnthonyB99}
-{\sc Anthony, M.} {\sc and} {\sc Bartlett, P.~L.} 1999.
-\newblock {\em Neural Network Learning - Theoretical Foundations}.
-\newblock Cambridge University Press, New York, NY, USA.
+\bibitem[Anthony and Bartlett(1999)]{AnthonyB99}
+Martin Anthony and Peter~L. Bartlett.
+\newblock \emph{Neural Network Learning - Theoretical Foundations}.
+\newblock Cambridge University Press, New York, NY, USA, 1999.
+%\newblock ISBN 978-0-521-57353-5.
 
-\bibitem[\protect\citeauthoryear{Babcock, Chaudhuri, and Das}{Babcock
-  et~al\mbox{.}}{2003}]{BabcockCD03}
-{\sc Babcock, B.}, {\sc Chaudhuri, S.}, {\sc and} {\sc Das, G.} 2003.
+\bibitem[Babcock et~al.(2003)Babcock, Chaudhuri, and Das]{BabcockCD03}
+Brian Babcock, Surajit Chaudhuri, and Gautam Das.
 \newblock Dynamic sample selection for approximate query processing.
-\newblock In {\em Proceedings of the 2003 ACM SIGMOD international conference
-  on Management of data}. SIGMOD '03. ACM, New York, NY, USA, 539--550.
+\newblock In \emph{Proceedings of the 2003 ACM SIGMOD international conference
+  on Management of data}, SIGMOD '03, pages 539--550, New York, NY, USA, 2003.
+  ACM.
+%\newblock ISBN 1-58113-634-X.
+%\newblock \doi{http://doi.acm.org/10.1145/872757.872822}.
+%\newblock URL \url{http://doi.acm.org/10.1145/872757.872822}.
 
-\bibitem[\protect\citeauthoryear{Benedikt and Libkin}{Benedikt and
-  Libkin}{2002}]{BenediktL02}
-{\sc Benedikt, M.} {\sc and} {\sc Libkin, L.} 2002.
+\bibitem[Benedikt and Libkin(2002)]{BenediktL02}
+Michael Benedikt and Leonid Libkin.
 \newblock Aggregate operators in constraint query languages.
-\newblock {\em Journal of Computer and System Sciences\/}~{\em 64,\/}~3,
-  628--654.
+\newblock \emph{Journal of Computer and System Sciences}, 64\penalty0
+  (3):\penalty0 628--654, 2002.
+%\newblock ISSN 0022-0000.
+%\newblock \doi{DOI: 10.1006/jcss.2001.1810}.
+%\newblock URL
+%  \url{http://www.sciencedirect.com/science/article/pii/S0022000001918100}.
 
-\bibitem[\protect\citeauthoryear{Blum, Ligett, and Roth}{Blum
-  et~al\mbox{.}}{2008}]{BlumLR08}
-{\sc Blum, A.}, {\sc Ligett, K.}, {\sc and} {\sc Roth, A.} 2008.
+\bibitem[Blum et~al.(2008)Blum, Ligett, and Roth]{BlumLR08}
+Avrim Blum, Katrina Ligett, and Aaron Roth.
 \newblock A learning theory approach to non-interactive database privacy.
-\newblock In {\em Proceedings of the 40th annual ACM symposium on Theory of
-  computing}. STOC '08. ACM, New York, NY, USA, 609--618.
+\newblock In \emph{Proceedings of the 40th annual ACM symposium on Theory of
+  computing}, STOC '08, pages 609--618, New York, NY, USA, 2008. ACM.
+%\newblock ISBN 978-1-60558-047-0.
+%\newblock \doi{http://doi.acm.org/10.1145/1374376.1374464}.
+%\newblock URL \url{http://doi.acm.org/10.1145/1374376.1374464}.
 
-\bibitem[\protect\citeauthoryear{Blumer, Ehrenfeucht, Haussler, and
-  Warmuth}{Blumer et~al\mbox{.}}{1989}]{BlumerEHW89}
-{\sc Blumer, A.}, {\sc Ehrenfeucht, A.}, {\sc Haussler, D.}, {\sc and} {\sc
-  Warmuth, M.~K.} 1989.
+\bibitem[Blumer et~al.(1989)Blumer, Ehrenfeucht, Haussler, and
+  Warmuth]{BlumerEHW89}
+Anselm Blumer, Andrzej Ehrenfeucht, David Haussler, and Manfred~K. Warmuth.
 \newblock Learnability and the {V}apnik-{C}hervonenkis dimension.
-\newblock {\em J. ACM\/}~{\em 36}, 929--965.
+\newblock \emph{Journal of the ACM}, 36:\penalty0 929--965, October 1989.
+%\newblock ISSN 0004-5411.
+%\newblock \doi{http://doi.acm.org/10.1145/76359.76371}.
+%\newblock URL \url{http://doi.acm.org/10.1145/76359.76371}.
 
-\bibitem[\protect\citeauthoryear{Brown and Haas}{Brown and
-  Haas}{2006}]{BrownH06}
-{\sc Brown, P.~G.} {\sc and} {\sc Haas, P.~J.} 2006.
+\bibitem[Brown and Haas(2006)]{BrownH06}
+Paul~G. Brown and Peter~J. Haas.
 \newblock Techniques for warehousing of sample data.
-\newblock In {\em Proceedings of the 22nd International Conference on Data
-  Engineering}. ICDE '06. IEEE Computer Society, Washington, DC, USA, 6.
+\newblock In \emph{Proceedings of the 22nd International Conference on Data
+  Engineering}, ICDE '06, page~6, Washington, DC, USA, 2006. IEEE Computer
+  Society.
+%\newblock ISBN 0-7695-2570-9.
+%\newblock \doi{http://dx.doi.org/10.1109/ICDE.2006.157}.
+%\newblock URL \url{http://dx.doi.org/10.1109/ICDE.2006.157}.
 
-\bibitem[\protect\citeauthoryear{Bruno and Chaudhuri}{Bruno and
-  Chaudhuri}{2004}]{BrunoC04}
-{\sc Bruno, N.} {\sc and} {\sc Chaudhuri, S.} 2004.
+\bibitem[Bruno and Chaudhuri(2004)]{BrunoC04}
+Nicolas Bruno and Surajit Chaudhuri.
 \newblock Conditional selectivity for statistics on query expressions.
-\newblock In {\em Proceedings of the 2004 ACM SIGMOD international conference
-  on Management of data}. SIGMOD '04. ACM, New York, NY, USA, 311--322.
+\newblock In \emph{Proceedings of the 2004 ACM SIGMOD international conference
+  on Management of data}, SIGMOD '04, pages 311--322, New York, NY, USA, 2004.
+  ACM.
+%\newblock ISBN 1-58113-859-8.
+%\newblock \doi{http://doi.acm.org/10.1145/1007568.1007604}.
+%\newblock URL \url{http://doi.acm.org/10.1145/1007568.1007604}.
 
-\bibitem[\protect\citeauthoryear{Bruno, Chaudhuri, and Gravano}{Bruno
-  et~al\mbox{.}}{2001}]{BrunoCG01}
-{\sc Bruno, N.}, {\sc Chaudhuri, S.}, {\sc and} {\sc Gravano, L.} 2001.
+\bibitem[Bruno et~al.(2001)Bruno, Chaudhuri, and Gravano]{BrunoCG01}
+Nicolas Bruno, Surajit Chaudhuri, and Luis Gravano.
 \newblock {STH}oles: a multidimensional workload-aware histogram.
-\newblock {\em SIGMOD Rec.\/}~{\em 30}, 211--222.
+\newblock \emph{SIGMOD Rec.}, 30:\penalty0 211--222, May 2001.
+%\newblock ISSN 0163-5808.
+%\newblock \doi{http://doi.acm.org/10.1145/376284.375686}.
+%\newblock URL \url{http://doi.acm.org/10.1145/376284.375686}.
 
-\bibitem[\protect\citeauthoryear{Chaudhuri, Das, and Narasayya}{Chaudhuri
-  et~al\mbox{.}}{2007}]{ChaudhuriDN07}
-{\sc Chaudhuri, S.}, {\sc Das, G.}, {\sc and} {\sc Narasayya, V.} 2007.
-\newblock Optimized stratified sampling for approximate query processing.
-\newblock {\em ACM Trans. Database Syst.\/}~{\em 32}, 50.
-
-\bibitem[\protect\citeauthoryear{Chaudhuri, Motwani, and Narasayya}{Chaudhuri
-  et~al\mbox{.}}{1998}]{ChaudhuriMN98}
-{\sc Chaudhuri, S.}, {\sc Motwani, R.}, {\sc and} {\sc Narasayya, V.} 1998.
+\bibitem[Chaudhuri et~al.(1998)Chaudhuri, Motwani, and
+  Narasayya]{ChaudhuriMN98}
+Surajit Chaudhuri, Rajeev Motwani, and Vivek Narasayya.
 \newblock Random sampling for histogram construction: how much is enough?
-\newblock {\em SIGMOD Rec.\/}~{\em 27}, 436--447.
+\newblock \emph{SIGMOD Rec.}, 27:\penalty0 436--447, June 1998.
+%\newblock ISSN 0163-5808.
+%\newblock \doi{http://doi.acm.org/10.1145/276305.276343}.
+%\newblock URL \url{http://doi.acm.org/10.1145/276305.276343}.
 
-\bibitem[\protect\citeauthoryear{Chaudhuri, Motwani, and Narasayya}{Chaudhuri
-  et~al\mbox{.}}{1999}]{ChaudhuriMN99}
-{\sc Chaudhuri, S.}, {\sc Motwani, R.}, {\sc and} {\sc Narasayya, V.} 1999.
+\bibitem[Chaudhuri et~al.(1999)Chaudhuri, Motwani, and
+  Narasayya]{ChaudhuriMN99}
+Surajit Chaudhuri, Rajeev Motwani, and Vivek Narasayya.
 \newblock On random sampling over joins.
-\newblock In {\em Proceedings of the 1999 ACM SIGMOD international conference
-  on Management of data}. SIGMOD '99. ACM, New York, NY, USA, 263--274.
+\newblock In \emph{Proceedings of the 1999 ACM SIGMOD international conference
+  on Management of data}, SIGMOD '99, pages 263--274, New York, NY, USA, 1999.
+  ACM.
+%\newblock ISBN 1-58113-084-8.
+%\newblock \doi{http://doi.acm.org/10.1145/304182.304206}.
+%\newblock URL \url{http://doi.acm.org/10.1145/304182.304206}.
 
-\bibitem[\protect\citeauthoryear{Chazelle}{Chazelle}{2000}]{Chazelle00}
-{\sc Chazelle, B.} 2000.
-\newblock {\em The Discrepancy Method: Randomness and Complexity}.
-\newblock Cambridge University Press, New York, NY, USA.
+\bibitem[Chaudhuri et~al.(2007)Chaudhuri, Das, and Narasayya]{ChaudhuriDN07}
+Surajit Chaudhuri, Gautam Das, and Vivek Narasayya.
+\newblock Optimized stratified sampling for approximate query processing.
+\newblock \emph{ACM Trans. Database Syst.}, 32:\penalty0 50, June 2007.
+%\newblock ISSN 0362-5915.
+%\newblock \doi{http://doi.acm.org/10.1145/1242524.1242526}.
+%\newblock URL \url{http://doi.acm.org/10.1145/1242524.1242526}.
 
-\bibitem[\protect\citeauthoryear{Chen, McNamee, and Matloff}{Chen
-  et~al\mbox{.}}{1990}]{ChenMM90}
-{\sc Chen, M.~C.}, {\sc McNamee, L.}, {\sc and} {\sc Matloff, N.~S.} 1990.
+\bibitem[Chazelle(2000)]{Chazelle00}
+Bernard Chazelle.
+\newblock \emph{The discrepancy method: randomness and complexity}.
+\newblock Cambridge University Press, New York, NY, USA, 2000.
+%\newblock ISBN 0-521-00357-1.
+
+\bibitem[Chen et~al.(1990)Chen, McNamee, and Matloff]{ChenMM90}
+Meng~Chang Chen, Lawrence McNamee, and Norman~S. Matloff.
 \newblock Selectivity estimation using homogeneity measurement.
-\newblock In {\em Proceedings of the Sixth International Conference on Data
-  Engineering}. IEEE Computer Society, Washington, DC, USA, 304--310.
+\newblock In \emph{Proceedings of the Sixth International Conference on Data
+  Engineering}, pages 304--310, Washington, DC, USA, 1990. IEEE Computer
+  Society.
+%\newblock ISBN 0-8186-2025-0.
+%\newblock URL \url{http://portal.acm.org/citation.cfm?id=645475.654001}.
 
-\bibitem[\protect\citeauthoryear{Das}{Das}{2009}]{Das09}
-{\sc Das, G.} 2009.
+\bibitem[Das(2009)]{Das09}
+Gautam Das.
 \newblock Sampling methods in approximate query answering systems.
-\newblock In {\em Encyclopedia of Data Warehousing and Mining\/} 2nd Ed.,
-  {J.~Wang}, Ed. IGI Global, Hershey, PA, USA, 1702--1707.
+\newblock In John Wang, editor, \emph{Encyclopedia of Data Warehousing and
+  Mining}, pages 1702--1707. IGI Global, Hershey, PA, USA, 2nd edition, 2009.
 
-\bibitem[\protect\citeauthoryear{Dobra}{Dobra}{2005}]{Dobra05}
-{\sc Dobra, A.} 2005.
+\bibitem[Dobra(2005)]{Dobra05}
+Alin Dobra.
 \newblock Histograms revisited: when are histograms the best approximation
   method for aggregates over joins?
-\newblock In {\em Proceedings of the twenty-fourth ACM SIGMOD-SIGACT-SIGART
-  symposium on Principles of database systems}. PODS '05. ACM, New York, NY,
-  USA, 228--237.
+\newblock In \emph{Proceedings of the twenty-fourth ACM SIGMOD-SIGACT-SIGART
+  symposium on Principles of database systems}, PODS '05, pages 228--237, New
+  York, NY, USA, 2005. ACM.
+%\newblock ISBN 1-59593-062-0.
+%\newblock \doi{http://doi.acm.org/10.1145/1065167.1065196}.
+%\newblock URL \url{http://doi.acm.org/10.1145/1065167.1065196}.
 
-\bibitem[\protect\citeauthoryear{Estan and Naughton}{Estan and
-  Naughton}{2006}]{EstanN06}
-{\sc Estan, C.} {\sc and} {\sc Naughton, J.~F.} 2006.
+\bibitem[Estan and Naughton(2006)]{EstanN06}
+Cristian Estan and Jeffrey~F. Naughton.
 \newblock End-biased samples for join cardinality estimation.
-\newblock In {\em Proceedings of the 22nd International Conference on Data
-  Engineering}. ICDE '06. IEEE Computer Society, Washington, DC, USA, 20--.
+\newblock In \emph{Proceedings of the 22nd International Conference on Data
+  Engineering}, ICDE '06, pages 20--, Washington, DC, USA, 2006. IEEE Computer
+  Society.
+%\newblock ISBN 0-7695-2570-9.
+%\newblock \doi{http://dx.doi.org/10.1109/ICDE.2006.61}.
+%\newblock URL \url{http://dx.doi.org/10.1109/ICDE.2006.61}.
 
-\bibitem[\protect\citeauthoryear{Ganguly, Gibbons, Matias, and
-  Silberschatz}{Ganguly et~al\mbox{.}}{1996}]{GangulyGMS96}
-{\sc Ganguly, S.}, {\sc Gibbons, P.~B.}, {\sc Matias, Y.}, {\sc and} {\sc
-  Silberschatz, A.} 1996.
+\bibitem[Ganguly et~al.(1996)Ganguly, Gibbons, Matias, and
+  Silberschatz]{GangulyGMS96}
+Sumit Ganguly, Phillip~B. Gibbons, Yossi Matias, and Avi Silberschatz.
 \newblock Bifocal sampling for skew-resistant join size estimation.
-\newblock {\em SIGMOD Rec.\/}~{\em 25}, 271--281.
+\newblock \emph{SIGMOD Rec.}, 25:\penalty0 271--281, June 1996.
+%\newblock ISSN 0163-5808.
+%\newblock \doi{http://doi.acm.org/10.1145/235968.233340}.
+%\newblock URL \url{http://doi.acm.org/10.1145/235968.233340}.
 
-\bibitem[\protect\citeauthoryear{Ganti, Lee, and Ramakrishnan}{Ganti
-  et~al\mbox{.}}{2000}]{GantiLR00}
-{\sc Ganti, V.}, {\sc Lee, M.-L.}, {\sc and} {\sc Ramakrishnan, R.} 2000.
+\bibitem[Ganti et~al.(2000)Ganti, Lee, and Ramakrishnan]{GantiLR00}
+Venkatesh Ganti, Mong-Li Lee, and Raghu Ramakrishnan.
 \newblock {ICICLES}: Self-tuning samples for approximate query answering.
-\newblock In {\em Proceedings of the 26th International Conference on Very
-  Large Data Bases}. VLDB '00. Morgan Kaufmann Publishers Inc., San Francisco,
-  CA, USA, 176--187.
+\newblock In \emph{Proceedings of the 26th International Conference on Very
+  Large Data Bases}, VLDB '00, pages 176--187, San Francisco, CA, USA, 2000.
+  Morgan Kaufmann Publishers Inc.
+%\newblock ISBN 1-55860-715-3.
+%\newblock URL \url{http://portal.acm.org/citation.cfm?id=645926.672017}.
 
-\bibitem[\protect\citeauthoryear{Garcia-Molina, Ullman, and
-  Widom}{Garcia-Molina et~al\mbox{.}}{2002}]{GarciaMolinaUW02}
-{\sc Garcia-Molina, H.}, {\sc Ullman, J.~D.}, {\sc and} {\sc Widom, J.} 2002.
-\newblock {\em Database Systems - The Complete Book}.
-\newblock Prentice Hall, Upper Saddle River, NJ, USA.
+\bibitem[Garcia-Molina et~al.(2002)Garcia-Molina, Ullman, and
+  Widom]{GarciaMolinaUW02}
+Hector Garcia-Molina, Jeffrey~D. Ullman, and Jennifer Widom.
+\newblock \emph{Database Systems - The Complete Book}.
+\newblock Prentice Hall, Upper Saddle River, NJ, USA, 2002.
+%\newblock ISBN 978-0-13-187325-4.
 
-\bibitem[\protect\citeauthoryear{Gemulla, Lehner, and Haas}{Gemulla
-  et~al\mbox{.}}{2006}]{GemullaLH06}
-{\sc Gemulla, R.}, {\sc Lehner, W.}, {\sc and} {\sc Haas, P.~J.} 2006.
+\bibitem[Gemulla et~al.(2006)Gemulla, Lehner, and Haas]{GemullaLH06}
+Rainer Gemulla, Wolfgang Lehner, and Peter~J. Haas.
 \newblock A dip in the reservoir: maintaining sample synopses of evolving
   datasets.
-\newblock In {\em Proceedings of the 32nd international conference on Very
-  large data bases}. VLDB '06. VLDB Endowment, Almaden, CA, USA, 595--606.
+\newblock In \emph{Proceedings of the 32nd international conference on Very
+  large data bases}, VLDB '06, pages 595--606, Almaden, CA, USA, 2006. VLDB
+  Endowment.
+%\newblock URL \url{http://portal.acm.org/citation.cfm?id=1182635.1164179}.
 
-\bibitem[\protect\citeauthoryear{Gemulla, Lehner, and Haas}{Gemulla
-  et~al\mbox{.}}{2007}]{GemullaLH07}
-{\sc Gemulla, R.}, {\sc Lehner, W.}, {\sc and} {\sc Haas, P.~J.} 2007.
+\bibitem[Gemulla et~al.(2007)Gemulla, Lehner, and Haas]{GemullaLH07}
+Rainer Gemulla, Wolfgang Lehner, and Peter~J. Haas.
 \newblock Maintaining bernoulli samples over evolving multisets.
-\newblock In {\em Proceedings of the twenty-sixth ACM SIGMOD-SIGACT-SIGART
-  symposium on Principles of database systems}. PODS '07. ACM, New York, NY,
-  USA, 93--102.
+\newblock In \emph{Proceedings of the twenty-sixth ACM SIGMOD-SIGACT-SIGART
+  symposium on Principles of database systems}, PODS '07, pages 93--102, New
+  York, NY, USA, 2007. ACM.
+%\newblock ISBN 978-1-59593-685-1.
+%\newblock \doi{http://doi.acm.org/10.1145/1265530.1265544}.
+%\newblock URL \url{http://doi.acm.org/10.1145/1265530.1265544}.
 
-\bibitem[\protect\citeauthoryear{Getoor, Taskar, and Koller}{Getoor
-  et~al\mbox{.}}{2001}]{GetoorTK01}
-{\sc Getoor, L.}, {\sc Taskar, B.}, {\sc and} {\sc Koller, D.} 2001.
+\bibitem[Getoor et~al.(2001)Getoor, Taskar, and Koller]{GetoorTK01}
+Lise Getoor, Benjamin Taskar, and Daphne Koller.
 \newblock Selectivity estimation using probabilistic models.
-\newblock {\em SIGMOD Rec.\/}~{\em 30}, 461--472.
+\newblock \emph{SIGMOD Rec.}, 30:\penalty0 461--472, May 2001.
+%\newblock ISSN 0163-5808.
+%\newblock \doi{http://doi.acm.org/10.1145/376284.375727}.
+%\newblock URL \url{http://doi.acm.org/10.1145/376284.375727}.
 
-\bibitem[\protect\citeauthoryear{Gibbons and Matias}{Gibbons and
-  Matias}{1998}]{GibbonsM98}
-{\sc Gibbons, P.~B.} {\sc and} {\sc Matias, Y.} 1998.
+\bibitem[Gibbons and Matias(1998)]{GibbonsM98}
+Phillip~B. Gibbons and Yossi Matias.
 \newblock New sampling-based summary statistics for improving approximate query
   answers.
-\newblock {\em SIGMOD Rec.\/}~{\em 27}, 331--342.
+\newblock \emph{SIGMOD Rec.}, 27:\penalty0 331--342, June 1998.
+%\newblock ISSN 0163-5808.
+%\newblock \doi{http://doi.acm.org/10.1145/276305.276334}.
+%\newblock URL \url{http://doi.acm.org/10.1145/276305.276334}.
 
-\bibitem[\protect\citeauthoryear{Gross-Amblard}{Gross-Amblard}{2011}]{Gross11}
-{\sc Gross-Amblard, D.} 2011.
+\bibitem[Gross-Amblard(2011)]{Gross11}
+David Gross-Amblard.
 \newblock Query-preserving watermarking of relational databases and xml
   documents.
-\newblock {\em ACM Trans. Database Syst.\/}~{\em 36}, 3:1--3:24.
+\newblock \emph{ACM Trans. Database Syst.}, 36:\penalty0 3:1--3:24, March 2011.
+%\newblock ISSN 0362-5915.
+%\newblock \doi{http://doi.acm.org/10.1145/1929934.1929937}.
+%\newblock URL \url{http://doi.acm.org/10.1145/1929934.1929937}.
 
-\bibitem[\protect\citeauthoryear{Gryz and Liang}{Gryz and
-  Liang}{2004}]{GryzL04}
-{\sc Gryz, J.} {\sc and} {\sc Liang, D.} 2004.
+\bibitem[Gryz and Liang(2004)]{GryzL04}
+Jarek Gryz and Dongming Liang.
 \newblock Query selectivity estimation via data mining.
-\newblock In {\em Intelligent Information Processing and Web Mining,
-  Proceedings of the International IIS: IIPWM'04 Conference held in Zakopane,
-  Poland, May 17-20, 2004}, {M.~A. Klopotek}, {S.~T. Wierzchon}, {and}
-  {K.~Trojanowski}, Eds. Advances in Soft Computing. Springer-Verlag, Berlin
-  Heidelberg, Germany, 29--38.
+\newblock In Mieczyslaw~A. Klopotek, Slawomir~T. Wierzchon, and Krzysztof
+  Trojanowski, editors, \emph{Intelligent Information Processing and Web
+  Mining, Proceedings of the International IIS: IIPWM'04 Conference held in
+  Zakopane, Poland, May 17-20, 2004}, Advances in Soft Computing, pages 29--38,
+  Berlin Heidelberg, Germany, 2004. Springer-Verlag.
 
-\bibitem[\protect\citeauthoryear{Haas}{Haas}{1996}]{Haas96}
-{\sc Haas, P.~J.} 1996.
+\bibitem[Haas(1996)]{Haas96}
+Peter~J. Haas.
 \newblock Hoeffding inequalities for join-selectivity estimation and online
   aggregation.
-\newblock Tech. Rep. RJ 10040, IBM Almaden Research.
+\newblock Technical Report RJ 10040, IBM Almaden Research, 1996.
 
-\bibitem[\protect\citeauthoryear{Haas and K\"{o}nig}{Haas and
-  K\"{o}nig}{2004}]{HaasK04}
-{\sc Haas, P.~J.} {\sc and} {\sc K\"{o}nig, C.} 2004.
-\newblock A bi-level bernoulli scheme for database sampling.
-\newblock In {\em Proceedings of the 2004 ACM SIGMOD international conference
-  on Management of data}. SIGMOD '04. ACM, New York, NY, USA, 275--286.
+\bibitem[Haas and K\"{o}nig(2004)]{HaasK04}
+Peter~J. Haas and Christian K\"{o}nig.
+\newblock A bi-level Bernoulli scheme for database sampling.
+\newblock In \emph{Proceedings of the 2004 ACM SIGMOD international conference
+  on Management of data}, SIGMOD '04, pages 275--286, New York, NY, USA, 2004.
+  ACM.
+%\newblock ISBN 1-58113-859-8.
+%\newblock \doi{http://doi.acm.org/10.1145/1007568.1007601}.
+%\newblock URL \url{http://doi.acm.org/10.1145/1007568.1007601}.
 
-\bibitem[\protect\citeauthoryear{Haas, Naughton, Seshadri, and Swami}{Haas
-  et~al\mbox{.}}{1993}]{HaasNSS93}
-{\sc Haas, P.~J.}, {\sc Naughton, J.~F.}, {\sc Seshadri, S.}, {\sc and} {\sc
-  Swami, A.~N.} 1993.
-\newblock Fixed-precision estimation of join selectivity.
-\newblock In {\em Proceedings of the twelfth ACM SIGACT-SIGMOD-SIGART symposium
-  on Principles of database systems}. PODS '93. ACM, New York, NY, USA,
-  190--201.
-
-\bibitem[\protect\citeauthoryear{Haas, Naughton, Seshadri, and Swami}{Haas
-  et~al\mbox{.}}{1996}]{HaasNSS96}
-{\sc Haas, P.~J.}, {\sc Naughton, J.~F.}, {\sc Seshadri, S.}, {\sc and} {\sc
-  Swami, A.~N.} 1996.
-\newblock Selectivity and cost estimation for joins based on random sampling.
-\newblock {\em J. Comput. Syst. Sci.\/}~{\em 52}, 550--569.
-
-\bibitem[\protect\citeauthoryear{Haas, Naughton, and Swami}{Haas
-  et~al\mbox{.}}{1994}]{HaasNS94}
-{\sc Haas, P.~J.}, {\sc Naughton, J.~F.}, {\sc and} {\sc Swami, A.~N.} 1994.
-\newblock On the relative cost of sampling for join selectivity estimation.
-\newblock In {\em Proceedings of the thirteenth ACM SIGACT-SIGMOD-SIGART
-  symposium on Principles of database systems}. PODS '94. ACM, New York, NY,
-  USA, 14--24.
-
-\bibitem[\protect\citeauthoryear{Haas and Swami}{Haas and
-  Swami}{1992}]{HaasS92}
-{\sc Haas, P.~J.} {\sc and} {\sc Swami, A.~N.} 1992.
+\bibitem[Haas and Swami(1992)]{HaasS92}
+Peter~J. Haas and Arun~N. Swami.
 \newblock Sequential sampling procedures for query size estimation.
-\newblock In {\em Proceedings of the 1992 ACM SIGMOD international conference
-  on Management of data}. SIGMOD '92. ACM, New York, NY, USA, 341--350.
+\newblock In \emph{Proceedings of the 1992 ACM SIGMOD international conference
+  on Management of data}, SIGMOD '92, pages 341--350, New York, NY, USA, 1992.
+  ACM.
+%\newblock ISBN 0-89791-521-6.
+%\newblock \doi{http://doi.acm.org/10.1145/130283.130335}.
+%\newblock URL \url{http://doi.acm.org/10.1145/130283.130335}.
 
-\bibitem[\protect\citeauthoryear{Haas and Swami}{Haas and
-  Swami}{1995}]{HaasS95}
-{\sc Haas, P.~J.} {\sc and} {\sc Swami, A.~N.} 1995.
+\bibitem[Haas and Swami(1995)]{HaasS95}
+Peter~J. Haas and Arun~N. Swami.
 \newblock Sampling-based selectivity estimation for joins using augmented
   frequent value statistics.
-\newblock In {\em Proceedings of the Eleventh International Conference on Data
-  Engineering}. ICDE '95. IEEE Computer Society, Washington, DC, USA, 522--531.
+\newblock In \emph{Proceedings of the Eleventh International Conference on Data
+  Engineering}, ICDE '95, pages 522--531, Washington, DC, USA, 1995. IEEE
+  Computer Society.
+%\newblock ISBN 0-8186-6910-1.
+%\newblock URL \url{http://portal.acm.org/citation.cfm?id=645480.655440}.
+%
+\bibitem[Haas et~al.(1993)Haas, Naughton, Seshadri, and Swami]{HaasNSS93}
+Peter~J. Haas, Jeffrey~F. Naughton, S.~Seshadri, and Arun~N. Swami.
+\newblock Fixed-precision estimation of join selectivity.
+\newblock In \emph{Proceedings of the twelfth ACM SIGACT-SIGMOD-SIGART
+  symposium on Principles of database systems}, PODS '93, pages 190--201, New
+  York, NY, USA, 1993. ACM.
+%\newblock ISBN 0-89791-593-3.
+%\newblock \doi{http://doi.acm.org/10.1145/153850.153875}.
+%\newblock URL \url{http://doi.acm.org/10.1145/153850.153875}.
 
-\bibitem[\protect\citeauthoryear{Har-Peled and Sharir}{Har-Peled and
-  Sharir}{2011}]{HarPS11}
-{\sc Har-Peled, S.} {\sc and} {\sc Sharir, M.} 2011.
+\bibitem[Haas et~al.(1994)Haas, Naughton, and Swami]{HaasNS94}
+Peter~J. Haas, Jeffrey~F. Naughton, and Arun~N. Swami.
+\newblock On the relative cost of sampling for join selectivity estimation.
+\newblock In \emph{Proceedings of the thirteenth ACM SIGACT-SIGMOD-SIGART
+  symposium on Principles of database systems}, PODS '94, pages 14--24, New
+  York, NY, USA, 1994. ACM.
+%\newblock ISBN 0-89791-642-5.
+%\newblock \doi{http://doi.acm.org/10.1145/182591.182594}.
+%\newblock URL \url{http://doi.acm.org/10.1145/182591.182594}.
+
+\bibitem[Haas et~al.(1996)Haas, Naughton, Seshadri, and Swami]{HaasNSS96}
+Peter~J. Haas, Jeffrey~F. Naughton, S.~Seshadri, and Arun~N. Swami.
+\newblock Selectivity and cost estimation for joins based on random sampling.
+\newblock \emph{J. Comput. Syst. Sci.}, 52:\penalty0 550--569, June 1996.
+%\newblock ISSN 0022-0000.
+%\newblock \doi{http://dx.doi.org/10.1006/jcss.1996.0041}.
+%\newblock URL \url{http://dx.doi.org/10.1006/jcss.1996.0041}.
+
+\bibitem[Har-Peled and Sharir(2011)]{HarPS11}
+Sariel Har-Peled and Micha Sharir.
 \newblock Relative $(p,\varepsilon)$-approximations in geometry.
-\newblock {\em Discrete \& Computational Geometry\/}~{\em 45,\/}~3, 462--496.
+\newblock \emph{Discrete \& Computational Geometry}, 45\penalty0 (3):\penalty0
+  462--496, 2011.
+%\newblock ISSN 0179-5376.
+%\newblock URL \url{http://dx.doi.org/10.1007/s00454-010-9248-1}.
 
-\bibitem[\protect\citeauthoryear{Harangsri, Shepherd, and Ngu}{Harangsri
-  et~al\mbox{.}}{1997}]{HarangsriNS97}
-{\sc Harangsri, B.}, {\sc Shepherd, J.}, {\sc and} {\sc Ngu, A. H.~H.} 1997.
+\bibitem[Harangsri et~al.(1997)Harangsri, Shepherd, and Ngu]{HarangsriNS97}
+Banchong Harangsri, John Shepherd, and Anne H.~H. Ngu.
 \newblock Query size estimation using machine learning.
-\newblock In {\em Proceedings of the Fifth International Conference on Database
-  Systems for Advanced Applications (DASFAA)}. World Scientific Press,
-  Hackensack, NJ, USA, 97--106.
+\newblock In \emph{Proceedings of the Fifth International Conference on
+  Database Systems for Advanced Applications (DASFAA)}, pages 97--106,
+  Hackensack, NJ, USA, 1997. World Scientific Press.
+%\newblock ISBN 981-02-3107-5.
+%\newblock URL \url{http://portal.acm.org/citation.cfm?id=646711.703171}.
 
-\bibitem[\protect\citeauthoryear{Haussler and Welzl}{Haussler and
-  Welzl}{1986}]{HausslerW86}
-{\sc Haussler, D.} {\sc and} {\sc Welzl, E.} 1986.
+\bibitem[Haussler and Welzl(1986)]{HausslerW86}
+D~Haussler and E~Welzl.
 \newblock Epsilon-nets and simplex range queries.
-\newblock In {\em Proceedings of the second annual symposium on Computational
-  geometry}. SCG '86. ACM, New York, NY, USA, 61--71.
+\newblock In \emph{Proceedings of the second annual symposium on Computational
+  geometry}, SCG '86, pages 61--71, New York, NY, USA, 1986. ACM.
+%\newblock ISBN 0-89791-194-6.
+%\newblock \doi{http://doi.acm.org/10.1145/10515.10522}.
+%\newblock URL \url{http://doi.acm.org/10.1145/10515.10522}.
 
-\bibitem[\protect\citeauthoryear{Hou, Ozsoyoglu, and Dogdu}{Hou
-  et~al\mbox{.}}{1991}]{HouOD91}
-{\sc Hou, W.-C.}, {\sc Ozsoyoglu, G.}, {\sc and} {\sc Dogdu, E.} 1991.
-\newblock Error-constrained count query evaluation in relational databases.
-\newblock {\em SIGMOD Rec.\/}~{\em 20}, 278--287.
-
-\bibitem[\protect\citeauthoryear{Hou, Ozsoyoglu, and Taneja}{Hou
-  et~al\mbox{.}}{1988}]{HouOT88}
-{\sc Hou, W.-C.}, {\sc Ozsoyoglu, G.}, {\sc and} {\sc Taneja, B.~K.} 1988.
+\bibitem[Hou et~al.(1988)Hou, Ozsoyoglu, and Taneja]{HouOT88}
+Wen-Chi Hou, Gultekin Ozsoyoglu, and Baldeo~K. Taneja.
 \newblock Statistical estimators for relational algebra expressions.
-\newblock In {\em Proceedings of the seventh ACM SIGACT-SIGMOD-SIGART symposium
-  on Principles of database systems}. PODS '88. ACM, New York, NY, USA,
-  276--287.
+\newblock In \emph{Proceedings of the seventh ACM SIGACT-SIGMOD-SIGART
+  symposium on Principles of database systems}, PODS '88, pages 276--287, New
+  York, NY, USA, 1988. ACM.
+%\newblock ISBN 0-89791-263-2.
+%\newblock \doi{http://doi.acm.org/10.1145/308386.308455}.
+%\newblock URL \url{http://doi.acm.org/10.1145/308386.308455}.
 
-\bibitem[\protect\citeauthoryear{Ioannidis and Poosala}{Ioannidis and
-  Poosala}{1995}]{IoannidisP95}
-{\sc Ioannidis, Y.~E.} {\sc and} {\sc Poosala, V.} 1995.
+\bibitem[Hou et~al.(1991)Hou, Ozsoyoglu, and Dogdu]{HouOD91}
+Wen-Chi Hou, Gultekin Ozsoyoglu, and Erdogan Dogdu.
+\newblock Error-constrained count query evaluation in relational databases.
+\newblock \emph{SIGMOD Rec.}, 20:\penalty0 278--287, April 1991.
+%\newblock ISSN 0163-5808.
+%\newblock \doi{http://doi.acm.org/10.1145/119995.115837}.
+%\newblock URL \url{http://doi.acm.org/10.1145/119995.115837}.
+
+\bibitem[Ioannidis and Poosala(1995)]{IoannidisP95}
+Yannis~E. Ioannidis and Viswanath Poosala.
 \newblock Balancing histogram optimality and practicality for query result size
   estimation.
-\newblock In {\em Proceedings of the 1995 ACM SIGMOD international conference
-  on Management of data}. SIGMOD '95. ACM, New York, NY, USA, 233--244.
+\newblock In \emph{Proceedings of the 1995 ACM SIGMOD international conference
+  on Management of data}, SIGMOD '95, pages 233--244, New York, NY, USA, 1995.
+  ACM.
+%\newblock ISBN 0-89791-731-6.
+%\newblock \doi{http://doi.acm.org/10.1145/223784.223841}.
+%\newblock URL \url{http://doi.acm.org/10.1145/223784.223841}.
 
-\bibitem[\protect\citeauthoryear{Jagadish, Koudas, Muthukrishnan, Poosala,
-  Sevcik, and Suel}{Jagadish et~al\mbox{.}}{1998}]{JagadishKMPSS98}
-{\sc Jagadish, H.~V.}, {\sc Koudas, N.}, {\sc Muthukrishnan, S.}, {\sc Poosala,
-  V.}, {\sc Sevcik, K.~C.}, {\sc and} {\sc Suel, T.} 1998.
+\bibitem[Jagadish et~al.(1998)Jagadish, Koudas, Muthukrishnan, Poosala, Sevcik,
+  and Suel]{JagadishKMPSS98}
+H.~V. Jagadish, Nick Koudas, S.~Muthukrishnan, Viswanath Poosala, Kenneth~C.
+  Sevcik, and Torsten Suel.
 \newblock Optimal histograms with quality guarantees.
-\newblock In {\em Proceedings of the 24rd International Conference on Very
-  Large Data Bases}. VLDB '98. Morgan Kaufmann Publishers Inc., San Francisco,
-  CA, USA, 275--286.
+\newblock In \emph{Proceedings of the 24rd International Conference on Very
+  Large Data Bases}, VLDB '98, pages 275--286, San Francisco, CA, USA, 1998.
+  Morgan Kaufmann Publishers Inc.
+%\newblock ISBN 1-55860-566-5.
+%\newblock URL \url{http://portal.acm.org/citation.cfm?id=645924.671191}.
 
-\bibitem[\protect\citeauthoryear{Jermaine, Pol, and Arumugam}{Jermaine
-  et~al\mbox{.}}{2004}]{JermainePA04}
-{\sc Jermaine, C.}, {\sc Pol, A.}, {\sc and} {\sc Arumugam, S.} 2004.
+\bibitem[Jermaine et~al.(2004)Jermaine, Pol, and Arumugam]{JermainePA04}
+Christopher Jermaine, Abhijit Pol, and Subramanian Arumugam.
 \newblock Online maintenance of very large random samples.
-\newblock In {\em Proceedings of the 2004 ACM SIGMOD international conference
-  on Management of data}. SIGMOD '04. ACM, New York, NY, USA, 299--310.
+\newblock In \emph{Proceedings of the 2004 ACM SIGMOD international conference
+  on Management of data}, SIGMOD '04, pages 299--310, New York, NY, USA, 2004.
+  ACM.
+%\newblock ISBN 1-58113-859-8.
+%\newblock \doi{http://doi.acm.org/10.1145/1007568.1007603}.
+%\newblock URL \url{http://doi.acm.org/10.1145/1007568.1007603}.
 
-\bibitem[\protect\citeauthoryear{Jin, Glimcher, Jermaine, and Agrawal}{Jin
-  et~al\mbox{.}}{2006}]{JinGJA06}
-{\sc Jin, R.}, {\sc Glimcher, L.}, {\sc Jermaine, C.}, {\sc and} {\sc Agrawal,
-  G.} 2006.
+\bibitem[Jin et~al.(2006)Jin, Glimcher, Jermaine, and Agrawal]{JinGJA06}
+Ruoming Jin, Leo Glimcher, Chris Jermaine, and Gagan Agrawal.
 \newblock New sampling-based estimators for olap queries.
-\newblock In {\em Proceedings of the 22nd International Conference on Data
-  Engineering}. ICDE '06. IEEE Computer Society, Washington, DC, USA, 18--.
+\newblock In \emph{Proceedings of the 22nd International Conference on Data
+  Engineering}, ICDE '06, pages 18--, Washington, DC, USA, 2006. IEEE Computer
+  Society.
+%\newblock ISBN 0-7695-2570-9.
+%\newblock \doi{http://dx.doi.org/10.1109/ICDE.2006.106}.
+%\newblock URL \url{http://dx.doi.org/10.1109/ICDE.2006.106}.
 
-\bibitem[\protect\citeauthoryear{Joshi and Jermaine}{Joshi and
-  Jermaine}{2008}]{JoshiJ08}
-{\sc Joshi, S.} {\sc and} {\sc Jermaine, C.} 2008.
+\bibitem[Joshi and Jermaine(2008)]{JoshiJ08}
+Shantanu Joshi and Christopher Jermaine.
 \newblock Robust stratified sampling plans for low selectivity queries.
-\newblock In {\em Proceedings of the 2008 IEEE 24th International Conference on
-  Data Engineering}. IEEE Computer Society, Washington, DC, USA, 199--208.
+\newblock In \emph{Proceedings of the 2008 IEEE 24th International Conference
+  on Data Engineering}, pages 199--208, Washington, DC, USA, 2008. IEEE
+  Computer Society.
+%\newblock ISBN 978-1-4244-1836-7.
+%\newblock \doi{10.1109/ICDE.2008.4497428}.
+%\newblock URL \url{http://portal.acm.org/citation.cfm?id=1546682.1547159}.
 
-\bibitem[\protect\citeauthoryear{Kaushik, Naughton, Ramakrishnan, and
-  Chakravarthy}{Kaushik et~al\mbox{.}}{2005}]{KaushikNRC05}
-{\sc Kaushik, R.}, {\sc Naughton, J.~F.}, {\sc Ramakrishnan, R.}, {\sc and}
-  {\sc Chakravarthy, V.~T.} 2005.
+\bibitem[Kaushik et~al.(2005)Kaushik, Naughton, Ramakrishnan, and
+  Chakravarthy]{KaushikNRC05}
+Raghav Kaushik, Jeffrey~F. Naughton, Raghu Ramakrishnan, and Venkatesan~T.
+  Chakravarthy.
 \newblock Synopses for query optimization: A space-complexity perspective.
-\newblock {\em ACM Trans. Database Syst.\/}~{\em 30}, 1102--1127.
+\newblock \emph{ACM Trans. Database Syst.}, 30:\penalty0 1102--1127, December
+  2005.
+%\newblock ISSN 0362-5915.
+%\newblock \doi{http://doi.acm.org/10.1145/1114244.1114251}.
+%\newblock URL \url{http://doi.acm.org/10.1145/1114244.1114251}.
 
-\bibitem[\protect\citeauthoryear{Larson, Lehner, Zhou, and Zabback}{Larson
-  et~al\mbox{.}}{2007}]{LarsonLZZ07}
-{\sc Larson, P.-A.}, {\sc Lehner, W.}, {\sc Zhou, J.}, {\sc and} {\sc Zabback,
-  P.} 2007.
+\bibitem[Larson et~al.(2007)Larson, Lehner, Zhou, and Zabback]{LarsonLZZ07}
+Per-Ake Larson, Wolfgang Lehner, Jingren Zhou, and Peter Zabback.
 \newblock Cardinality estimation using sample views with quality assurance.
-\newblock In {\em Proceedings of the 2007 ACM SIGMOD international conference
-  on Management of data}. SIGMOD '07. ACM, New York, NY, USA, 175--186.
+\newblock In \emph{Proceedings of the 2007 ACM SIGMOD international conference
+  on Management of data}, SIGMOD '07, pages 175--186, New York, NY, USA, 2007.
+  ACM.
+%\newblock ISBN 978-1-59593-686-8.
+%\newblock \doi{http://doi.acm.org/10.1145/1247480.1247502}.
+%\newblock URL \url{http://doi.acm.org/10.1145/1247480.1247502}.
 
-\bibitem[\protect\citeauthoryear{Li, Long, and Srinivasan}{Li
-  et~al\mbox{.}}{2001}]{LiLS01}
-{\sc Li, Y.}, {\sc Long, P.~M.}, {\sc and} {\sc Srinivasan, A.} 2001.
+\bibitem[Li et~al.(2001)Li, Long, and Srinivasan]{LiLS01}
+Yi~Li, Philip~M. Long, and Aravind Srinivasan.
 \newblock Improved bounds on the sample complexity of learning.
-\newblock {\em Journal of Computer and System Sciences\/}~{\em 62,\/}~3,
-  516--527.
+\newblock \emph{Journal of Computer and System Sciences}, 62\penalty0
+  (3):\penalty0 516--527, 2001.
+%\newblock ISSN 0022-0000.
+%\newblock \doi{DOI: 10.1006/jcss.2000.1741}.
+%\newblock URL
+%  \url{http://www.sciencedirect.com/science/article/B6WJ0-45B65MX-H/2/3b0f2dd50a30dcee8b995d701959f15f}.
 
-\bibitem[\protect\citeauthoryear{Lipton and Naughton}{Lipton and
-  Naughton}{1995}]{LiptonN95}
-{\sc Lipton, R.~J.} {\sc and} {\sc Naughton, J.~F.} 1995.
+\bibitem[Lipton and Naughton(1995)]{LiptonN95}
+Richard~J. Lipton and Jeffrey~F. Naughton.
 \newblock Query size estimation by adaptive sampling.
-\newblock {\em J. Comput. Syst. Sci.\/}~{\em 51}, 18--25.
+\newblock \emph{J. Comput. Syst. Sci.}, 51:\penalty0 18--25, August 1995.
+%\newblock ISSN 0022-0000.
+%\newblock \doi{10.1006/jcss.1995.1050}.
+%\newblock URL \url{http://portal.acm.org/citation.cfm?id=211046.211053}.
 
-\bibitem[\protect\citeauthoryear{Lipton, Naughton, and Schneider}{Lipton
-  et~al\mbox{.}}{1990}]{LiptonNS90}
-{\sc Lipton, R.~J.}, {\sc Naughton, J.~F.}, {\sc and} {\sc Schneider, D.~A.}
-  1990.
+\bibitem[Lipton et~al.(1990)Lipton, Naughton, and Schneider]{LiptonNS90}
+Richard~J. Lipton, Jeffrey~F. Naughton, and Donovan~A. Schneider.
 \newblock Practical selectivity estimation through adaptive sampling.
-\newblock {\em SIGMOD Rec.\/}~{\em 19}, 1--11.
+\newblock \emph{SIGMOD Rec.}, 19:\penalty0 1--11, May 1990.
+%\newblock ISSN 0163-5808.
+%\newblock \doi{http://doi.acm.org/10.1145/93605.93611}.
+%\newblock URL \url{http://doi.acm.org/10.1145/93605.93611}.
 
-\bibitem[\protect\citeauthoryear{L\"{o}ffler and Phillips}{L\"{o}ffler and
-  Phillips}{2009}]{LofflerP09}
-{\sc L\"{o}ffler, M.} {\sc and} {\sc Phillips, J.~M.} 2009.
+\bibitem[L\"{o}ffler and Phillips(2009)]{LofflerP09}
+Maarten L\"{o}ffler and Jeff~M. Phillips.
 \newblock Shape fitting on point sets with probability distributions.
-\newblock In {\em Algorithms - ESA 2009}, {A.~Fiat} {and} {P.~Sanders}, Eds.
-  Lecture Notes in Computer Science Series, vol. 5757. Springer-Verlag, Berlin
-  Heidelberg, Germany, 313--324.
+\newblock In Amos Fiat and Peter Sanders, editors, \emph{Algorithms - ESA
+  2009}, volume 5757 of \emph{Lecture Notes in Computer Science}, pages
+  313--324. Springer, Berlin / Heidelberg, 2009.
+%\newblock URL \url{http://dx.doi.org/10.1007/978-3-642-04128-0_29}.
 
-\bibitem[\protect\citeauthoryear{Markl, Haas, Kutsch, Megiddo, Srivastava, and
-  Tran}{Markl et~al\mbox{.}}{2007}]{MarklHKMST07}
-{\sc Markl, V.}, {\sc Haas, P.~J.}, {\sc Kutsch, M.}, {\sc Megiddo, N.}, {\sc
-  Srivastava, U.}, {\sc and} {\sc Tran, T.~M.} 2007.
+\bibitem[Markl et~al.(2007)Markl, Haas, Kutsch, Megiddo, Srivastava, and
+  Tran]{MarklHKMST07}
+V.~Markl, Peter.~J. Haas, M.~Kutsch, N.~Megiddo, U.~Srivastava, and T.~M. Tran.
 \newblock Consistent selectivity estimation via maximum entropy.
-\newblock {\em The VLDB Journal\/}~{\em 16}, 55--76.
+\newblock \emph{The VLDB Journal}, 16:\penalty0 55--76, January 2007.
+%\newblock ISSN 1066-8888.
+%\newblock \doi{http://dx.doi.org/10.1007/s00778-006-0030-1}.
+%\newblock URL \url{http://dx.doi.org/10.1007/s00778-006-0030-1}.
 
-\bibitem[\protect\citeauthoryear{Matias, Vitter, and Wang}{Matias
-  et~al\mbox{.}}{1998}]{MatiasVW98}
-{\sc Matias, Y.}, {\sc Vitter, J.~S.}, {\sc and} {\sc Wang, M.} 1998.
+\bibitem[Matias et~al.(1998)Matias, Vitter, and Wang]{MatiasVW98}
+Yossi Matias, Jeffrey~Scott Vitter, and Min Wang.
 \newblock Wavelet-based histograms for selectivity estimation.
-\newblock In {\em Proceedings of the 1998 ACM SIGMOD international conference
-  on Management of data}. SIGMOD '98. ACM, New York, NY, USA, 448--459.
+\newblock In \emph{Proceedings of the 1998 ACM SIGMOD international conference
+  on Management of data}, SIGMOD '98, pages 448--459, New York, NY, USA, 1998.
+  ACM.
+%\newblock ISBN 0-89791-995-5.
+%\newblock \doi{http://doi.acm.org/10.1145/276304.276344}.
+%\newblock URL \url{http://doi.acm.org/10.1145/276304.276344}.
 
-\bibitem[\protect\citeauthoryear{Matou\v{s}ek}{Matou\v{s}ek}{2002}]{Matousek02}
-{\sc Matou\v{s}ek, J.} 2002.
-\newblock {\em Lectures on Discrete Geometry}.
-\newblock Springer-Verlag, New York, NY, USA.
+\bibitem[Matou\v{s}ek(2002)]{Matousek02}
+Ji\v{r}\'{i} Matou\v{s}ek.
+\newblock \emph{Lectures on Discrete Geometry}.
+\newblock Springer-Verlag, Secaucus, NJ, USA, 2002.
+%\newblock ISBN 0387953744.
 
-\bibitem[\protect\citeauthoryear{Miller}{Miller}{1981}]{Miller81}
-{\sc Miller, R.~G.} 1981.
-\newblock {\em Simultaneous Statistical Inference}.
-\newblock Springer series in statistics. Springer-Verlag, New York, NY, USA.
+\bibitem[Miller(1981)]{Miller81}
+Rupert~G. Miller.
+\newblock \emph{Simultaneous Statistical Inference}.
+\newblock Springer series in statistics. Springer-Verlag, New York, NY, USA,
+  1981.
 
-\bibitem[\protect\citeauthoryear{Ngu, Harangsri, and Shepherd}{Ngu
-  et~al\mbox{.}}{2004}]{NguHS04}
-{\sc Ngu, A. H.~H.}, {\sc Harangsri, B.}, {\sc and} {\sc Shepherd, J.} 2004.
+\bibitem[Mohri et~al.(2012)Mohri, Rostamizadeh, and Talwalkar]{MohriRT12}
+Mehryar Mohri, Afshin Rostamizadeh, and Ameet Talwalkar.
+\newblock \emph{Foundations of machine learning}.
+\newblock The MIT Press, 2012.
+
+\bibitem[Ngu et~al.(2004)Ngu, Harangsri, and Shepherd]{NguHS04}
+A.~H.~H. Ngu, B.~Harangsri, and J.~Shepherd.
 \newblock Query size estimation for joins using systematic sampling.
-\newblock {\em Distrib. Parallel Databases\/}~{\em 15}, 237--275.
+\newblock \emph{Distrib. Parallel Databases}, 15:\penalty0 237--275, May 2004.
+%\newblock ISSN 0926-8782.
+%\newblock \doi{10.1023/B:DAPD.0000018573.35050.25}.
+%\newblock URL \url{http://portal.acm.org/citation.cfm?id=973183.973203}.
 
-\bibitem[\protect\citeauthoryear{Olken}{Olken}{1993}]{Olken93}
-{\sc Olken, F.} 1993.
-\newblock Random sampling from databases.
-\newblock Ph.D. thesis, University of California, Berkeley.
+\bibitem[Olken(1993)]{Olken93}
+Frank Olken.
+\newblock \emph{Random Sampling from Databases}.
+\newblock PhD thesis, University of California, Berkeley, 1993.
 
-\bibitem[\protect\citeauthoryear{Poosala, Haas, Ioannidis, and Shekita}{Poosala
-  et~al\mbox{.}}{1996}]{PoosalaHIS96}
-{\sc Poosala, V.}, {\sc Haas, P.~J.}, {\sc Ioannidis, Y.~E.}, {\sc and} {\sc
-  Shekita, E.~J.} 1996.
-\newblock Improved histograms for selectivity estimation of range predicates.
-\newblock In {\em Proceedings of the 1996 ACM SIGMOD international conference
-  on Management of data}. SIGMOD '96. ACM, New York, NY, USA, 294--305.
-
-\bibitem[\protect\citeauthoryear{Poosala and Ioannidis}{Poosala and
-  Ioannidis}{1997}]{PoosalaI97}
-{\sc Poosala, V.} {\sc and} {\sc Ioannidis, Y.~E.} 1997.
+\bibitem[Poosala and Ioannidis(1997)]{PoosalaI97}
+Viswanath Poosala and Yannis~E. Ioannidis.
 \newblock Selectivity estimation without the attribute value independence
   assumption.
-\newblock In {\em Proceedings of the 23rd International Conference on Very
-  Large Data Bases}. VLDB '97. Morgan Kaufmann Publishers Inc., San Francisco,
-  CA, USA, 486--495.
+\newblock In \emph{Proceedings of the 23rd International Conference on Very
+  Large Data Bases}, VLDB '97, pages 486--495, San Francisco, CA, USA, 1997.
+  Morgan Kaufmann Publishers Inc.
+%\newblock ISBN 1-55860-470-7.
+%\newblock URL \url{http://portal.acm.org/citation.cfm?id=645923.673638}.
 
-\bibitem[\protect\citeauthoryear{R\'{e} and Suciu}{R\'{e} and
-  Suciu}{2010}]{ReS10}
-{\sc R\'{e}, C.} {\sc and} {\sc Suciu, D.} 2010.
+\bibitem[Poosala et~al.(1996)Poosala, Haas, Ioannidis, and
+  Shekita]{PoosalaHIS96}
+Viswanath Poosala, Peter~J. Haas, Yannis~E. Ioannidis, and Eugene~J. Shekita.
+\newblock Improved histograms for selectivity estimation of range predicates.
+\newblock In \emph{Proceedings of the 1996 ACM SIGMOD international conference
+  on Management of data}, SIGMOD '96, pages 294--305, New York, NY, USA, 1996.
+  ACM.
+%\newblock ISBN 0-89791-794-4.
+%\newblock \doi{http://doi.acm.org/10.1145/233269.233342}.
+%\newblock URL \url{http://doi.acm.org/10.1145/233269.233342}.
+
+\bibitem[R\'{e} and Suciu(2010)]{ReS10}
+Christopher R\'{e} and Dan Suciu.
 \newblock Understanding cardinality estimation using entropy maximization.
-\newblock In {\em Proceedings of the twenty-ninth ACM SIGMOD-SIGACT-SIGART
-  symposium on Principles of database systems}. PODS '10. ACM, New York, NY,
-  USA, 53--64.
+\newblock In \emph{Proceedings of the twenty-ninth ACM SIGMOD-SIGACT-SIGART
+  symposium on Principles of database systems}, PODS '10, pages 53--64, New
+  York, NY, USA, 2010. ACM.
+%\newblock ISBN 978-1-4503-0033-9.
+%\newblock \doi{http://doi.acm.org/10.1145/1807085.1807095}.
+%\newblock URL \url{http://doi.acm.org/10.1145/1807085.1807095}.
 
-\bibitem[\protect\citeauthoryear{Srivastava, Haas, Markl, Kutsch, and
-  Tran}{Srivastava et~al\mbox{.}}{2006}]{SrivastavaHMKT}
-{\sc Srivastava, U.}, {\sc Haas, P.~J.}, {\sc Markl, V.}, {\sc Kutsch, M.},
-  {\sc and} {\sc Tran, T.~M.} 2006.
+\bibitem[Riondato and Upfal(2012)]{RiondatoU12}
+Matteo Riondato and Eli Upfal.
+\newblock Efficient discovery of association rules and frequent itemsets
+  through sampling with tight performance guarantees.
+\newblock In Peter~A. Flach, Tijl De~Bie, and Nello Cristianini, editors,
+  \emph{Machine Learning and Knowledge Discovery in Databases - European
+  Conference, ECML PKDD 2012, Bristol, UK, September 24-28, 2012. Proceedings,
+  Part I}, volume 7523 of \emph{Lecture Notes in Computer Science}, pages
+  25--41, Berlin / Heidelberg, 2012. Springer.
+%\newblock ISBN 978-3-642-33459-7.
+
+\bibitem[Srivastava et~al.(2006)Srivastava, Haas, Markl, Kutsch, and
+  Tran]{SrivastavaHMKT}
+U.~Srivastava, Peter~J. Haas, V.~Markl, M.~Kutsch, and T.~M. Tran.
 \newblock {ISOMER}: Consistent histogram construction using query feedback.
-\newblock In {\em Proceedings of the 22nd International Conference on Data
-  Engineering}. ICDE '06. IEEE Computer Society, Washington, DC, USA, 39--.
+\newblock In \emph{Proceedings of the 22nd International Conference on Data
+  Engineering}, ICDE '06, pages 39--, Washington, DC, USA, 2006. IEEE Computer
+  Society.
+%\newblock ISBN 0-7695-2570-9.
+%\newblock \doi{http://dx.doi.org/10.1109/ICDE.2006.84}.
+%\newblock URL \url{http://dx.doi.org/10.1109/ICDE.2006.84}.
 
-\bibitem[\protect\citeauthoryear{Vapnik}{Vapnik}{1999}]{Vapnik99}
-{\sc Vapnik, V.~N.} 1999.
-\newblock {\em The Nature of Statistical Learning Theory}.
+\bibitem[Vapnik(1999)]{Vapnik99}
+Vladimir~N. Vapnik.
+\newblock \emph{The Nature of Statistical Learning Theory}.
 \newblock Statistics for engineering and information science. Springer-Verlag,
-  New York, NY, USA.
+  New York, NY, USA, 1999.
+%\newblock ISBN 9780387987804.
 
-\bibitem[\protect\citeauthoryear{Vapnik and Chervonenkis}{Vapnik and
-  Chervonenkis}{1971}]{VapnikC71}
-{\sc Vapnik, V.~N.} {\sc and} {\sc Chervonenkis, A.~J.} 1971.
+\bibitem[Vapnik and Chervonenkis(1971)]{VapnikC71}
+Vladimir~N. Vapnik and Alexey~J. Chervonenkis.
 \newblock On the uniform convergence of relative frequencies of events to their
   probabilities.
-\newblock {\em Theory of Probability and its Applications\/}~{\em 16,\/}~2,
-  264--280.
+\newblock \emph{Theory of Probability and its Applications}, 16\penalty0
+  (2):\penalty0 264--280, 1971.
+%\newblock \doi{10.1137/1116025}.
 
-\bibitem[\protect\citeauthoryear{Wang and Sevcik}{Wang and
-  Sevcik}{2003}]{WangS03}
-{\sc Wang, H.} {\sc and} {\sc Sevcik, K.~C.} 2003.
+\bibitem[Wang and Sevcik(2003)]{WangS03}
+Hai Wang and Kenneth~C. Sevcik.
 \newblock A multi-dimensional histogram for selectivity estimation and fast
   approximate query answering.
-\newblock In {\em Proceedings of the 2003 conference of the Centre for Advanced
-  Studies on Collaborative research}. CASCON '03. IBM Press, Boston, MA, USA,
-  328--342.
+\newblock In \emph{Proceedings of the 2003 conference of the Centre for
+  Advanced Studies on Collaborative research}, CASCON '03, pages 328--342,
+  Boston, MA, USA, 2003. IBM Press.
+%\newblock URL \url{http://portal.acm.org/citation.cfm?id=961322.961374}.
 
-\bibitem[\protect\citeauthoryear{Wang, Vitter, and Iyer}{Wang
-  et~al\mbox{.}}{1997}]{WangVI97}
-{\sc Wang, M.}, {\sc Vitter, J.~S.}, {\sc and} {\sc Iyer, B.~R.} 1997.
+\bibitem[Wang et~al.(1997)Wang, Vitter, and Iyer]{WangVI97}
+Min Wang, Jeffrey~Scott Vitter, and Balakrishna~R. Iyer.
 \newblock Selectivity estimation in the presence of alphanumeric correlations.
-\newblock In {\em Proceedings of the Thirteenth International Conference on
-  Data Engineering}. ICDE '97. IEEE Computer Society, Washington, DC, USA,
-  169--180.
+\newblock In \emph{Proceedings of the Thirteenth International Conference on
+  Data Engineering}, ICDE '97, pages 169--180, Washington, DC, USA, 1997. IEEE
+  Computer Society.
+%\newblock ISBN 0-8186-7807-0.
+%\newblock URL \url{http://portal.acm.org/citation.cfm?id=645482.653296}.
 
-\bibitem[\protect\citeauthoryear{Wu, Agrawal, and El~Abbadi}{Wu
-  et~al\mbox{.}}{2001}]{WuAE01}
-{\sc Wu, Y.-L.}, {\sc Agrawal, D.}, {\sc and} {\sc El~Abbadi, A.} 2001.
+\bibitem[Wu et~al.(2001)Wu, Agrawal, and El~Abbadi]{WuAE01}
+Yi-Leh Wu, Divyakant Agrawal, and Amr El~Abbadi.
 \newblock Applying the golden rule of sampling for query estimation.
-\newblock {\em SIGMOD Rec.\/}~{\em 30}, 449--460.
+\newblock \emph{SIGMOD Rec.}, 30:\penalty0 449--460, May 2001.
+%\newblock ISSN 0163-5808.
+%\newblock \doi{http://doi.acm.org/10.1145/376284.375724}.
+%\newblock URL \url{http://doi.acm.org/10.1145/376284.375724}.
 
 \end{thebibliography}
 \fi

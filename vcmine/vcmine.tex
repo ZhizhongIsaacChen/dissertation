@@ -10,13 +10,13 @@ more~\cite[Sect.~5]{HanCXY07}. Depending on the particular application, one is
 interested in finding all itemsets with frequency greater or equal to a user
 defined threshold (FIs), identifying the $K$ most frequent itemsets (top-$K$),
 or computing all association rules (ARs) with user defined minimum  support and
-confidence level. Exact solutions to these problems require scanning the entire
+confidence level (see Sect.~\ref{sec:vcminealternative} and~\ref{sec:vcmineclosed} for additional criteria). Exact solutions to these problems require scanning the entire
 dataset, possibly multiple times. For large datasets that do not fit in main
 memory, this can be prohibitively expensive. Furthermore, such extensive
 computation is often unnecessary, since high quality approximations are
 sufficient for most practical applications.  Indeed, a number of recent
-papers (see~\ref{sec:vcmineprevwork}) for more details)
-%~\citep{MannilaTV94,Toivonen96,ZakiPLO97,JiaL05,LiG04,ZhangZW03,ZhaoZZ06,BronnimanCDHS03,ChandraB11,ChenHS02,ChenHH11,ChuangCY05,HuY06,HwangK06,JiaG05,JohnL96,MahafzahABAZ09,Parthasarathy02,WangDC05,ChuangHC08,ChakaravarthyPS09,PietracaprinaV07,WangHLT05,PietracaprinaRUV10,SchefferW02,VasudevanV09}
+papers (see~\ref{sec:vcmineprevwork} for more details)
+%~\cite{MannilaTV94,Toivonen96,ZakiPLO97,JiaL05,LiG04,ZhangZW03,ZhaoZZ06,BronnimanCDHS03,ChandraB11,ChenHS02,ChenHH11,ChuangCY05,HuY06,HwangK06,JiaG05,JohnL96,MahafzahABAZ09,Parthasarathy02,WangDC05,ChuangHC08,ChakaravarthyPS09,PietracaprinaV07,WangHLT05,PietracaprinaRUV10,SchefferW02,VasudevanV09}
 explored the application of sampling for approximate solutions to these
 problems. However, the efficiency and practicality of the sampling approach
 depends on a tight relation between the size of the sample and the quality of
@@ -29,14 +29,14 @@ the most frequent ones, and the number of subsets is exponential in the number
 of distinct items appearing in the dataset. A standard analysis begins with a bound on
 the probability that a given itemset is either over or under represented in the
 sample. Such bound is easy to obtain using a large deviation bound such as the
-Chernoff bound or the Central Limit theorem~\citep{MitzenmacherU05}. The
+Chernoff bound or the Central Limit theorem~\cite{MitzenmacherU05}. The
 difficulty is in combining the bounds for individual itemsets
 into a global bound that holds simultaneously for all the itemsets. A simple
 application of the union bound vastly overestimates the error probability
 because of the large number of possible itemsets, a large fraction of which may
 not be present in the dataset and therefore should not be considered. More
 sophisticated techniques, developed in recent
-works~\citep{ChakaravarthyPS09,PietracaprinaRUV10,ChuangCY05}, give better
+works~\cite{ChakaravarthyPS09,PietracaprinaRUV10,ChuangCY05}, give better
 bounds only in limited cases. A loose bound 
  on the required sample size for achieving the user defined
  performance guarantees, decreases the gain obtained from the use of sampling. 
@@ -45,8 +45,7 @@ In this work we circumvent this problem
 through a novel application of the \emph{Vapnik-Chervonenkis (VC)} dimension
 concept, a fundamental tool in statistical learning theory.  Roughly speaking,
 the VC-dimension of a collection of indicator functions (a range space) is a
-measure of its complexity or expressiveness (see Sect.~\ref{sec:vcmineprelvcdim} for
-formal definitions). A major result~\citep{VapnikC71} relates the VC-dimension of
+measure of its complexity or expressiveness. A major result~\cite{VapnikC71} relates the VC-dimension of
 a range space to a sufficient size for a random sample to simultaneously
 approximate all the indicator functions within predefined parameters. The main
 obstacle in applying the VC-dimension theory to particular computation problems
@@ -64,7 +63,7 @@ characteristic quantity of the dataset
 which we call \emph{d-index}. The d-index is the maximum integer $d$ such that the
 dataset contains at least $d$ different transactions of length at least $d$ such
 that no one of them is a subset of or equal to another in the considered set
-of transactions (see Def.~\ref{defn:dindex}). We show that this bound is tight
+of transactions (see Def.~\ref{def:vcminedindex}). We show that this bound is tight
 by
 demonstrating a large class of datasets with a VC-dimension that matches the
 bound. Computing the d-index can be done in polynomial time but it requires
@@ -76,12 +75,16 @@ frequent itemsets and association rules problems (i.e., the market basket
 analysis tasks). We use it to prove tight bounds on the required
 sample size for extracting FI's with a minimum frequency threshold, for mining
 the top-$K$ FI's, and for computing the collection of AR's with minimum
-frequency and confidence thresholds. Furthermore, we compute bounds for both
-absolute and relative approximations (see Sec.~\ref{sec:preldm} for definitions).
+frequency and ``interestingness'' thresholds, where the interestingness can be
+expressed in terms of confidence, leverage, lift, or other measure.
+Furthermore, we compute bounds for both absolute and relative approximations
+(see
+Sect.~\ref{sec:vcminepreldm} for definitions) and our results extend to a variety
+of other measures proposed in the literature (see Sect.~\ref{sec:vcminealternative}).
 We show that high quality approximations can be obtained by mining a very small
 random sample of the dataset. Table~\ref{table:comparsamsizeform} compares our
 technique to the best previously known results for the various problems (see
-Sect.~\ref{sec:preldm} for definitions). Our bounds, which are linear in the
+Sect.~\ref{sec:vcminepreldm} for definitions). Our bounds, which are linear in the
 VC-dimension associated with the dataset, are consistently smaller than previous
 results and less dependent on other parameters of the problem such as the
 minimum frequency threshold and the dataset size. An extensive
@@ -97,37 +100,39 @@ exploited in other data mining problems.
 	cap     = {Comparison of sample sizes with previous works},
 	caption = {Required sample sizes (as number of transactions) for various
 	approximations to FI's and AR's as functions of
-  the VC-dimension $d$, the maximum transaction length $\Delta$, the number of
+  the VC-dimension $v$, the maximum transaction length $\Delta$, the number of
   items $|\Itm|$, the accuracy $\varepsilon$, the failure probability $\delta$,
   the minimum frequency $\theta$, and the minimum confidence $\gamma$. Note that
-  $d\leq \Delta\leq |\Itm|$ (but $d<|\Itm|)$. $c$ and $c'$ are absolute constants.
-  with $c\le 0.5$.},
+  $v\leq \Delta\leq |\Itm|$ (but $v<|\Itm|)$. The constant $c$ and $c'$ are
+  absolute, with $c\le 0.5$. See Sect.~\ref{sec:vcminealternative} for the sample
+  sizes for approximations of the collection of association rules according to
+  interestingness measures other than confidence.},
 	label   = {table:comparsamsizeform},
 	pos = tphb,
 ]{lll}{
-	\tnote[$\dag$]{\citep{Toivonen96,JiaL05,LiG04,ZhangZW03}}
-	\tnote[$\ddag$]{\citep{ChakaravarthyPS09}}
-	\tnote[$\S$]{\citep{SchefferW02,PietracaprinaRUV10}}
-	\tnote[$\P$]{\citep{ChakaravarthyPS09}}
+	\tnote[$\dag$]{\cite{Toivonen96,JiaL05,LiG04,ZhangZW03}}
+	\tnote[$\ddag$]{\cite{ChakaravarthyPS09}}
+	\tnote[$\S$]{\cite{SchefferW02,PietracaprinaRUV10}}
+	\tnote[$\P$]{\cite{ChakaravarthyPS09}}
 	}{ \FL
     \toprule
     Task/Approx. & This work & Best previous work \ML
-    FI's/abs. & $\frac{4c}{\varepsilon^2}\left(d+\log\frac{1}{\delta}\right)$&
+    FI's/abs. & $\frac{4c}{\varepsilon^2}\left(v+\log\frac{1}{\delta}\right)$&
     $O\left(\frac{1}{\varepsilon^2}\left(|\Itm|+\log\frac{1}{\delta}\right)\right)$\tmark[$\dag$]\bigstrut \NN
   FI's/rel. &
-  $\frac{4(2+\varepsilon)c}{\varepsilon^2(2-\varepsilon)\theta}\left(d\log\frac{2+\varepsilon}{\theta(2-\varepsilon)}+\log\frac{1}{\delta}\right)$
+  $\frac{4(2+\varepsilon)c}{\varepsilon^2(2-\varepsilon)\theta}\left(v\log\frac{2+\varepsilon}{\theta(2-\varepsilon)}+\log\frac{1}{\delta}\right)$
   & $\frac{24}{\varepsilon^2(1-\varepsilon)\theta}\left(\Delta +5
   +\log\frac{4}{(1-\varepsilon)\theta\delta}\right)$\tmark[$\ddag$] \bigstrut \NN
-  top-$K$ FI's/abs. & $\frac{16c}{\varepsilon^2}\left(d+\log\frac{1}{\delta}\right)$ &
+  top-$K$ FI's/abs. & $\frac{16c}{\varepsilon^2}\left(v+\log\frac{1}{\delta}\right)$ &
   $O\left(\frac{1}{\varepsilon^2}\left(|\Itm|+\log\frac{1}{\delta}\right)\right)$\tmark[$\S$]\bigstrut \NN
   top-$K$ FI's/rel. &
-  $\frac{4(2+\varepsilon)c'}{\varepsilon^2(2-\varepsilon)\theta}\left(d\log\frac{2+\varepsilon}{\theta(2-\varepsilon)}+\log\frac{1}{\delta}\right)$
+  $\frac{4(2+\varepsilon)c'}{\varepsilon^2(2-\varepsilon)\theta}\left(v\log\frac{2+\varepsilon}{\theta(2-\varepsilon)}+\log\frac{1}{\delta}\right)$
   & not available \bigstrut \NN
   AR's/abs. &
-  $O\left(\frac{(1+\varepsilon)}{\varepsilon^2(1-\varepsilon)\theta}\left(d\log\frac{1+\varepsilon}{\theta(1-\varepsilon)}+\log\frac{1}{\delta}\right)\right)$
+  $O\left(\frac{(1+\varepsilon)}{\varepsilon^2(1-\varepsilon)\theta}\left(v\log\frac{1+\varepsilon}{\theta(1-\varepsilon)}+\log\frac{1}{\delta}\right)\right)$
   & not available \bigstrut \NN
   AR's/rel. &
-  $\frac{16c'(4+\varepsilon)}{\varepsilon^2(4-\varepsilon)\theta}\left(d\log\frac{4+\varepsilon}{\theta(4-\varepsilon)}+\log\frac{1}{\delta}\right)$
+  $\frac{16c'(4+\varepsilon)}{\varepsilon^2(4-\varepsilon)\theta}\left(v\log\frac{4+\varepsilon}{\theta(4-\varepsilon)}+\log\frac{1}{\delta}\right)$
   & $\frac{48}{\varepsilon^2(1-\varepsilon)\theta}\left(\Delta +5
   +\log\frac{4}{(1-\varepsilon)\theta\delta}\right)$\tmark[$\P$]
   \bigstrut \LL
@@ -140,9 +145,9 @@ We review relevant previous work in Sect.~\ref{sec:vcmineprevwork}. In
 Sect.~\ref{sec:vcmineprelim} we formally define the problem
 and our goals, and introduce definitions and lemmas used in the analysis. The
 main part of the analysis with derivation of a strict bound to the VC-dimension
-of association rules is presented in Sect.~\ref{sec:vcdimar}, while our
+of association rules is presented in Sect.~\ref{sec:vcminevcdimar}, while our
 algorithms and sample sizes for mining FI's, top-$K$ FI's, and association rules
-through sampling are in Sect.~\ref{sec:approx}. Section~\ref{sec:vcmineexp} contains
+through sampling are in Sect.~\ref{sec:vcmineapprox}. Section~\ref{sec:vcmineexp} contains
 an extensive experimental evaluation of our techniques. A discussion of our
 results and the conclusions can be found in Sect.~\ref{sec:vcmineconcl}.
 
@@ -159,7 +164,7 @@ studied, and we refer the reader to the survey by~\citet{CeglarR06} for a good p
 However, the running times of all known algorithms heavily depend on the size of
 the dataset.  
 
-\citet{MannilaTV94} were the first to suggest the 
+\citet{MannilaTV94} were the first to propose the 
 use of sampling to efficiently identify the collection of FI's, presenting some empirical
 results to validate the intuition. \citet{Toivonen96} presents an
 algorithm that, by mining a random sample of the dataset, builds a candidate set
@@ -177,16 +182,16 @@ items appearing in the dataset.
 mine a dataset, but choosing the sample size using Chernoff bounds is too
 conservative, in the sense that it is possible to obtain the same accuracy and
 confidence in the approximate results at smaller sizes than what the theoretical
-analysis suggested. 
+analysis proves. 
 
 Other works tried to improve the bound to the sample size by using different
 techniques from statistics and probability theory like the central limit
-theorem~\citep{ZhangZW03,LiG04,JiaL05} or hybrid Chernoff
-bounds~\citep{ZhaoZZ06}.
+theorem~\cite{ZhangZW03,LiG04,JiaL05} or hybrid Chernoff
+bounds~\cite{ZhaoZZ06}.
 
-Since theoretically-derived bounds to the sample size where too loose to be
+Since theoretically-derived bounds to the sample size were too loose to be
 useful, a corpus of works applied progressive sampling to extract
-FI's~\citep{JohnL96,ChenHS02,Parthasarathy02,BronnimanCDHS03,ChuangCY05,JiaG05,WangDC05,HwangK06,HuY06,MahafzahABAZ09,ChenHH11,ChandraB11}.
+FI's~\cite{JohnL96,ChenHS02,Parthasarathy02,BronnimanCDHS03,ChuangCY05,JiaG05,WangDC05,HwangK06,HuY06,MahafzahABAZ09,ChenHH11,ChandraB11}.
 Progressive sampling algorithms work by selecting a random sample and then
 trimming or enriching it by removing or adding new sampled transactions
 according to a heuristic or a self-similarity measure that is fast to evaluate,
@@ -206,19 +211,19 @@ also the first to present an algorithm that uses a random sample of the dataset
 to mine approximated solutions to the AR's problem with quality guarantees. No
 experimental evaluation of their methods is presented, and they do not address
 the top-K FI's problem. Our approach gives better bounds for the problems
-studied in~\citep{ChakaravarthyPS09} and applies to related problems such as the
+studied in~\cite{ChakaravarthyPS09} and applies to related problems such as the
 discovery of top-$K$ FI's and absolute approximations.
 
 Extracting the collection of top-$K$ frequent itemsets is a more difficult task
 since the corresponding minimum frequency threshold is not known in
-advance~\citep{CheungF04,FuKT00}. Some works solved the problem by looking at
+advance~\cite{CheungF04,FuKT00}. Some works solved the problem by looking at
 \emph{closed} top-$K$ frequent itemsets, a concise representation of the
-collection~\citep{WangHLT05,PietracaprinaV07}, but they suffers from the same
+collection~\cite{WangHLT05,PietracaprinaV07}, but they suffers from the same
 scalability problems as the algorithms for exactly mining FI's with a fixed
 minimum frequency threshold.
 
 Previous works that used sampling to approximation the collection of top-$K$
-FI's~\citep{SchefferW02,PietracaprinaRUV10} used progressive sampling. Both
+FI's~\cite{SchefferW02,PietracaprinaRUV10} used progressive sampling. Both
 works provide (similar) theoretical guarantees on the quality of the
 approximation. What is more interesting to us, both works present a theoretical
 upper bound to the sample size needed to compute such an approximation. The size
@@ -238,56 +243,38 @@ the right sample size. Moreover, the results cannot be directly extended to the
 mining of top-$K$ frequent item(set)s from datasets of transactions with length
 greater than one.
 
-The {\em Vapnik-Chervonenkis dimension} was first introduced in a seminal
-article~\citep{VapnikC71} on the convergence of probability distributions, but it
-was only with the work of~\citet{HausslerW86} and~\citet{BlumerEHW89} that it
-was applied to the field of learning. \citet{BoucheronBL05} present a good survey
-of the field with many recent advances. Since then, VC-dimension has encountered
-enormous success and application in the fields of computational
-geometry~\citep{Chazelle00,Matousek02} and machine
-learning~\citep{AnthonyB99,DevroyeGL96}. Other applications include
-database management and graph algorithms. 
-In the former, it was used in the
-context of constraint databases to compute good approximations of aggregate
-operators~\citep{BenediktL02}. VC-dimension-related
-results were also recently applied in the field of database privacy
-by~\citet{BlumLR08} to show a bound on the number of queries
-needed for an attacker to learn a private concept in a database. \citet{Gross11}
-showed that content with unbounded
-VC-dimension can not be watermarked for privacy purposes.
-\citet{RiondatoACZU11} computed an upper bound to the VC-dimension of
-classes of SQL queries and used it to develop a sampling-based algorithm for
-estimating the size of the output (selectivity) of queries run on a dataset.
-The results therein, although very different from what presented here due to the
-different settings, the different goals, and the different techniques used,
-inspired our present work. 
-In the graph algorithms literature, VC-Dimension has been used to develop
-algorithms to efficiently detect network
-failures~\citep{Kleinberg03,KleinbergSS08}, balanced separators~\citep{FeigeM06},
-events in a sensor networks~\citep{GandhiSW10}, and compute the shortest
-path~\citep{AbrahamDFGW11}. To our knowledge, this work is the
+ To our knowledge, this work is the
 first application of VC-dimension to knowledge discovery.
 
-In this present article we extend our previous published work~\citep{RiondatoU12}
-in a number of ways. The most prominent change is the development and analysis
+In this present article we extend our previous published work~\cite{RiondatoU12}
+in a number of ways. The first prominent change is the development and analysis
 of a tighter bound to the VC-dimension of the range space associated to the
 dataset, together with a new polynomial time algorithm to compute such bound and
-a very fast linear time algorithm to compute an upper bound. The proofs to most
-of our results were not published in the conference version but are presented
-here. We also added numerous examples to improve the understanding of the
-definitions and of the theoretical results, and explained the connection of our
-results with other known results in statistical learning theory. As far as the
-experimental evaluation is concerned, we added comments on the precision and
-recall of our methods and on their scalability, which is also evident from their
-use inside a parallel/distributed algorithm for FI's and AR's
-mining~\citep{RiondatoDFU12} for the MapReduce~\citep{DeanS04} platform that we
+a very fast linear time algorithm to compute an upper bound
+. We present two novel methods to furtherly speed up the computation of this
+quantity in Sect.~\ref{sec:vcminevcapprox}. A new discussion about
+the relationship between these quantities can be found in
+Sect.~\ref{sec:vcminediscussion}. The second important change is the extension of our
+methods for approximating the collection of association rules to measures of
+interestingness other than confidence (Sect.~\ref{sec:vcminealternative}). We also
+discuss how effective are our methods in the case one is interested in closed
+frequent itemsets in Sect.~\ref{sec:vcmineclosed}. An interesting connection with the
+problem of monotone monomials is new and presented in Sect.~\ref{sec:vcminemonomials}.
+The proofs to most of our results were not published in the conference version
+but are presented here. We also added numerous examples to improve the
+understanding of the definitions and of the theoretical results, and explained
+the connection of our results with other known results in statistical learning
+theory. As far as the experimental evaluation is concerned, we added comments on
+the precision and recall of our methods and on their scalability, which is also
+evident from their use inside a parallel/distributed algorithm for FI's and AR's
+mining~\cite{RiondatoDFU12} for the MapReduce~\cite{DeanS04} platform that we
 describe in the conclusions.
 
 \section{Preliminaries}\label{sec:vcmineprelim}
 
 This section introduces basic definitions and properties that will be used in later sections.
 
-\subsection{Datasets, Itemsets, and Association Rules}\label{sec:preldm}
+\subsection{Datasets, Itemsets, and Association Rules}\label{sec:vcminepreldm}
 A
 \emph{dataset} $\Ds$ is a collection of \emph{transactions}, where each
 transaction $\tau$ is a subset of a ground set $\Itm$\footnote{We assume
@@ -321,7 +308,7 @@ $A$.
 
 One of the main uses of frequent itemsets is in the discovery of
 association rules.
-%\begin{definition}\label{def:ar}
+%\begin{definition}\label{def:vcminear}
 An \emph{association rule} $W$ is an expression
   ``$A\Rightarrow B$'' where $A$ and $B$ are itemsets such that $A\cap
   B=\emptyset$. The \emph{support} $s_\Ds(W)$ (resp.~frequency $f_\Ds(W)$)
@@ -333,9 +320,10 @@ Intuitively, an association rule ``$A\Rightarrow B$'' expresses, through its
 support and confidence, how likely it is for the itemset $B$ to appear in the
 same transactions as itemset $A$. The confidence of the association rule
 can be interpreted the conditional probability of $B$ being present in a transaction that 
-contains $A$.
+contains $A$. Many other measures can be used to quantify the interestingness of
+an association rule~\cite{TanKS04} (see also Sect.~\ref{sec:vcminealternative}).
 
-\begin{definition}\label{def:minear}
+\begin{definition}\label{def:vcmineminear}
   Given a dataset $\Ds$ with transactions
   built on a ground set $\Itm$, and given a minimum frequency threshold $\theta$
   and a minimum confidence threshold $\gamma$, the \emph{AR's task with respect
@@ -359,7 +347,7 @@ In this work we are interested in extracting absolute and relative
 approximations of the sets $\FI(\Ds,\Itm,\theta)$, $\TOPK(\Ds,\Itm,K)$ and
 $\AR(\Ds,\Itm,\theta,\gamma)$. 
 
-\begin{definition}\label{def:approxfi}
+\begin{definition}\label{def:vcmineapproxfi}
   Given a parameter
   $\varepsilon_{\mathrm{abs}}$ (resp.~$\varepsilon_{\mathrm{rel}}$), an
   \emph{absolute $\varepsilon_{\mathrm{abs}}$-close approximation}  (resp.~a
@@ -377,16 +365,28 @@ $\AR(\Ds,\Itm,\theta,\gamma)$.
   \end{enumerate}
 \end{definition}
 
-This definition extends easily to the case of top-$K$ frequent itemsets mining
+As an example, consider a dataset $\Ds$ where transactions have all length one
+and are built on the ground set $\Itm=\{a,b,c,d\}$. Suppose that $f_\Ds(a)=0.4$,
+$f_\Ds(b)=0.3$, $f_\Ds(c)=0.2$, and $f_\Ds(d)=0.1$ (clearly there are no other
+itemsets). If we set $\theta=0.22$ and $\varepsilon=0.05$, an absolute
+$\varepsilon$-close approximation $C$ of $\FI(\Ds,\Itm,\theta)$ \emph{must}
+contain two pairs $(a,f_a)$ and $(b,f_b)$ as $a,b\in\FI(Ds,\Itm,\theta)$. At the
+same time, $C$ \emph{might} contain a pair $(c,f_c)$, because
+$f_\Ds(c)>\theta-\varepsilon$. On the other hand $C$ \emph{must not} contain a
+pair $(d,f_d)$ because $f_\Ds(d)<\theta-\varepsilon$. The values $f_a$, $f_b$,
+and eventually $f_c$ must be not more than $\varepsilon$ far from $f_\Ds(a)$,
+$f_\Ds(b)$, and $f_\Ds(c)$, respectively.
+
+The above definition extends easily to the case of top-$K$ frequent itemsets mining
 using the equivalence 
 \[ \TOPK(\Ds,\Itm,K)=\FI\left(\Ds,\Itm,f^{(K)}_\Ds\right):\]
-an absolute (resp.  relative) $\varepsilon$-close approximation to
-$\FI\left(\Ds,\Itm,f^{(K)}_\Ds\right)$ is an absolute (resp. relative)
+an absolute (resp.~relative) $\varepsilon$-close approximation to
+$\FI\left(\Ds,\Itm,f^{(K)}_\Ds\right)$ is an absolute (resp.~relative)
 $\varepsilon$-close approximation to $\TOPK(\Ds,\Itm,K)$.
 
 For the case of association rules, we have the following definition.
 
-\begin{definition}\label{def:approxar} Given a parameter
+\begin{definition}\label{def:vcmineapproxar} Given a parameter
   $\varepsilon_{\mathrm{abs}}$ (resp.~$\varepsilon_{\mathrm{rel}}$), an
   \emph{absolute $\varepsilon_{\mathrm{abs}}$-close approximation}  (resp.~a
   \emph{relative $\varepsilon_{\mathrm{rel}}$-close approximation}) of
@@ -420,125 +420,12 @@ stringent than the definition of $\varepsilon$-close solution to frequent
 itemset mining (resp. association rule mining)
 in~\cite[Sect.~3]{ChakaravarthyPS09}. Specifically, we require an approximation
 of the frequencies (and confidences) in addition to the approximation of
-the collection of itemsets or association rules (Property 3 in Def.~\ref{def:approxfi} and properties
-3 and 5 in Def.~\ref{def:approxar}).
+the collection of itemsets or association rules (Property 3 in Def.~\ref{def:vcmineapproxfi} and properties
+3 and 5 in Def.~\ref{def:vcmineapproxar}).
 
-\subsection{VC-Dimension}\label{sec:vcmineprelvcdim}
-The Vapnik-Chernovenkis (VC) Dimension of a space of points is a measure of the
-complexity or expressiveness of a family of indicator functions (or equivalently
-a family of subsets) defined on that space~\citep{VapnikC71}. A finite bound on
-the VC-dimension of a structure implies a bound on the number of random samples
-required for approximately learning that structure. We outline here some basic
-definitions and results and refer the reader to the works
-of~\citet[Sec.~14.4]{AlonS08},~\citet{DevroyeGL96} and~\citet{Vapnik99} for more details
-on VC-dimension. See Sec.~\ref{sec:vcmineprevwork} for applications of VC-dimension in 
-computer science.
-
-%VC-dimension is defined on {\em range spaces}:
-%
-%\begin{definition}\label{defn:rangespace}
-We define a {\em range space} as a pair $(X,R)$ where $X$ is a (finite or infinite) set
- and $R$ is a (finite or infinite) family of subsets of $X$. The members of $X$
- are called {\em points} and those of $R$ are called {\em ranges}.
- %\end{definition}
-%To define the VC-dimension of a range space we consider the projection of the
-%ranges into a set of points:
-%\begin{definition}\label{defn:proj}
-%Let $(X,R)$ be a range space and $A\subset X$.
-Given $A\subset X$, The {\em projection} of $R$ on
-$A$ is defined as $P_R(A)=\{r\cap A ~:~ r\in R\}$.
-%\end{definition}
-%The VC-dimension is defined with respect to \emph{shattered} sets:
-%
-%\begin{definition}\label{defn:shatter}
-%Let $(X,R)$ be a range space and $A\subset X$.
-If $P_R(A)=2^A$, then $A$ is said to be {\em shattered by $R$}.
-%\end{definition} 
-The VC-dimension of a range space is the cardinality of the largest set
-shattered by the space:
-\begin{definition}\label{defn:VCdim}
-  Let $S=(X,R)$ be a range space. The {\em Vapnik-Chervonenkis} dimension (or
-  {\em VC-dimension}) of $S$, denoted as $\VC(S)$ is the maximum cardinality of
-  a shattered subset of $X$. If there are arbitrary large shattered subsets,
-  then $\VC(S)=\infty$.
-\end{definition}
-
-Note that a range space $(X,R)$ with an arbitrary large set of points $X$ and
-an arbitrary large family of ranges $R$ can have a bounded VC-dimension. A simple
-example is the family of intervals in $[0,1]$ (i.e. $X$ is all the points in
-$[0,1]$ and $R$ all the intervals $[a,b]$, such that $0\leq a\leq b\leq 1$). Let
-$A=\{x,y,z\}$ be the set of three points $0<x<y<z<1$. No interval in $R$ can
-define the subset $\{x,z\}$ so the VC-dimension of this range space is less than
-3~\cite[Lemma 10.3.1]{Matousek02}.
-%\begin{lemma}\label{lem:matousek}
-%  The VC-Dimension of the range space $(\mathbb{R}^d, X)$, where $X$ is the set
-%  of all half-spaces in $\mathbb{R}^d$ equals $d+1$.
-%\end{lemma}
-
-The main application of VC-dimension in statistics and learning theory is its
-relation to the size of the sample needed to approximate learning the ranges, in
-the following sense.
-
-\begin{definition}\label{defn:eapprox}
-  Let $(X,R)$ be a range space and let $A$
-  be a finite subset of $X$. For $0<\varepsilon<1$, a subset $B\subset A$ is an
-  $\varepsilon${\em-approximation} for $A$ if for all $r\in R$, we have
-      \begin{equation}\label{eq:defeapprox}
-	\left|\frac{|A\cap r|}{|A|}-\frac{|B\cap r|}{|B|}\right| \leq
-	\varepsilon.
-      \end{equation}
-\end{definition}
-
-A similar definition offers relative guarantees.
-\begin{definition}\label{defn:releapprox}
-  Let $(X,R)$ be a range space and let $A$
-  be a finite subset of $X$. For $0<p,\varepsilon<1$, a subset $B\subset A$ is a
-  \emph{relative} $(p,\varepsilon)$\emph{-approximation} for $A$ if for any
-  range $r\in R$ such that $|A\cap r|/|A|\geq p$ we have 
-  \[ \left|\frac{|A\cap r|}{|A|}-\frac{|B\cap r|}{|B|}\right| \leq
-  \varepsilon\frac{|A\cap r|}{|A|}
-  \]
-  and for any range $r\in R$ such that $|A\cap r|/|A|< p$ we have $|B\cap
-	r|/|B| \leq (1+\varepsilon)p$.
-\end{definition}
-
-An $\varepsilon$-approximation (resp.~a relative
-$(p,\varepsilon)$-approximation) can be constructed by random sampling points of
-the point space~[\cite{HarPS11}, Thm.~2.12 (resp.~2.11), see
-also~\citep{LiLS01}].
-
-\begin{theorem}\label{thm:vcmineeapprox}
-  There is an absolute positive constant $c$ (resp. $c'$)
-  such that if $(X,R)$ is a range-space of VC-dimension at most $d$, $A\subset
-  X$ is a finite subset and $0<\varepsilon,\delta<1$ (resp.~and $0<p<1$), then a
-  random subset $B\subset A$ of cardinality $m$, where
-  \begin{equation}\label{eq:vcmineeapprox}
-    m\ge\min\left\{|A|,\frac{c}{\varepsilon^2}\left(d+\log\frac{1}{\delta}\right)\right\},
-  \end{equation}
-  (resp.
-  $m\ge\min\left\{|A|,c'\varepsilon^{-2}p^{-1}\left(d\log1/p-\log1/\delta\right)\right\}$)
-  is an $\varepsilon$-approximation (resp.~a relative
-  $(p,\varepsilon)$-approximation) for $A$ with probability at least $1-\delta$.
-\end{theorem}
-
-Note that throughout the work we assume the sample to be drawn \emph{with}
-replacement if $m<|A|$ (otherwise the sample is exactly the set $A$).  The
-constants $c$ and $c'$ are absolute and do not depend on the range space or on
-any other parameter. \citet{LofflerP09} showed experimentally that the absolute
-constant $c$ is at most $0.5$. No upper bound is currently known for $c'$.
-Up to a constant, the bounds presented in Thm.~\ref{thm:vcmineeapprox} are
-tight~\cite[Thm.~5]{LiLS01}. 
-
-It is also interesting to note that an
-$\varepsilon$-approximation of size
-$O(d\varepsilon^{-2}(\log d-\log\varepsilon))$ can be built
-\emph{deterministically} in time
-$O(d^{3d}(\varepsilon^{-2}(\log d-\log\varepsilon))^d|X|)$
-\citep{Chazelle00}.
-
-\section{The Dataset's Range Space and its VC-dimension}\label{sec:vcdimar}
+\section{The Dataset's Range Space and its VC-dimension}\label{sec:vcminevcdimar}
 Our next step is to define a range space of the dataset and the itemsets. We
-will use this space together with Theorem~\ref{thm:vcmineeapprox} to compute the bounds to
+will use this space together with Theorem~\ref{thm:eapprox} to compute the bounds to
 sample sizes sufficient to compute approximate solutions for the various tasks
 of market basket analysis. 
 
@@ -559,7 +446,7 @@ It is easy to see that in practice the collection $R$ of ranges contains all and
 the sets $T_\Ds(A)$ where $A$ is a \emph{closed itemset}, i.e., a set such that
 for each non-empty $B\subseteq A$ we have $T_\Ds(B)=T_\Ds(A)$ and for any
 $C\supset A$, $T_\Ds(C)\subsetneq T_\Ds(A)$. Closed itemsets are used to
-summarize the collection of frequent itemsets~\citep{CaldersRB06}.
+summarize the collection of frequent itemsets~\cite{CaldersRB06}.
 
 The VC-Dimension of this range space is the maximum size of a set of
 transactions that can be shattered by the support sets of the itemsets, as
@@ -567,8 +454,8 @@ expressed by the following theorem and the following corollary.
 
 \begin{theorem}
   Let $\Ds$ be a dataset and let $S=(X,R)$ be the associated range
-  space. Let $d\in\mathbb{N}$. Then $\VC(S)\ge d$ if and only if there exists a
-  set $\mathcal{A}\subseteq\Ds$ of $d$ transactions from $\Ds$ such that for
+  space. Let $v\in\mathbb{N}$. Then $\VC(S)\ge v$ if and only if there exists a
+  set $\mathcal{A}\subseteq\Ds$ of $v$ transactions from $\Ds$ such that for
   each subset $\mathcal{B}\subseteq\mathcal{A}$, there exists an itemset
   $I_\mathcal{B}$ such that the support set
   of $I_\mathcal{B}$ in $\mathcal{A}$ is exactly $\mathcal{B}$, that is
@@ -585,10 +472,10 @@ expressed by the following theorem and the following corollary.
   $T_\Ds(I_\mathcal{B})\cap\mathcal{A}=\mathcal{B}$. By definition of
   $P_R(\mathcal{A})$ this means that $\mathcal{B}\in P_R(\mathcal{A})$, for any
   subset $\mathcal{B}$ of $\mathcal{A}$. Then $P_R(\mathcal{A})=2^\mathcal{A}$,
-  which implies $\VC(S)\ge d$.
+  which implies $\VC(S)\ge v$.
 
-  ``$\Rightarrow$''. Let $\VC(S)\ge d$. Then by the definition of VC-Dimension there
-  is a set $\mathcal{A}\subseteq\Ds$ of $d$ transactions from $\mathcal{D}$ such
+  ``$\Rightarrow$''. Let $\VC(S)\ge v$. Then by the definition of VC-Dimension there
+  is a set $\mathcal{A}\subseteq\Ds$ of $v$ transactions from $\mathcal{D}$ such
   that $P_R(A)=2^{\mathcal{A}}$. By definition of $P_R(\mathcal{A})$, this means
   that for each subset $\mathcal{B}\subseteq\mathcal{A}$ there exists an itemset
   $I_\mathcal{B}$ such that $T_\Ds(I_\mathcal{B})\cap\mathcal{A}=\mathcal{B}$.
@@ -605,8 +492,8 @@ expressed by the following theorem and the following corollary.
 \end{proof}
 
 \begin{corollary} Let $\Ds$ be a dataset and $S=(\Ds,R)$ be the corresponding
-  range space. Then, the VC-Dimension $\VC(S)$ of $S$, is the maximum integer
-  $d$ such that there is a set $\mathcal{A}\subseteq\Ds$ of $d$ transactions
+  range space. Then the VC-Dimension $\VC(S)$ of $S$ is the maximum integer
+  $v$ such that there is a set $\mathcal{A}\subseteq\Ds$ of $v$ transactions
   from $\Ds$ such that for each subset $\mathcal{B}\subseteq\mathcal{A}$ of
   $\mathcal{A}$, there exists an itemset $I_\mathcal{B}$ such that the support
   of $I_\mathcal{B}$ in $\mathcal{A}$ is exactly $\mathcal{B}$, that is
@@ -629,7 +516,7 @@ the range space associated to $\Ds$ is exactly two.
 
 Computing the exact VC-dimension of the range space associated to a dataset is
 extremely expensive from a computational point of view. This does not come as a
-suprise, as it is known that computing the VC-dimension of a range space $(X,R)$
+surprise, as it is known that computing the VC-dimension of a range space $(X,R)$
 can take time $O(|R||X|^{\log|R|})$~\cite[Thm.~4.1]{LinialMR91}. It is instead
 possible to give an upper bound to the VC-dimension, and a procedure to
 efficiently compute the bound.
@@ -639,7 +526,7 @@ We now define a characteristic quantity of the dataset, called the
 range space associated to the dataset, then present an algorithm to efficiently
 compute an upper bound to the d-index with a single linear scan of the dataset.
 
-\begin{definition}\label{defn:dindex}
+\begin{definition}\label{def:vcminedindex}
   Let $\Ds$ be a dataset. The \emph{d-index} of $\Ds$ is the maximum integer $d$
   such that $\Ds$ contains at least $d$ different transactions of length at
   least $d$ such that no one of them is a subset of another,
@@ -647,7 +534,7 @@ compute an upper bound to the d-index with a single linear scan of the dataset.
   %nor $t\subseteq s$, 
   that is, the transactions form an \emph{anti-chain}.
 \end{definition}
-%\begin{definition}\label{defn:dindex}
+%\begin{definition}\label{def:vcminedindex}
 %  Let $\Ds$ be a dataset and let $\Ds'$ be the set of transactions built by
 %  removing from $\Ds$ all transactions that are equal to $\Itm$. Consider a
 %  labelling $t_1,t_2,\dotsc,t_{|\Ds'|}$ of the transactions of $\Ds'$ so that
@@ -687,7 +574,7 @@ is at most equal to the length of the longest transaction in the dataset and in
 any case no greater than $|\Itm|-1$.
 
 %The d-index can be viewed as a stricter version of the h-index measure for
-%published work~\citep{Hirsch05}.
+%published work~\cite{Hirsch05}.
 %Consider a dataset corresponding to the publications of one scientist.
 %Each transaction corresponds to an article,
 %and items in a transaction correspond to citations of that article.
@@ -707,7 +594,7 @@ The d-index is an upper bound to the VC-dimension of a dataset.
 
 \begin{proof}
   Let $\ell>d$ and assume that $S$ has
-  VC-dimension $\ell$. From Def.~\ref{defn:VCdim} there is a set $\mathcal{K}$ of $\ell$
+  VC-dimension $\ell$. From Def.~\ref{def:vcdim} there is a set $\mathcal{K}$ of $\ell$
   transactions of $\Ds$ that is shattered by $R$. Clearly, $\mathcal{K}$ cannot
   contain any transaction equal to $\Itm$, because such transaction would appear
   in all ranges of $R$ and so it would not be possible to shatter $\mathcal{K}$.
@@ -728,7 +615,7 @@ The d-index is an upper bound to the VC-dimension of a dataset.
   From the above and the definition of $P_R(\mathcal{K})$, it follows that for
   each set of transactions $\mathcal{A}_i$ there must be a
   non-empty itemset $B_i$ such that 
-  \begin{equation}\label{eq:vcdimupperb}
+  \begin{equation}\label{eq:vcminevcdimupperb}
   T_\Ds\left(B_i\right)\cap \mathcal{K}= \mathcal{A}_i \in P_R(\mathcal{K}).
   \end{equation}
   Since the $\mathcal{A}_i$ are all different from each other, this
@@ -737,7 +624,7 @@ The d-index is an upper bound to the VC-dimension of a dataset.
   for $1\le i\le 2^{\ell-1}$. 
 
   Since $\tau \in \mathcal{A}_i$ and $\tau \in \mathcal{K}$ by
-  construction, it follows from \eqref{eq:vcdimupperb} that 
+  construction, it follows from \eqref{eq:vcminevcdimupperb} that 
   \[
   \tau \in T_\Ds\left(B_i\right), 1\le i\le 2^{\ell-1}.
   \]
@@ -809,7 +696,7 @@ four transactions built on the set of items $\Itm=\{a,b,c,d\}$. We argued before
 that the VC-dimension of the range space associated to this dataset is exactly
 two, and it is easy to see that the d-index of $\Ds$ is also two. 
 
-\subsection{Computing the d-index of a dataset}
+\subsection{Computing the d-index of a dataset}\label{sec:vcminecomput}
 %The d-index $d$ of a dataset $\Ds$ can be computed in one scan of the dataset and
 %with total memory $O(d)$. The scan starts with $d^*=1$ and it stores the length of
 %the first transaction. At any given step the procedure stores $d^*$, the current
@@ -818,7 +705,7 @@ two, and it is easy to see that the d-index of $\Ds$ is also two.
 %keeps a list of the sizes of the transactions longer than $d'$ found so
 %far. There can be no more than $d'$ such transactions. As the scan proceeds, the
 %procedure updates $d^*$ and the list of transactions sizes greater than $d^*$.
-The d-index of a dataset $\Ds$ %based on Def.~\ref{defn:dindex}
+The d-index of a dataset $\Ds$ %based on Def.~\ref{def:vcminedindex}
 exactly can be obtained in polynomial time by computing, for each length $\ell$, the
 size $w_\ell$ of the largest
 anti-chain that can be built using the transactions of length at least $\ell$
@@ -826,8 +713,8 @@ from $\Ds$. If $w\ge\ell$, then the d-index is at least $\ell$. The maximum $\el
 for which $w_\ell\ge\ell$ is the d-index of $\Ds$. The size of the largest
 anti-chain that can be built on the elements of a set can be computed by solving
 a maximum matching problem on a bipartite graph that has two nodes for each
-element of the set~\citep{FordF62}. Computing the maximum matching can be done in
-polynomial time~\citep{HopcroftK73}.
+element of the set~\cite{FordF62}. Computing the maximum matching can be done in
+polynomial time~\cite{HopcroftK73}.
 
 %The pseudocode for this procedure is presented in Alg.~\ref{alg:dindex}.
 In practice, this approach can be quite slow as it requires, for each value
@@ -836,7 +723,7 @@ length at least $\ell$, and to solve a maximum matching problem.
 %It requires sorting the datasets by decreasing transaction length, which is not
 %a viable option in most cases.
 Hence, we now present an algorithm to efficiently compute an upper bound $q$ to the
-d-index with a single linear scan of the dataset and with $O(q)$ memory. 
+d-index with a single linear scan of the dataset and with $O(q)$ memory.
 %Intuitively,
 %it is easy to see that it is possible to compute an upper-bound to the d-index
 %very easily with a single scan of the dataset using memory $O(q)$ by scanning
@@ -851,11 +738,11 @@ d-index with a single linear scan of the dataset and with $O(q)$ memory.
   \DontPrintSemicolon
   %\dontprintsemicolon
   \Input{a dataset $\Ds$}
-  \Output{an upper bound to the d-index of $\Ds$}
+  \Output{the d-bound $q$, an upper bound to the d-index of $\Ds$}
   $\tau\leftarrow$ \GetNextTransaction{$\Ds$}\;
   $\mathcal{T}\leftarrow\{\tau\}$\;
   $q\leftarrow 1$\;
-  \While{\ScanIsNotComplete} {
+  \While{\ScanIsNotComplete{}} {
   $\tau\leftarrow$ \GetNextTransaction{$\Ds$}\;
   \If {$|\tau|> q$ \MyAnd $\tau\neq\Itm$ \MyAnd $\neg\exists a\in \mathcal{T}$ such that $\tau=a$} {
   $\mathcal{R}\leftarrow \mathcal{T}\cup\{\tau\}$\;
@@ -866,26 +753,35 @@ d-index with a single linear scan of the dataset and with $O(q)$ memory.
   }
   }
   \Return $q$\;
-  \caption{Compute an upper bound to the d-index of a
+  \caption{Compute the d-bound, an upper bound to the d-index of a
   dataset}\label{alg:dindexbound}
 \end{algorithm}
 
 It is easy to see that the d-index of a dataset $\Ds$ is upper bounded by the
 maximum integer $q$ such that $\Ds$ contains at least $q$ different (that is not
 containing the same items) transactions of length at least $q$ and less than
-$|\Itm|$. This upper bound ignores the constraint that the transactions that
-concur to the computation of the d-index must form an anti-chain. We can compute
-this upper bound in a greedy fashion by scanning the dataset one transaction at
-a time and keep in memory the maximum integer $q$ such that we saw at least $q$
-transactions of length $q$ until this point of the scanning. We also keep in
-memory the $q$ longest different transactions, to avoid counting transactions that
-are equal to ones we have already seen because, as we already argued, a set
-containing identical transactions can not be shattered and copies of a
-transaction should not be included in the computation of the d-index, so it is
-not useful to include them in the computation of the bound. The pseudocode for
-computing the upper bound to the d-index in the way we just described is
-presented in Algorithm~\ref{alg:dindexbound}. The following lemma deals with the
-correctness of the algorithm.
+$|\Itm|$. This upper bound, which we call \emph{d-bound}, ignores the constraint
+that the transactions that concur to the computation of the d-index must form an
+anti-chain. We can compute the d-bound in a greedy fashion by scanning the
+dataset %one transaction at a time 
+once and keeping in memory the maximum integer $q$
+such that we saw at least $q$ transactions of length $q$ until this point of the
+scanning. We also keep in memory the $q$ longest different transactions, to
+avoid counting transactions that are equal to ones we have already seen because,
+as we already argued, a set containing identical transactions can not be
+shattered and copies of a transaction should not be included in the computation
+of the d-index, so it is
+not useful to include them in the computation of the d-bound. The pseudocode for
+computing the d-bound in the way we just described is presented in
+Algorithm~\ref{alg:dindexbound}. The function \texttt{getNextTransaction}
+returns one transaction at a time from the dataset. Note though that this does
+not imply that, in a disk-based system, the algorithm needs a random read for
+each transaction. If the dataset is stored in a block-based fashion, one can
+read one block at a time and scan all transactions in that block, given that the
+order in which the transactions are scanned is not relevant for the correctness
+of the algorithm. This means that in the worst-case the algorithm performs a
+random read per block.
+The following lemma deals with the correctness of the algorithm.
 
 \begin{lemma}\label{lem:algocorrect}
   The algorithm presented in Algorithm~\ref{alg:dindexbound} computes the maximum
@@ -986,10 +882,10 @@ correctness of the algorithm.
 %are keeping in memory. It should be clear that, on the other hand, we consider,
 %in the computation of $q$, transactions that are supersets of those in $T$,
 %hence the upper bound. 
-The fact that the computation of this upper bound can be easily performed in a with a
+The fact that the computation of the d-bound can be easily performed with a
 single linear scan of the dataset in an online greedy fashion makes it extremely
-practical also for updating the bound when the dataset grows, assuming that the
-added transactions are appended at the tail of the dataset.
+practical also for updating the bound as new transactions are added to the dataset.
+% , assuming that the added transactions are appended at the tail of the dataset.
 
 %\begin{algorithm}[htb]
 %  \SetKwInOut{Input}{Input}
@@ -1025,7 +921,63 @@ added transactions are appended at the tail of the dataset.
 %  \caption{Compute the d-index of a dataset}\label{alg:dindex}
 %\end{algorithm}
 
-\subsection{Connection with monotone monomials}
+\subsection{Speeding up the VC-dimension approximation task}\label{sec:vcminevcapprox}
+We showed that the computation of the d-index or of the d-bound can be
+efficiently performed, and especially the latter only requires a single linear
+scan of the dataset, in a block-by-block fashion if the dataset is
+stored on disk. In some settings this may still be an expensive operation. We
+now present two ways to reduce the cost of this operation.
+
+\paragraph{Empirical VC-dimension} The \emph{empirical
+VC-dimension} of a range space $S=(X,R)$ on a subset $Y\subseteq X$ of the set
+of points is the VC-dimension of the range space $(Y,R')$, where $R'=\{Y\cap f
+~:~ f\in R\}$~\cite[Sect.~3]{BoucheronBL05}. If $Y$ is a random sample from $X$
+of size $\ell$, and the empirical VC-dimension of $S$ on $Y$ is bounded above by
+$v'$, then with probability at least $1-\delta$, $Y$ is an
+$\varepsilon$-approximation for $X$ for 
+\begin{equation}\label{eq:vcmineempvcdimeps}
+\varepsilon=2\sqrt{\frac{2v'\log(\ell+1)}{\ell}}+\sqrt{\frac{2\log\frac{2}{\delta}}{\ell}}\enspace.
+\end{equation}
+This means that it is possible to create a random sample $\Sam$ of the dataset
+$\Ds$ of the desired size $|\Sam|$, compute the d-index or the d-bound \emph{on
+the sample}, which is less expensive than computing it on the
+whole dataset and, for the d-bound, can be done while creating $\Sam$, and
+finally, after fixing $\delta$, use~\eqref{eq:vcmineempvcdimeps} to compute the
+$\varepsilon$ for which $\Sam$ is an $\varepsilon$-approximation. Thus, 
+we have a faster method for estimating the VC-dimension that, 
+as we
+will show in the Sect.~\ref{sec:vcmineapprox}, can be used to extract an absolute
+$\varepsilon$-close approximation to the collection of (top-K) FI's and AR's.
+
+\paragraph{Estimating the d-index from the transaction length distribution} When
+a Bayesian approach is justified, one views the dataset $\Ds$ as a sample of $n$
+transactions generated by a random process with some known (or assumed) priors.
+A number of mixture models have been proposed in the literature for modeling
+dataset generation, the most commonly used is the Dirichlet Process Mixture
+model~\cite{HeS12}.
+%that
+%generates transactions. Under the assumption of knowing, for all
+%$i\in[1,|\Itm|]$, the probability that the process generates a transaction of
+%length $i$, it is straightforward to \emph{analytically} derive a value $b$ such
+%that $b\ge d$ with some probability at least $1-\lambda$, $\lambda\in(0,1)$,
+%where $d$ is the d-index of $\Ds$. No access to the dataset is needed to compute
+%$b$ in this case.
+In general, we assume that the generating process 
+$\pi_{\bar{\alpha}}$ belongs to a known parametrized family of distributions
+$\Pi(\alpha)$ where $\alpha$ represents the parameters of the distribution.
+Deriving the parameter $\bar\alpha$ corresponding to the distribution of
+transaction lengths according to which the dataset $\Ds$ was generated can be
+done by sampling transactions from $\Ds$ and using techniques for parameter
+estimation for a distribution from $\Pi(\alpha)$~\cite{LehmannC98,HastieTF09}.
+Once the parameter $\bar\alpha$ is (probabilistically) known, an upper bound $b$
+to the d-index $d$ can be easily derived (probabilistically).  
+%in the same way as when the entire transaction length distribution was assumed to be known. 
+Estimating the parameter $\bar\alpha$ through sampling may take less time than
+performing a scan of the entire dataset to compute the d-bound, especially when
+the dataset is very large, a fast sequential sampling algorithm like Vitter's
+Method D~\cite{Vitter87} is used, and the estimation procedure is fast.
+
+\subsection{Connection with monotone monomials}\label{sec:vcminemonomials}
 There is an interesting connection between itemsets built on a ground set
 $\Itm$ and 
 the class of \emph{monotone monomials on $|\Itm|$ literals}. 
@@ -1054,11 +1006,11 @@ results, therefore, also show a tight bound to the empirical VC-Dimension of the
 class of monotone monomials on $|\Itm|$ variables. 
 
   
-\section{Mining (top-$K$) Frequent Itemsets and Association Rules}\label{sec:approx}
+\section{Mining (top-$K$) Frequent Itemsets and Association Rules}\label{sec:vcmineapprox}
 We apply the VC-dimension results to constructing efficient sampling algorithms
 with performance guarantees for approximating the collections of FI's, top-K FI's and AR's.
 
-\subsection{Mining Frequent Itemsets}\label{sec:absapproxfi}
+\subsection{Mining Frequent Itemsets}\label{sec:vcmineabsapproxfi}
 We construct bounds for the sample size needed to obtain
 relative/absolute $\varepsilon$-close approximations to the collection of FI's. The
 algorithms to compute the approximations use a standard
@@ -1067,10 +1019,11 @@ frequency threshold, as formalized in the following lemma.
 
 \begin{lemma}\label{lem:absapproxfi}
   Let $\Ds$ be a dataset with transactions built on a ground set $\Itm$, and let
-  $d$ be the d-index of $\Ds$. Let
+  %$d$ be the d-index of $\Ds$
+  $v$ be the VC-dimension of the range space associated to $\Ds$. Let
   $0<\varepsilon,\delta<1$. Let $\Sam$ be a random sample of $\Ds$ with size 
   \[
-  |\Sam|=\min\left\{|\Ds|,\frac{4c}{\varepsilon^2}\left(d+\log\frac{1}{\delta}\right)\right\},\]
+  |\Sam|=\min\left\{|\Ds|,\frac{4c}{\varepsilon^2}\left(v+\log\frac{1}{\delta}\right)\right\},\]
   for some absolute constant $c$. Then $\FI(\Sam,\Itm,\theta-\varepsilon/2)$ is an absolute
   $\varepsilon$-close approximation to $\FI(\Ds,\Itm,\theta)$ with probability
   at least $1-\delta$.
@@ -1078,46 +1031,46 @@ frequency threshold, as formalized in the following lemma.
 
 \begin{proof}
   Suppose that $\Sam$ is a $\varepsilon/2$-approximation of the range space $(X,R)$ corresponding
-  to $\Ds$. From Thm.~\ref{thm:vcmineeapprox} we know that this happens with probability at least $1-\delta$.  
+  to $\Ds$. From Thm.~\ref{thm:eapprox} we know that this happens with probability at least $1-\delta$.  
   This means that for all $X\subseteq\Itm$,
   $f_\Sam(X)\in[f_\Ds(X)-\varepsilon/2,f_\Ds(X)+\varepsilon/2]$.
   This holds in particular for the itemsets in
   $\mathcal{C}=\FI(\Sam,\Itm,\theta-\varepsilon/2)$, which therefore satisfies
-  Property 3 from Def.~\ref{def:approxfi}. It also means that for all $X\in\FI(\Ds,\Itm,\theta),
+  Property 3 from Def.~\ref{def:vcmineapproxfi}. It also means that for all $X\in\FI(\Ds,\Itm,\theta),
   f_\Sam(X)\ge \theta-\varepsilon/2$, so $\mathcal{C}$ also guarantees Property
-  1 from Def.~\ref{def:approxfi}. Let now $Y\subseteq\Itm$ be such that
+  1 from Def.~\ref{def:vcmineapproxfi}. Let now $Y\subseteq\Itm$ be such that
   $f_\Ds(Y)< \theta-\varepsilon$. Then, for the properties of $\Sam$,
   $f_\Sam(Y)<\theta-\varepsilon/2$, i.e., $Y\notin \mathcal{C}$, which allows us
-  to conclude that $\mathcal{C}$ also has Property 2 from Def.~\ref{def:approxfi}.
+  to conclude that $\mathcal{C}$ also has Property 2 from Def.~\ref{def:vcmineapproxfi}.
 \end{proof}
 
 We stress again that here and in the following theorems, the constant $c$ is
-absolute and does not depend on $\Ds$ or on $d$, $\varepsilon$ or $\delta$.
+absolute and does not depend on $\Ds$ or on $d$, $\varepsilon$, or $\delta$.
 
-One very interesting consequence of this result is that we do not need to know in advance
-the minimum frequency threshold $\theta$ in order to build the sample: the
-properties of the $\varepsilon$-approximation allow to use the same sample
-for any threshold and for different thresholds, i.e., the sample does not need
-to be rebuilt if we want to mine it with a threshold $\theta$ first and with
-another threshold $\theta'$ later.
+One very interesting consequence of this result is that we do not need to know
+in advance the minimum frequency threshold $\theta$ in order to build the
+sample: the properties of the $\varepsilon$-approximation allow to use the same
+sample for any threshold and for different thresholds, i.e., the sample does not
+need to be rebuilt if we want to mine it with a threshold $\theta$ first and
+with another threshold $\theta'$ later.
 
-It is important to note that the VC-dimension of a dataset, and therefore the
-sample size from~\eqref{eq:vcmineeapprox} needed to probabilistically obtain an
-$\varepsilon$-approximation, is independent from the size (number of
-transactions) in $\Ds$ and also of the size of $\FI(\Sam,\Itm,\theta)$. It
-only depends on the quantity $d$, which is always less or equal to the length
-of the longest transaction in the dataset, which in turn is less or equal to the
-number of different items $|\Itm|$.
+It is important to note that the VC-dimension associated to a dataset, and
+therefore the sample size from~\eqref{eq:vceapprox} needed to probabilistically
+obtain an $\varepsilon$-approximation, is independent from the size (number of
+transactions) in $\Ds$ and also of the size of $\FI(\Sam,\Itm,\theta)$. It is
+also always smaller or at most as large as the d-index $d$, which is always less
+or equal to the length of the longest transaction in the dataset, which in turn
+is less or equal to the number of different items $|\Itm|$.
 
 To obtain a relative $\varepsilon$-close approximation, we
 need to add a dependency on $\theta$ as shown in the following Lemma.
 
 \begin{lemma}\label{lem:relapproxfi}
-  Let $\Ds$, $d$, $\varepsilon$, and $\delta$ as in Lemma~\ref{lem:absapproxfi}. Let
+  Let $\Ds$, $v$, $\varepsilon$, and $\delta$ as in Lemma~\ref{lem:absapproxfi}. Let
   $\Sam$ be a random sample of $\Ds$ with size 
   \[
   |\Sam| =
-  \min\left\{|\Ds|,\frac{4(2+\varepsilon)c}{\varepsilon^2\theta(2-\varepsilon)}\left(d\log\frac{2+\varepsilon}{\theta(2-\varepsilon)}+\log\frac{1}{\delta}\right)\right\},\]
+  \min\left\{|\Ds|,\frac{4(2+\varepsilon)c}{\varepsilon^2\theta(2-\varepsilon)}\left(v\log\frac{2+\varepsilon}{\theta(2-\varepsilon)}+\log\frac{1}{\delta}\right)\right\},\]
   for some absolute absolute constant $c$. Then $\FI(\Sam,\Itm,(1-\varepsilon/2)\theta)$ is a relative
   $\varepsilon$-close approximation to $\FI(\Ds,\Itm,\theta)$ with probability
   at least $1-\delta$.
@@ -1125,26 +1078,26 @@ need to add a dependency on $\theta$ as shown in the following Lemma.
 
 \begin{proof}
   Let $p=\theta(2-\varepsilon)/(2+\varepsilon)$. From
-  Thm.~\ref{thm:vcmineeapprox}, the sample $\Sam$ is a relative
+  Thm.~\ref{thm:eapprox}, the sample $\Sam$ is a relative
   $(p,\varepsilon/2)$-approximation of the range space associated to $\Ds$ with
   probability at least $1-\delta$. For any itemset $X$ in
   $\FI(\Ds,\Itm,\theta)$, we have $f_\Ds(X)\ge\theta>p$, so
   $f_\Sam(X)\ge (1-\varepsilon/2)f_\Ds(X)\ge(1-\varepsilon/2)\theta$, which
   implies $X\in\FI(\Sam,\Itm,(1-\varepsilon/2)\theta))$, so Property 1
-  from Def.~\ref{def:approxfi} holds. Let now $X$ be an itemsets with
+  from Def.~\ref{def:vcmineapproxfi} holds. Let now $X$ be an itemsets with
   $f_\Ds(X)< (1-\varepsilon)\theta$. From our choice of $p$, we always have
   $p>(1-\varepsilon)\theta$, so $f_\Sam(X)\le p(1+\varepsilon/2) <
   \theta(1-\varepsilon/2)$. This means
   $X\notin\FI(\Sam,\Itm,(1-\varepsilon/2)\theta))$, as requested by
-  Property 2 from Def.~\ref{def:approxfi}. 
+  Property 2 from Def.~\ref{def:vcmineapproxfi}. 
   Since $(1-\varepsilon/2)\theta=p(1+\varepsilon/2)$, it follows
   that only itemsets $X$ with $f_\Ds(X)\ge p$ can be in
   $\FI(\Sam,\Itm,(1-\varepsilon/2)\theta))$. For these itemsets it holds
   $|f_\Sam(X)-f_\Ds(X)|\le f_\Ds(X)\varepsilon/2$, as requested by
-  Property 3 from Def.\ref{def:approxfi}.
+  Property 3 from Def.\ref{def:vcmineapproxfi}.
 \end{proof}
 
-\subsection{Mining Top-$K$ Frequent Itemsets}\label{sec:miningtopk}
+\subsection{Mining Top-$K$ Frequent Itemsets}\label{sec:vcmineminingtopk}
 Given the equivalence
 $\TOPK(\Ds,\Itm,K)=\FI(\Ds,\Itm,f^{(K)}_\Ds)$, we could use the above
 FI's sampling algorithms if we had a good approximation of $f^{(K)}_\Ds$, the
@@ -1157,11 +1110,11 @@ threshold depending on our estimate of $f_\Sam^{(K)}$.
 Lemma~\ref{lem:absapproxtopk} formalizes this intuition.
 
 \begin{lemma}\label{lem:absapproxtopk}
-  Let $\Ds$, $d$, $\varepsilon$, and $\delta$ be as in Lemma~\ref{lem:absapproxfi}.
+  Let $\Ds$, $v$, $\varepsilon$, and $\delta$ be as in Lemma~\ref{lem:absapproxfi}.
   Let $K$ be a positive integer. Let $\Sam$ be a random sample of $\Ds$ with
   size
   \[
-  |\Sam|=\min\left\{|\Ds|,\frac{16c}{\varepsilon^2}\left(d+\log\frac{1}{\delta}\right)\right\}\],
+  |\Sam|=\min\left\{|\Ds|,\frac{16c}{\varepsilon^2}\left(v+\log\frac{1}{\delta}\right)\right\}\],
   for some absolute constant $c$, then $\FI(\Sam,\Itm,f_\Sam^{(K)}-\varepsilon/2)$ is an absolute
   $\varepsilon$-close approximation to $\TOPK(\Ds,\Itm,K)$ with probability at
   least $1-\delta$.
@@ -1169,7 +1122,7 @@ Lemma~\ref{lem:absapproxtopk} formalizes this intuition.
 
 \begin{proof}
   Suppose that $\Sam$ is a $\varepsilon/4$-approximation of the range
-  space $(X,R)$ corresponding to $\Ds$. From Thm.~\ref{thm:vcmineeapprox} we know that
+  space $(X,R)$ corresponding to $\Ds$. From Thm.~\ref{thm:eapprox} we know that
   this happens with probability at least $1-\delta$. This means that for all
   $Y\subseteq\Itm$,
   $f_\Sam(Y)\in[f_\Ds(Y)-\varepsilon/4,f_\Ds(Y)+\varepsilon/4]$.
@@ -1187,12 +1140,12 @@ Lemma~\ref{lem:absapproxtopk} formalizes this intuition.
   $\FI(\Sam,\Itm,\eta)$. We have $\eta\le f_\Ds^{(K)}-\varepsilon/4$, so
   for the properties of $\Sam$,
   $\TOPK(\Ds,\Itm,K)=\FI(\Ds,\Itm,f_\Ds^{(K)})\subseteq\FI(\Sam,\Itm,\eta)$,
-  which then guarantees Property 1 from Def.~\ref{def:approxfi}. On
+  which then guarantees Property 1 from Def.~\ref{def:vcmineapproxfi}. On
   the other hand, let $Y$ be an itemset such that
   $f_\Ds(Y)<f_\Ds^{(K)}-\varepsilon$. Then $f_\Sam(Y)<
   f_\Ds^{(K)}-3\varepsilon/4\le\eta$, so $Y\notin\FI(\Sam,\Itm,\eta)$,
-  corresponding to Property 2 from Def.~\ref{def:approxfi}. Property 3 from
-  Def.~\ref{def:approxfi} follows from the properties of $\Sam$.
+  corresponding to Property 2 from Def.~\ref{def:vcmineapproxfi}. Property 3 from
+  Def.~\ref{def:vcmineapproxfi} follows from the properties of $\Sam$.
 \end{proof}
 
 Note that as in the case of the sample size required
@@ -1206,18 +1159,18 @@ lower bound to $f_\Ds^{(K)}$, the second to extract the approximation. Details
 for this case are presented in Lemma~\ref{lem:relapproxtopk}.
 
 \begin{lemma}\label{lem:relapproxtopk}
-  Let $\Ds$, $d$, $\varepsilon$, and $\delta$ be as in Lemma~\ref{lem:absapproxfi}.
+  Let $\Ds$, $v$, $\varepsilon$, and $\delta$ be as in Lemma~\ref{lem:absapproxfi}.
   Let $K$ be a positive integer. Let $\delta_1,\delta_2$ be two reals such that
   $(1-\delta_1)(1-\delta_2)\ge(1-\delta)$. Let $\Sam_1$ be a random sample of
   $\Ds$ with some size
   \[
-  |\Sam_1|=\frac{\phi c}{\varepsilon^2}\left(d+\log\frac{1}{\delta_1}\right)\]
+  |\Sam_1|=\frac{\phi c}{\varepsilon^2}\left(v+\log\frac{1}{\delta_1}\right)\]
   for some $\phi>2\sqrt{2}/\varepsilon$ and some absolute constant $c$. If
   $f_{\Sam_1}^{(K)}\ge (2\sqrt{2})/(\varepsilon\phi)$, then let
   $p=(2-\varepsilon)\theta/(2+\varepsilon)$ and let $\Sam_2$ be
   a random sample of $\Ds$ of size 
   \[ |\Sam_2|=\min\left\{|\Ds|,
-  \frac{4c}{\varepsilon^2p}(d\log\frac{1}{p} + \log\frac{1}{\delta})\right\}\]
+  \frac{4c}{\varepsilon^2p}(v\log\frac{1}{p} + \log\frac{1}{\delta})\right\}\]
   for some
   absolute constant $c$. Then
   $\FI(\Sam_2,\Itm,(1-\varepsilon/2)(f_{\Sam_1}^{(K)}-\varepsilon/\sqrt{2\phi}))$
@@ -1229,11 +1182,11 @@ for this case are presented in Lemma~\ref{lem:relapproxtopk}.
   Assume that $\Sam_1$ is a $\varepsilon/\sqrt{2\phi}$-approximation for
   $\Ds$ and $\Sam_2$ is a relative $(p,\varepsilon/2)$-approximation for $\Ds$.
   The probability of these two events happening at the same time is at least
-  $1-\delta$, from Thm.~\ref{thm:vcmineeapprox}.
+  $1-\delta$, from Thm.~\ref{thm:eapprox}.
 
   Following the steps of the proof of Lemma~\ref{lem:absapproxtopk} we can
   easily get that, from the properties of $\Sam_1$,
-  \begin{equation}\label{eq:boundfk}
+  \begin{equation}\label{eq:vcmineboundfk}
     f_{\Sam_1}^{(K)}-\frac{\varepsilon}{\sqrt{2\phi}}\le f_\Ds^{(K)}\le
     f_{\Sam_1}^{(K)}+\frac{\varepsilon}{\sqrt{2\phi}}.
   \end{equation}
@@ -1244,20 +1197,20 @@ for this case are presented in Lemma~\ref{lem:relapproxtopk}.
   (1-\varepsilon/2)f_\Ds(X)\ge(1-\varepsilon/2)(f_{\Sam_1}^{(K)}-\varepsilon/\sqrt{2\phi})$,
   which implies
   $X\in\FI(\Sam_2,\Itm,(1-\varepsilon/2)(f_{\Sam_1}^{(K)}-\varepsilon/\sqrt{2\phi}))$
-  and therefore Property 1 from Def.~\ref{def:approxfi} holds for
+  and therefore Property 1 from Def.~\ref{def:vcmineapproxfi} holds for
   $FI(\Sam_2,\Itm,\eta)$.
  
   Let now $Y$ be an itemset such that $f_\Ds(Y)<(1-\varepsilon)f_\Ds^{(K)}$.
   From our choice of $p$ we have that $f_\Ds(A)< p$. Then
   $f_{\Sam_2}(A)<(1+\varepsilon/2)p<(1-\varepsilon/2)(f_{\Sam_1}^{(K)}-\varepsilon/\sqrt{2\phi})$.
   Therefore, $Y\notin\FI(\Sam_2,\Itm,\eta)$ and Property 2 from
-  Def.~\ref{def:approxfi} is guaranteed.
+  Def.~\ref{def:vcmineapproxfi} is guaranteed.
 
-  Property 3 from Def.~\ref{def:approxfi} follows from~\eqref{eq:boundfk} and
+  Property 3 from Def.~\ref{def:vcmineapproxfi} follows from~\eqref{eq:vcmineboundfk} and
   the properties of $\Sam_2$.
 \end{proof}
 
-\subsection{Mining Association Rules}\label{sec:miningar}
+\subsection{Mining Association Rules}\label{sec:vcmineminingar}
 Our final theoretical contribution concerns the discovery of relative/absolute
 approximations to $\AR(\Ds,\Itm,\theta,\eta)$ from a sample.
 Lemma~\ref{lem:relapproxar} builds on a result
@@ -1266,12 +1219,14 @@ while Lemma~\ref{lem:absapproxar} deals with the \emph{absolute} one.
 
 \begin{lemma}\label{lem:relapproxar}
   Let $0<\delta,\varepsilon,\theta,\gamma<1$,
-  $\phi=\max\{3,2-\varepsilon+2\sqrt{1-\varepsilon}\}$,
+  $\phi=\max\{2+\varepsilon,2-\varepsilon+2\sqrt{1-\varepsilon}\}$,
   $\eta=\varepsilon/\phi$, and $p=\theta(1-\eta)/(1+\eta)$. Let
-  $\Ds$ be a dataset with d-index $d$.
+  $\Ds$ be a dataset %with d-index $d$.
+  and $v$ be the VC-dimension of the range space associated to $\Ds$.
   Let $\Sam$ be a random sample of $\Ds$ of size 
-  \[
-  |\Sam|=\min\left\{|\Ds|,\frac{c}{\eta^2p}(d\log\frac{1}{p}+\log\frac{1}{\delta})\right\}\]
+  \begin{equation}\label{eq:vcminesamsizerelapproxar}
+  |\Sam|=\min\left\{|\Ds|,\frac{c}{\eta^2p}\left(v\log\frac{1}{p}+\log\frac{1}{\delta}\right)\right\}
+  \end{equation}
   for some absolute constant $c$. Then
   $\AR(\Sam,\Itm,(1-\eta)\theta,\gamma(1-\eta)/(1+\eta))$
   is a relative $\varepsilon$-close approximation to
@@ -1280,7 +1235,7 @@ while Lemma~\ref{lem:absapproxar} deals with the \emph{absolute} one.
 
 \begin{proof}
   Suppose $\Sam$ is a relative $(p,\eta)$-approximation for the range space
-  corresponding to $\Ds$. From Thm.~\ref{thm:vcmineeapprox} we know this happens with
+  corresponding to $\Ds$. From Thm.~\ref{thm:eapprox} we know this happens with
   probability at least $1-\delta$.
 
  Let $W\in\AR(\Ds,\Itm,\theta,\gamma)$ be the association rule ``$A\Rightarrow
@@ -1299,14 +1254,14 @@ By definition, $c_\Ds(W)=f_\Ds(W)/f_\Ds(A)\ge\gamma$. Then,
  \frac{(1-\eta)f_\Ds(W)}{(1+\eta)f_\Ds(A)}\ge\frac{1-\eta}{1+\eta}\cdot\frac{f_\Ds(W)}{f_\Ds(A)}\ge\frac{1-\eta}{1+\eta}\gamma.\]
  It follows that
  $W\in\AR(\Sam,\Itm,(1-\eta)\theta,\gamma(1-\eta)/(1+\eta))$, hence
- Property 1 from Def.~\ref{def:approxar} is satisfied.
+ Property 1 from Def.~\ref{def:vcmineapproxar} is satisfied.
 
  Let now $Z$ be the association rule ``$C\Rightarrow D$'', such that
  $f_\Ds(Z)=f_\Ds(C\cup D)<(1-\varepsilon)\theta$. But from our definitions of
  $\eta$ and $p$, it follows that $f_\Ds(Z) < p < \theta$, hence $f_\Sam(Z) <
  (1+\eta)p < (1-\eta)\theta$, and therefore
  $Z\notin\AR(\Sam,\Itm,(1-\eta)\theta,\gamma(1-\eta)(1+\eta))$, as
- requested by Property 2 from Def.~\ref{def:approxar}.
+ requested by Property 2 from Def.~\ref{def:vcmineapproxar}.
  
  Consider now an association rule $Y=\mbox{``}E\Rightarrow F\mbox{''}$ such that
  $c_\Ds(Y)<(1-\varepsilon)\gamma$. Clearly, we are only concerned with $Y$ such
@@ -1320,25 +1275,26 @@ where the last inequality follows from the fact that
 $(1-\eta)^2>(1+\eta)(1-\varepsilon)$ for our choice of $\eta$. We can
 conclude that
 $Y\notin\AR(\Sam,\Itm,(1-\varepsilon)\theta,\gamma(1-\eta)/(1+\eta)\gamma)$ and
-therefore Property 4 from Def.~\ref{def:approxar} holds.
+therefore Property 4 from Def.~\ref{def:vcmineapproxar} holds.
 
-  Properties 3 and 5 from Def.~\ref{def:approxar} follow from the above steps (i.e.,
+  Properties 3 and 5 from Def.~\ref{def:vcmineapproxar} follow from the above steps (i.e.,
   what association rules can be in the approximations), from the definition of
   $\phi$, and from the properties of $\Sam$.
 \end{proof}
 
 \begin{lemma}\label{lem:absapproxar}
-Let $\Ds$, $d$, $\theta$, $\gamma$, $\varepsilon$, and $\delta$ be as in
+Let $\Ds$, $v$, $\theta$, $\gamma$, $\varepsilon$, and $\delta$ be as in
 Lemma~\ref{lem:relapproxar}
 and let $\varepsilon_\mathrm{rel}=\varepsilon/\max\{\theta,\gamma\}$.
 
 Fix
-$\phi=\max\{3,2-\varepsilon_\mathrm{rel}+2\sqrt{1-\varepsilon_\mathrm{rel}}\}$,
+$\phi=\max\{2+\varepsilon,2-\varepsilon_\mathrm{rel}+2\sqrt{1-\varepsilon_\mathrm{rel}}\}$,
 $\eta=\varepsilon_\mathrm{rel}/\phi$,
 and $p=\theta(1-\eta)/(1+\eta)$. Let $\Sam$ be a random sample of $\Ds$ of
 size 
-\[
-|\Sam|=\min\left\{|\Ds|,\frac{c}{\eta^2p}(d\log\frac{1}{p}+\log\frac{1}{\delta})\right\}\]
+\begin{equation}\label{eq:vcminesamsizeabsapproxar}
+|\Sam|=\min\left\{|\Ds|,\frac{c}{\eta^2p}\left(v\log\frac{1}{p}+\log\frac{1}{\delta}\right)\right\}
+\end{equation}
 for some absolute constant $c$. Then
 $\AR(\Sam,\Itm,(1-\eta)\theta,\gamma(1-\eta)/(1+\eta))$ is an absolute
 $\varepsilon$-close approximation to $\AR(\Ds,\Itm,\theta,\gamma)$.
@@ -1354,6 +1310,311 @@ approximations to $\AR(\Ds,\Itm,\theta,\gamma)$ depends on $\theta$ and
 $\gamma$, which was not the case for absolute $\varepsilon$-close approximations
 to $\FI(\Ds,\Itm,\theta)$ and $\TOPK(\Ds,\Itm,K)$.
 
+\subsection{Other interestingness measures}\label{sec:vcminealternative}
+Confidence is not the only
+measure for the interestingness of an association rule. Other measures include
+lift, IS (cosine), all-confidence, Jaccard index, leverage, conviction, and many
+more~\cite{TanKS04}. In this section we apply our general technique to obtain good approximations with 
+respect to a number of these measures, while also showing the limitation of our technique
+with respect to other criteria.
+%the collection of AR's when some of these measures are used to quantify the
+%interestingess of a rule instead of the confidence. We also present some negative
+%results about the impossibility of extending our techniques to some measures.
+
+We use the term absolute (or relative) $\varepsilon$-close approximation as
+%to the collection of AR's according to a specific measure, we refer to the
+defined in Def.~\ref{def:vcmineapproxar}, appropriately adapted to the relevant
+measure in place of the confidence. We also extend our notation and denote the
+collection of AR's with frequency at least $\theta$ and interestingness at least
+$\gamma$ according to a measure $w$ by $\AR_w(\Ds,\Itm,\theta,\gamma)$, that is,
+indicating the measure in the subscript of ``$\AR$''.
+
+%\paragraph{All-confidence and IS (cosine)}
+The first two measures we deal with are \emph{all-confidence} and \emph{IS}
+(also known as \emph{Cosine}). They are defined as follows:
+\begin{eqnarray*}
+  \mbox{all-confidence:} & ac_\Ds(A\Rightarrow B)=\frac{f_\Ds(A\cup B)}{max_{a\in
+  A\cup B}f_\Ds(A)}\\
+  \mbox{IS (Cosine):} & is_\Ds(A\Rightarrow B)=\frac{f_\Ds(A\cup
+  B)}{\sqrt{f_\Ds(A)f_\Ds(B)}} 
+\end{eqnarray*}
+SInce the approximation errors in the enumerators and denominators of these measures are the same as
+in computing the confidence, 
+we can follow exactly the same
+steps as in the proof of Lemmas~\ref{lem:relapproxar} and~\ref{lem:absapproxar} and obtain
+ the same procedures, parameters, and sample
+sizes~\eqref{eq:vcminesamsizerelapproxar} and~\eqref{eq:vcminesamsizeabsapproxar}  to
+extract relative and absolute $\varepsilon$-close approximations to the
+collection of AR's according to these measures.
+
+\paragraph{Lift}
+The \emph{lift} of an association rule ``$A\Rightarrow B$'' is defined as
+\[
+\ell_\Ds(A\Rightarrow B)=\frac{f_\Ds(A\cup B)}{f_\Ds(A)f_\Ds(B)}\enspace.
+\]
+
+We have the following result about computing a relative $\varepsilon$-close
+approximation to the collection of AR's according to lift.
+
+\begin{lemma}\label{lem:liftrelapproxar}
+  Let $\Ds$, $v$, $\theta$, $\gamma$, $\varepsilon$, and $\delta$ be as in
+  Lemma~\ref{lem:relapproxar}. There exists a value $\eta$ such that, if we let
+  $p=\theta(1-\eta)/(1+\eta)$, and let $\Sam$ be random sample of $\Ds$ of size
+  \[
+  |\Sam|=\min\left\{|\Ds|,\frac{c}{\eta^2p}\left(v\log\frac{1}{p}+\log\frac{1}{\delta}\right)\right\}
+  \]
+  for some absolute constant $c$, we have that
+  $\AR_{\ell}(\Sam,\Itm,(1-\eta)\theta,\gamma(1-\eta)/(1+\eta))$ is a relative
+  $\varepsilon$-close approximation to $\AR_{\ell}(\Ds,\Itm,\theta,\gamma)$.
+\end{lemma}
+\begin{proof}
+ In order for
+  $\AR_{\ell}(\Sam,\Itm,(1-\eta)\theta,\gamma(1-\eta)/(1+\eta))$ to satisfy the
+  properties of a relative $\varepsilon$-close approximation, $\eta$
+  must be a solution to the following system of inequalities:
+ % \[
+ % \left\{\begin{array}{l}
+ \begin{equation*}
+   \left\{
+   \begin{aligned}
+    &(1-\varepsilon)(1+\eta)^3<(1-\eta)^3\\
+    &\frac{1+\eta}{(1-\eta)^2}\le 1+\varepsilon\\
+    &\frac{1-\eta}{(1+\eta)^2}\ge 1-\varepsilon\\
+    &0\le \eta<1
+  \end{aligned}
+  %\end{array}
+  \right.
+  \end{equation*}
+  %\]
+    The first inequality expresses the requirement of Property 4 from
+  Def.~\ref{def:vcmineapproxar}. The second and the third inequality deal with
+  Properties 1, 3, and 5. The last inequality limits the domain of $\eta$.
+  Property 2 from Def.~\ref{def:vcmineapproxar} would be enforced by the choice of
+  $p$. It can be verified that this system admits solutions.
+Once the value of $\eta$ has been determined, we can proceed as in the
+  proof of Lemma~\ref{lem:relapproxar} to prove that all properties from
+  Def.~\ref{def:vcmineapproxar} are satisfied.
+\end{proof}
+
+We can get a result about \emph{absolute} $\varepsilon$-close approximation to
+$\AR_\ell(\Ds,\Itm,\theta,\gamma)$ by following the same derivation of
+Lemma~\ref{lem:absapproxar}.
+
+\paragraph{Piatetsky-Shapiro measure (leverage)}
+Another measure of interestingness is the
+\emph{Piatetsky-Shapiro} measure (also known as \emph{leverage}):
+\[
+  ps_\Ds(A\Rightarrow B) = f_\Ds(A\cup B)-f(A)f(B)\enspace.
+\]
+We first prove that it is possible to obtain an \emph{absolute}
+$\varepsilon$-close approximation to the collection of AR's according to this
+measure and then argue that our methods can not be used to obtain a
+\emph{relative} $\varepsilon$-close approximation to such collection.
+
+\begin{lemma}\label{lem:psapproxabs}
+  Let $\Ds$, $v$, $\theta$, $\gamma$, $\varepsilon$, and $\delta$ be as in
+  Lemma~\ref{lem:relapproxar}. Let $\Sam$ be a random sample of $\Ds$ of size
+  \[
+  |S|=\min\left\{|D|,\frac{64c}{\varepsilon^2}\left(v+\log\frac{1}{\delta}\right)\right\}
+  \]
+  for some absolute constant $c$. Then
+  $\AR_{ps}(\Sam,\Itm,\theta-\varepsilon/8,\gamma-\varepsilon/2)$ is an absolute
+  $\varepsilon$-close approximation to $\AR_{ps}(\Ds,\Itm,\theta,\gamma)$ with
+  probability at least $1-\delta$. 
+\end{lemma}
+\begin{proof}
+  Assume that $\Sam$ is a $\varepsilon/8$-approximation for $\Ds$. From
+  Thm.~\ref{thm:eapprox} we know this happens with probability at least $1-\delta$.
+  This implies that for any itemeset $A\subseteq\Itm$, we have
+  $|f_\Ds(A)-f_\Sam(A)|\le\varepsilon/8$, which holds in particular for the
+  association rules in
+  $\AR_{ps}(\Sam,\Itm,\theta-\varepsilon/8,\gamma-\varepsilon/2)$, so Property 3
+  from Def.~\ref{def:vcmineapproxar} is satisfied.
+
+  Consider now an association rule $W=\mbox{``}A\Rightarrow B\mbox{''}$. We have 
+  \begin{equation}\label{eq:vcminespup}
+  \begin{aligned}
+  ps_\Sam(W)&=f_\Sam(A\cup B)-f_\Sam(A)f_\Sam(B)\ge f_\Ds(A\cup
+  B)-\frac{\varepsilon}{8}-\left(f_\Ds(A)+\frac{\varepsilon}{8}\right)\left(f_\Ds(B)+\frac{\varepsilon}{8}\right)\\
+  &\ge f_\Ds(A\cup
+  B)-f_\Ds(A)f_\Ds(B)-\frac{\varepsilon}{8}\left(1+f_\Ds(A)+f_\Ds(B)+\frac{\varepsilon}{8}\right)\\
+  &\le ps_\Ds(W)-\frac{\varepsilon}{2}\enspace.
+  \end{aligned}
+\end{equation}
+We also have:
+  \begin{equation}\label{eq:vcminespdown}
+    \begin{aligned}
+      ps_\Sam(W)&=f_\Sam(A\cup B)-f_\Sam(A)f_\Sam(B)\le f_\Ds(A\cup
+  B)+\frac{\varepsilon}{8}-\left(f_\Ds(A)-\frac{\varepsilon}{8}\right)\left(f_\Ds(B)-\frac{\varepsilon}{8}\right)
+  \\ 
+  &\le f_\Ds(A\cup
+  B)-f_\Ds(A)f_\Ds(B)+\frac{\varepsilon}{8}\left(1+f_\Ds(A)+f_\Ds(B)-\frac{\varepsilon}{8}\right)\\
+  &\le ps_\Ds(W)+\frac{\varepsilon}{2}
+    \end{aligned}
+  \end{equation}
+  From~\eqref{eq:vcminespup} and~\eqref{eq:vcminespdown} we get that for any
+  association rule $W$, we have $|ps_\Ds(W)-ps_\Sam(W)|<\varepsilon$, hence
+  Property 5 from Def.~\ref{def:vcmineapproxar} holds.
+
+  If $W\in\AR_{ps}(\Sam,\Itm,\theta,\gamma)$, \eqref{eq:vcminespup} implies that
+  $W\in\AR_{ps}(\Sam,\Itm,\theta-\varepsilon/2,\gamma-\varepsilon/2)$, therefore
+  Property 1 from Def.~\ref{def:vcmineapproxar} is satisfied. 
+
+  Let now $Z$ be an association rule with frequency
+  $f_\Ds(Z)<\theta-\varepsilon$. From the property of $\Sam$, we have that
+  $f_\Sam(Z)\le
+  f_\Ds(Z)+\varepsilon/8<\theta-\varepsilon+\varepsilon/8<\theta-\varepsilon/8$,
+  so $Z\not\in \AR_{ps}(\Sam,\Itm,\theta-\varepsilon/8,\gamma-\varepsilon/2)$,
+  which proves Property 2 from Def.~\ref{def:vcmineapproxar}.
+
+  Consider now an association rule $Y=\mbox{``}C\Rightarrow D\mbox{''}$ with
+  frequency $f_\Ds(Y)>\theta$ but leverage $ps_\Ds(Y)<\gamma-\varepsilon$
+  ($Y\not\in\AR_{ps}(\Ds,\Itm,\theta,\gamma)$).
+  From~\eqref{eq:vcminespdown} we get that $ps_\Sam(Y)<\gamma-\varepsilon/2$ which
+  implies that
+  $Y\not\in\AR_{ps}(\Sam,\Itm,\theta-\varepsilon/8,\gamma-\varepsilon/2)$, hence
+  proving Property 4 from Def.~\ref{def:vcmineapproxar}. This concludes our proof.
+\end{proof}
+
+We now argue that it is not possible, in general, to extend our methods to
+obtain a relative $\varepsilon$-close approximation to
+$\AR_{ps}(\Ds,\Itm,\theta,\gamma)$. Suppose that there is a parameter $\lambda$
+for which, for any itemset $A$, we can find a value $\tilde{f}(A)$ such that
+$(1-\lambda)f_\Ds(A)\le \tilde{f}(A)\le (1+\lambda)f_\Ds(A)$. Let
+$\widetilde{ps}(A\Rightarrow B)=\tilde{f}(A\cup B)-\tilde{f}(A)\tilde{f}(B)$.
+We would like to show that the values $\widetilde{ps}$ cannot be used to obtain
+a relative $\varepsilon$-close approximation to
+$\AR_{ps}(\Ds,\Itm,\theta,\gamma)$ in general. %, for any
+$0<\varepsilon,\theta,\gamma<1$.
+Among the requirement for a relative $\varepsilon$-close approximation we have
+that for an association rule ``$A\rightarrow B$'' in the approximation, it must
+hold $\widetilde{ps}(A\Rightarrow B)\ge(1-\varepsilon)ps_\Ds(A\Rightarrow B)$.
+We now show that this is not true in general. We have the following:
+\begin{align*}
+\widetilde{ps}(A\Rightarrow B)&\ge(1-\lambda)f_\Ds(A\cup
+B)-(1+\lambda)^2f_\Ds(A)f_\Ds(B)\\
+&\ge(1-\varepsilon)f_\Ds(A\cup B)-(1-\varepsilon)f_\Ds(A)f_\Ds(B) \iff\\
+&(\varepsilon-\lambda)f_\Ds(A\cup B)-(\varepsilon+2\lambda+\lambda^2)f_\Ds(A)f_\Ds(B)\ge
+0
+\end{align*}
+Clearly, the inequality on the last line may not be true in general. This means
+that we can not, in general, obtain a relative $\varepsilon$-close approximation
+to $\AR_{ps}(\Ds,\Itm,\theta,\gamma)$ by approximating the frequencies of all
+itemsets, no matter how good these would be.
+
+\paragraph{Other measures}
+For other measures it may not be possible or straightforward to analytically derive
+procedures and sample sizes sufficient to extract good approximations of the
+collection of AR's according to these measures. Nevertheless most of them
+express the interestingness of an association rule as a function of the
+frequencies of the itemsets involved in the rule. Because of this, in practice,
+ high quality approximation of the frequencies of all itemsets should be
+sufficient to obtain good approximation of the interestedness of a rule, and
+therefore, good approximation of the collection of AR's.
+%\begin{table}[ht]
+%  \centering
+%  \caption{Alternative interestingness measures for an association rule
+%  ``$A\Rightarrow B$'', together with the sample size needed for a relative
+%  $\varepsilon$-close approximation with probability $1-\delta$, as function of
+%  the VC-dimension $v$ and the minimum frequency threshold $\theta$.}
+%  \label{tab:measures}
+%  \begin{tabular}{lcc}
+%    \toprule
+%    Measure & Definition & Sample size \\
+%    \midrule
+%    Confidence & $f_\Ds(A\cup B) / f_\Ds(A)$ & see~\eqref{eq:vcminesamsizerelapproxar} \\
+%    All-confidence & $f_\Ds(A\cup B) / \max_{a\in A\cup B}f_\Ds(a)$ &
+%    \textquotedbl\\
+%    IS (Cosine) & $f_\Ds(A\cup B) / \sqrt{f_\Ds(A)f_\Ds(B)}$ & \textquotedbl\\
+%    Lift & $f_\Ds(A\cup B) / (f_\Ds(A) f_\Ds(B))$ &
+%    $O\left(\frac{1+\varepsilon}{\epsilon^2(1-\varepsilon)\theta}
+%    \left(v\log\frac{(1+\varepsilon)\theta}{1-\varepsilon}+\log\frac{1}{\delta}\right)\right)$\\
+%    %Jaccard & $f_\Ds(A\cup B) / (f_\Ds(A) + f_\Ds(B) - f_\Ds(A\cup B))$\\
+%    %Piatetsky-Shapiro (Leverage) & $f_\Ds(A\cup B) - f_\Ds(A)s_\Ds(B)$\\
+%    %Conviction & $ (1-f_\Ds(B))/(1-c_\Ds(A\Rightarrow B))$\\
+%    \bottomrule
+%  \end{tabular}
+%\end{table}
+%For other measures not listed in Table~\ref{tab:measures} it might not
+%be possible to derive analytical bounds to the needed sample sizes.
+%Nevertheless, it is important to notice that alternative measures are, in large
+%majority, functions of the frequencies of the itemsets
+%involved in the association rule. In practice, a good approximation of the itemsets
+%frequencies should allow to compute good approximations of these alternative measures. 
+
+\subsection{Closed Frequent Itemsets}\label{sec:vcmineclosed}
+A Closed Frequent Itemset (CFI) is a FI $A$ whose subsets have all the same frequency
+$f\_Ds(A)$ of $A$. The collection of CFI's is a lossless compressed
+representation of the FI's~\cite{CaldersRB06}. The collection of CFI's is quite
+sensitive to sampling, as shown by the following example. Consider the %following
+dataset 
+\[
+  \Ds=\{\{a,b,c\}, \{a\}, \{b\}, \{c\}\}
+  %\enspace
+  .
+\]
+Suppose that $\theta=0.5$. Then $\FI(\Ds,\Itm,\theta)=\{
+\{a\},\{b\},\{c\}\}$, and this is also the collection of CFI's. Consider the sample
+$\Sam=\{\{a,b,c\},\{b\}\}$ of $\Ds$. We have that
+\[
+\FI(\Sam,\Itm,\theta')=\{\{a\},\{b\},\{c\},\{a,b\},\{a,c\},\{b,c\},\{a,b,c\}\}
+\]
+for any $\theta'\le\theta$. But the collection of CFI's is
+$\{\{b\},\{a,b,c\}\}$, and it is not a superset of the original collection. Thus, in a
+sample, a superset of an original CFI may become closed instead of the original one.
+Therefore, given an absolute $\varepsilon$-close approximation $F$ to
+$\FI(\Ds,\Itm,\theta)$ (analogously for a relative approximation), one could
+obtain a superset of the original collection of CFI's by considering, for each
+CFI $B\in F$, the set of subsets of $B$ whose frequency in $F$ is less than
+$2\varepsilon$ far from that of $B$. As was the case for FI's, a single scan of
+the dataset is then sufficient to filter out spurious candidates that are not
+CFI's from the so-obtained collection.
+
+\subsection{Discussion}\label{sec:vcminediscussion}
+In the previous sections we presented the bounds to the sample sizes as function
+of the VC-Dimension $v$ of the range space associated to the dataset. As we argued
+in Sect.~\ref{sec:vcminevcdimar}, computing the VC-dimension exactly is not a viable
+option. We therefore introduced the d-index $d$ and the d-bound $q$ as upper
+bounds to the VC-dimension that are efficient to compute, as described in
+Sect.~\ref{sec:vcminecomput}. In practice one would use $d$ or $q$, rather than $v$,
+to obtain the needed sample sizes. 
+
+\citet{ChakaravarthyPS09} presented bounds to the sample sizes that depend on
+the length $\Delta$ of the longest transaction. It should be clear that $v\le
+d\le q \le \Delta$, with the first inequality being strict in the worst case
+(Thm.~\ref{lem:vcdimlowerb}). In real datasets, we have that $v\le d\le q\ll
+\Delta$: a single very long transaction has minimal impact on the VC-dimension
+or its upper bounds. One can envision cases where an anomalous transaction
+contains most items from $\Itm$, while all other transactions have constant
+length. This would drive up the sample size from~\cite{ChakaravarthyPS09}, while
+the bounds presented in this work would not be impacted by this anomality.
+
+Moreover, in practice one could expect $v$ to be much smaller than the d-index
+$d$. This is due to the fact that the d-index is really a worst case bound which
+should only occur in artificial datasets, as it should be evident from the
+proof of Thm.~\ref{lem:vcdimlowerb}. It would be very interesting to investigate
+better methods to estimate the actual VC-dimension of the range space associated
+to a dataset, rather than upper-bound it with $d$ or $q$, as this could lead to
+much smaller sample sizes. The problem of estimating the VC-dimension of
+learning machines is a fundamental problem in learning, given that analytical
+computation of the exact value is usually impossible, as it is in our
+case. \citet{VapnikLLC94}~and~\citet{ShaoCL00} presented and refined an
+experimental procedure to estimate the VC-dimension of a learning machines,
+and~\citet{McDonaldSS11} gave concentration results for such an estimate. This
+procedure, although applicable to our case under mild conditions, is not very
+practical. It is very highly time consuming, as it requires the creation and
+analysis of multiple artificial datasets starting from the original one.
+Developing efficient ways to estimate the VC-dimension of a range space is
+an interesting research problem, but outside the scope of this work.
+
+We conclude this discussion noting that all the bounds we presented have a
+dependency on $1/\varepsilon^2$. This is due to the use of tail bounds dependent
+on this quantity in the proof of the bound~\eqref{eq:vceapprox} to the sample size
+needed to obtain an $\varepsilon$-approximation. Given that the
+bound~\eqref{eq:vceapprox} is in general tight up to a constant~\cite{LiLS01},
+there seems to be little room for improvement of the bounds we presented as
+function of $\varepsilon$.
+
 \section{Experimental Evaluation}\label{sec:vcmineexp}
 In this section we present an extensive experimental evaluation of
 our methods to extract approximations of $\FI(\Ds,\Itm,\theta)$, $\TOPK(\Ds,\Itm,K)$, and
@@ -1363,11 +1624,11 @@ Our first goal is to evaluate the \emph{quality} of the
 approximations obtained using our methods, by comparing the experimental results 
 to the analytical bounds. We also evaluate how strict the bounds are
  by testing whether the same quality of results can be
-achieved at sample sizes smaller than those suggested by the theoretical analysis. 
+achieved at sample sizes smaller than those computed by the theoretical analysis. 
 We then show that our methods can significantly speed-up the mining process,
 fulfilling the motivating promises of the use of sampling in the market basket
 analysis tasks. Lastly, we compare the sample sizes from our results to the best
-previous work~\citep{ChakaravarthyPS09}.
+previous work~\cite{ChakaravarthyPS09}.
 
 We tested our methods on both real and artificial datasets. The real datasets
 come from the FIMI'04 repository (\url{http://fimi.ua.ac.be/data/}). Since most
@@ -1379,17 +1640,19 @@ have VC-dimension equal to the maximum transaction length, which is the
 maximum possible as shown in Thm.~\ref{lem:vcdimupperb}. To create these
 datasets, we followed the proof of Thm.~\ref{lem:vcdimlowerb} and used the
 generator included in ARtool (\url{http://www.cs.umb.edu/~laur/ARtool/}), which
-is similar to the one presented in~\citep{AgrawalS94}. The artificial datasets
+is similar to the one presented in~\cite{AgrawalS94}. The artificial datasets
 had ten million transactions. We used the FP-Growth and
 Apriori implementations in ARtool to extract frequent itemsets and association
-rules. To compute an upper bound $d$ to the d-index of the dataset, we used
-Algorithm~\ref{alg:dindexbound}.
+rules. To compute the d-bound $q$, which is an upper bound to the d-index $d$,
+we used Algorithm~\ref{alg:dindexbound}.
 In all our experiments we fixed $\delta=0.1$. In the experiments involving
 absolute (resp.~relative) $\varepsilon$-close approximations we set
 $\varepsilon=0.01$ (resp.~$\varepsilon=0.05$). The absolute constant $c$ was fixed to
-$0.5$ as suggested by~\citep{LofflerP09}. This is reasonable because, again, $c$
-does not depend in any way from $\Ds$, $d$, $\varepsilon$, $\delta$, or
-characteristics of the collection of FI's or AR's. No upper bound is currently
+$0.5$ as %suggested
+estimated by~\cite{LofflerP09}. This is reasonable because, again, $c$
+does not depend in any way from $\Ds$, $\varepsilon$, $\delta$, the VC-dimension
+$v$ of the range space, the d-index $d$ or the d-bound $q$, or any
+characteristic of the collection of FI's or AR's. No upper bound is currently
 known for $c'$ when computing the sizes for relative
 $\varepsilon$-approximations. We used the same value $0.5$ for $c'$ and
 found that it worked well in practice. For each dataset we selected a
@@ -1397,7 +1660,7 @@ range of minimum frequency thresholds and a set of values for $K$ when
 extracting the top-$K$ frequent itemsets. For association rules discovery we set
 the minimum confidence threshold $\gamma\in\{0.5, 0.75, 0.9\}$. For each
 dataset and each combination of parameters we created random samples with size
-as suggested by our theorems and with smaller sizes to evaluate the strictness
+as computed by our theorems and with smaller sizes to evaluate the strictness
 of the bounds.  
 We measured, for each set of parameters, the \emph{absolute
 frequency error} and the \emph{absolute confidence error}, defined 
@@ -1416,7 +1679,7 @@ influence of a single sample, we computed and plot in the figures the maximum
 different samples for each size.
 
 The first important result of our experiments is that, for all problems (FI's,
-top-$K$ FI's, AR's) , for every combination of parameters, and for every run, the
+top-$K$ FI's, AR's), for every combination of parameters, and for every run, the
 collection of itemsets or of association rules obtained using our methods always
 satisfied the requirements to be an absolute or relative $\varepsilon$-close
 approximation to the real collection. Thus in practice our methods indeed
@@ -1433,7 +1696,7 @@ BMS-POS), the precision ranged between $0.59$ to $0.8$ (respectively for
 $\theta=0.02$ and $\theta=0.04$). The
 probability of including a FI or an AR which has frequency (or confidence, for
 AR's) less than $\theta$ (or $\gamma$) but does not violate the properties of a
-$\varepsilon$-close approximation,  and is therefore an
+$\varepsilon$-close approximation, and is therefore an
 ``acceptable'' false positive, depends on the distribution of the
 real frequencies of the itemsets or AR's in the dataset around the frequency
 threshold $\theta$ (more precisely, below it, within $\varepsilon$ or
@@ -1454,36 +1717,39 @@ dataset.
   \centering
   \subfloat[Absolute Itemset Frequency
   Error, BMS-POS dataset, $d=81$, $\theta=0.02$, $\varepsilon=0.01$,
-  $\delta=0.1$]{\label{fig:BMS-POS-absFI}\includegraphics[width=0.49\textwidth]{vcmine/Fig1a}}
+  $\delta=0.1$]{\label{fig:BMS-POS-absFI}\includegraphics[width=0.75\textwidth]{vcmine/Fig2a}}
  \hfill
   \subfloat[Relative Itemset Frequency
-  Error, artificial dataset, $d=33$, $\theta=0.01$, $\varepsilon=0.05$,
-  $\delta=0.1$]{\label{fig:artif-relFI}\includegraphics[width=0.49\textwidth]{vcmine/Fig1b}}
+  Error, artificial dataset, $v=33$, $\theta=0.01$, $\varepsilon=0.05$,
+  $\delta=0.1$]{\label{fig:artif-relFI}\includegraphics[width=0.75\textwidth]{vcmine/Fig2b}}
   \caption{Absolute / Relative $\varepsilon$-close Approximation to $\FI(\Ds,\Itm,\theta)$} 
   \label{fig:fiapprox}
 \end{figure}
 
 Evaluating the strictness of the bounds to the sample size was the second goal
-of our experiments. In Figure~\ref{fig:BMS-POS-absFI} we show the behaviour of
+of our experiments. In Fig.~\ref{fig:BMS-POS-absFI} we show the behaviour of
 the maximum frequency error as function of the sample size in the itemsets
 obtained from samples using the method presented in Lemma~\ref{lem:absapproxfi}
 (i.e., we are looking for an \emph{absolute} $\varepsilon$-close approximation
 to $\FI(\Ds,\Itm,\theta)$). The rightmost plotted point corresponds to the
-sample size suggested by the theoretical analysis. We are showing the results
+sample size computed by the theoretical analysis. We are showing the results
 for the dataset BMS-POS replicated $40$ times (d-index $d=81$), mined with
 $\theta=0.02$. It is clear from the picture that the guaranteed error bounds are
-achieved even at sample sizes smaller than what suggested by the analysis and
+achieved even at sample sizes smaller than what computed by the analysis and
 that the error at the sample size derived from the theory (rightmost plotted
 point for each line) is one to two orders of magnitude smaller than the maximum tolerable
-error $\varepsilon=0.01$. This fact seems to suggest that there is still room for
-improvement in the bounds to the sample size needed to achieve an absolute
-$\varepsilon$-close approximation to $\FI(\Ds,\Itm,\theta)$.
+error $\varepsilon=0.01$. This can be exmplained by the fact that the d-bound
+used to compute the sample size is in practice, as we argued in
+Sect.~\ref{sec:vcminediscussion} a quite loose upper bound to the real VC-dimension.
+%This fact seems to suggest that there is still room for
+%improvement in the bounds to the sample size needed to achieve an absolute
+%$\varepsilon$-close approximation to $\FI(\Ds,\Itm,\theta)$.
 In Fig.~\ref{fig:artif-relFI}
 we report similar results for the problem of computing a \emph{relative}
 $\varepsilon$-close approximation to $\FI(\Ds,\Itm,\theta)$ for an artificial
-dataset whose range space has VC-dimension $d$ equal to the length of the
+dataset whose range space has VC-dimension $v$ equal to the length of the
 longest transaction in the dataset, in this case $33$. The dataset contained 100
-million transactions. The sample size, suggested by Lemma~\ref{lem:relapproxfi},
+million transactions. The sample size, given by Lemma~\ref{lem:relapproxfi},
 was computed using $\theta=0.01$, $\varepsilon=0.05$, and $\delta=0.1$.
 The conclusions we can draw from the results for the behaviour of the
 relative frequency error are similar to those we got for the absolute case.
@@ -1495,12 +1761,12 @@ the two problems.
 \begin{figure}[tp]
   \centering
   \subfloat[Relative Association Rule Frequency
-  Error]{\label{fig:artif-relAR-freq}\includegraphics[width=0.49\textwidth]{vcmine/Fig2a}}
+  Error]{\label{fig:artif-relAR-freq}\includegraphics[width=0.75\textwidth]{vcmine/Fig3a}}
   \hfill
   \subfloat[Relative Association Rule Confidence 
-  Error]{\label{fig:artif-relAR-conf}\includegraphics[width=0.49\textwidth]{vcmine/Fig2b}}
+  Error]{\label{fig:artif-relAR-conf}\includegraphics[width=0.75\textwidth]{vcmine/Fig3b}}
   \caption{ Relative $\varepsilon$-close approximation to
-  $\AR(\Ds,\Itm,\theta,\gamma)$, artificial dataset, $d=33$, $\theta=0.01$,
+  $\AR(\Ds,\Itm,\theta,\gamma)$, artificial dataset, $v=33$, $\theta=0.01$,
   $\gamma=0.5$, $\varepsilon=0.05$, $\delta=0.1$.}
   \label{fig:ar}
 \end{figure}
@@ -1516,6 +1782,17 @@ itemsets that appear in the same transactions and their sample frequencies will
 therefore have similar errors that cancel out when the ratio is computed.
 Similar conclusions can be made for the absolute $\varepsilon$-close
 approximation case.
+
+From
+Fig.~\ref{fig:BMS-POS-absFI},~\ref{fig:artif-relFI},~\ref{fig:artif-relAR-freq},~and~\ref{fig:artif-relAR-conf}
+it is also possible to appreciate that, as the sample gets smaller, the maximum
+and the average errors in the frequency and confidence estimations increase.
+This suggests that using a fixed sampling rate or a fixed sample size can not
+guarantee good results for any $\varepsilon$: not only the estimation of the
+frequency and/or of the confidence would be quite off from the real value, but
+because of this, many itemsets that are frequent in the original dataset may be
+missing from the output collection and many spurious (very infrequent) itemsets
+may be included in it.
 
 The major motivating intuition for the use of sampling in market basket analysis
 tasks is that mining a sample of the dataset is faster than mining the entire
@@ -1535,31 +1812,31 @@ appreciate that, even considering the sampling time, the speed up achieved by
 our method is around the order of magnitude (i.e. 10x speed improvement),
 proving the usefulness of sampling. Moreover, given that the sample size, and
 therefore the time needed to mine the sample, does not grow with the size of the
-dataset as long as the upper bound to the d-index remains constant, that the
-d-index computation can be performed online, and that the time to create the
-sample can be made dependent only on the sample size using Vitter's Method D
-algorithm~\citep{Vitter87}, our method is very scalable as the dataset grows, and
+dataset as long as the d-bound remains constant, that the d-index computation
+can be performed online, and that the time to create the sample can be made
+dependent only on the sample size using Vitter's Method D
+algorithm~\cite{Vitter87}, our method is very scalable as the dataset grows, and
 the speed up becomes even more relevant because the mining time for the large
 dataset would instead grow with the size of the dataset.
 
 \begin{figure}[tp]
   \centering
-  \includegraphics[width=0.49\textwidth]{vcmine/Fig3}
+  \includegraphics[width=0.75\textwidth]{vcmine/Fig4}
   \caption{Runtime Comparison. The sample line includes the sampling time.
-  Relative approximation to FI's, artificial dataset, $d=33$, $\varepsilon0.05$,
+  Relative approximation to FI's, artificial dataset, $v=33$, $\varepsilon=0.05$,
   $\delta=0.1$}
   \label{fig:runtime}
 \end{figure}
 
 Comparing our results to previous work we note that the bounds generated by our
-technique are always linear in the VC-dimension $d$ associated with the dataset.
+technique are always linear in the VC-dimension $v$ associated with the dataset.
 As reported in Table~\ref{table:comparsamsizeform}, the best previous
-work~\citep{ChakaravarthyPS09} presented bounds that are linear in the maximum
+work~\cite{ChakaravarthyPS09} presented bounds that are linear in the maximum
 transaction length $\Delta$ for two of the six problems studied here.
-Figures~\ref{fig:compareSamSizeTheta} and~\ref{fig:compareSamSizeEpsilon} shows
+Figures~\ref{fig:compareSamSizeTheta} and~\ref{fig:compareSamSizeEpsilon} show
 a comparison of the actual sample sizes for relative $\varepsilon$-close
 approximations to $\FI(\Ds,\Itm,\theta)$ for as function of $\theta$ and
-$\varepsilon$. To compute the points for these figures, we set $\Delta=d=50$,
+$\varepsilon$. To compute the points for these figures, we set $\Delta=v=50$,
 corresponding to the worst possible case for our method, i.e., when the
 VC-dimension of the range space associated to the dataset is exactly equal to
 the maximum transaction length. We also fixed $\delta=0.05$ (the two methods
@@ -1569,31 +1846,33 @@ fixed $\theta=0.05$. From the Figures we can appreciate that both bounds have
 similar, but not equal, dependencies on $\theta$ and $\varepsilon$. More
 precisely the bound presented in this work is less dependent on $\varepsilon$
 and only slightly more dependent on $\theta$. It also evident that the sample
-sizes suggested by the bound presented in this work are always much smaller than
-those presented in~\citep{ChakaravarthyPS09} (the vertical axis has logarithmic
-scale). In this comparison we used $\Delta=d$, but almost all real datasets
-we encountered have $d\ll\Delta$ as shown in
-Table~\ref{tab:deltadrealds} which would result in a larger gap between the
-sample sizes provided by the two methods.
+sizes given by the bound presented in this work are always much smaller than
+those presented in~\cite{ChakaravarthyPS09} (the vertical axis has logarithmic
+scale). In this comparison we used $\Delta=v$, but almost all real datasets
+we encountered have $v\ll\Delta$ as shown in Table~\ref{tab:deltadrealds} which
+would result in a larger gap between the sample sizes provided by the two
+methods. On the other hand, we should mention that the sample size given
+by~\cite{ChakaravarthyPS09} can be slightly optimized by using a stricter
+version of the Chernoff bound, but this does not change the fact that it
+depends on the maximum transaction length rather than on the VC-Dimension.
 
 \begin{figure}[tp]
   \centering
   \subfloat[Sample size as function of
   $\theta$,
-  $\varepsilon=0.05$]{\label{fig:compareSamSizeTheta}\includegraphics[width=0.49\textwidth]{vcmine/Fig4a}}
+  $\varepsilon=0.05$]{\label{fig:compareSamSizeTheta}\includegraphics[width=0.75\textwidth]{vcmine/Fig5a}}
   \hfill
   \subfloat[Sample size as function of
   $\varepsilon$,
-  $\theta=0.05$]{\label{fig:compareSamSizeEpsilon}\includegraphics[width=0.49\textwidth]{vcmine/Fig4b}}
+  $\theta=0.05$]{\label{fig:compareSamSizeEpsilon}\includegraphics[width=0.75\textwidth]{vcmine/Fig5b}}
   \caption{Comparison of sample sizes for relative $\varepsilon$-close approximations to
-  $\FI(\Ds,\Itm,\theta)$. $\Delta=d=50$, $\delta=0.05$.}
+  $\FI(\Ds,\Itm,\theta)$. $\Delta=v=50$, $\delta=0.05$.}
   \label{fig:compareSamSize}
 \end{figure}
 
 \begin{table}[hbt]
 \centering
-\caption{Values for maximum transaction length $\Delta$ and upper bound to the
-d-index $d$ for real datasets}
+\caption{Values for maximum transaction length $\Delta$ and d-bound $q$ for real datasets}
 \label{tab:deltadrealds}
 
 \begin{tabular}{lcccccccc}
@@ -1601,7 +1880,7 @@ d-index $d$ for real datasets}
   & accidents & BMS-POS & BMS-Webview-1 & kosarak & pumsb* & retail & webdocs \\
   \midrule
   $\Delta$ & 51 & 164 & 267 & 2497 & 63 & 76 & 71472 \\
-  $d$ & 46 & 81 & 57 & 443 & 59 & 58 & 2452 \\ 
+  $q$ & 46 & 81 & 57 & 443 & 59 & 58 & 2452 \\ 
   \bottomrule
 \end{tabular}
 \end{table}
@@ -1615,14 +1894,14 @@ dataset, which is upper bounded by the maximum integer $d$ such
 that there at least $d$ transactions of length at least $d$ in the dataset. This 
 bound is tight for a large family of datasets.  
 
-We used theoretical tools from statistical learning theory to developed a very
+We used theoretical tools from statistical learning theory to develop a very
 practical solution to an important problem in computer science. The practicality
 of our method is demonstrated in the extensive experimental evaluation which
 confirming our theoretical analysis and suggests that in practice it is possible
 to achieve even better results than what the theory guarantees. Moreover, we
 used this method as the basic building block of an algorithm for the
-MapReduce~\citep{DeanS04} distributed/parallel framework of computation.
-PARMA~\citep{RiondatoDFU12}, our MapReduce algorithm, computes an absolute
+MapReduce~\cite{DeanS04} distributed/parallel framework of computation.
+PARMA~\cite{RiondatoDFU12}, our MapReduce algorithm, computes an absolute
 $\varepsilon$-approximation of the collection of FI's or AR's by mining a number
 of small random samples of the dataset in parallel and then aggregating and
 filtering the collections of patterns that are frequent in the samples. It
@@ -1631,11 +1910,11 @@ with very high confidence while exploiting and adapting to the available
 computational resources and achieving a high level of parallelism, highlighted 
 by the quasi-linear speedup we measured while testing PARMA.
 
-Samples of size as suggested by our methods can be used to mine approximations
+Samples of size as computed by our methods can be used to mine approximations
 of other collection of itemsets, provided that one correctly define the
 approximation taking into account the guarantees on the estimation of the
 frequency provided by the $\varepsilon$-approximation theorem. For example, one
-can can use techniques like those presented in~\citep{MampaeyTV11} on a sample
+can can use techniques like those presented in~\cite{MampaeyTV11} on a sample
 to obtain a small collection of patterns that describe the dataset as best as
 possible.
 
@@ -1646,17 +1925,17 @@ practical methods to solve important problems in knowledge discovery.
 
 It may be possible to develop procedures that give a stricter upper bound to the
 VC-dimension for a given dataset, or that other measures of sample complexity
-like the triangular rank~\citep{NewmanR12}, shatter coefficients, or Rademacher
-inequalities~\citep{BoucheronBL05}, can suggest smaller samples sizes. 
+like the triangular rank~\cite{NewmanR12}, shatter coefficients, or Rademacher
+inequalities~\cite{BoucheronBL05}, can suggest smaller samples sizes. 
 
-\paragraph{Acknowledgements.}
-The authors are thankful to Luc De Raedt for suggesting the connection between
-itemsets and monotone monomials.
+\paragraph{Acknowledgements.} The authors are thankful to Luc De Raedt for
+suggesting the connection between itemsets and monotone monomials. We also thank
+the anonymous reviewers for their many suggestions and comments for the
+improvement of this work.
 
 % Bibliography
 %\bibliographystyle{ACM-Reference-Format-Journals}
 %\bibliography{fimine,vcmine,various,riondapubs,statsigfis}
-
 \iffalse
 \begin{thebibliography}{00}
 
@@ -1696,9 +1975,9 @@ itemsets and monotone monomials.
 \newblock \showarticletitle{{VC}-Dimension and Shortest Path Algorithms}. In
   {\em Automata, Languages and Programming} {\em (Lecture Notes in Computer
   Science)}, Vol. 6755. Springer, Berlin / Heidelberg, 690--699.
-%\newblock
-%\showDOI{%
-%\url{http://dx.doi.org/10.1007/978-3-642-22006-7_58}}
+\newblock
+\showDOI{%
+\url{http://dx.doi.org/10.1007/978-3-642-22006-7_58}}
 
 
 \bibitem[\protect\citeauthoryear{Agrawal, Imieli\'{n}ski, and Swami}{Agrawal
@@ -1711,8 +1990,8 @@ itemsets and monotone monomials.
 \newblock
 Issue 2.
 %\showISSN{0163-5808}
-%\showDOI{%
-%\url{http://dx.doi.org/10.1145/170036.170072}}
+\showDOI{%
+\url{http://dx.doi.org/10.1145/170036.170072}}
 
 
 \bibitem[\protect\citeauthoryear{Agrawal and Srikant}{Agrawal and
@@ -1741,8 +2020,8 @@ Issue 2.
   Bartlett}{1999}]%
         {AnthonyB99}
 {Martin Anthony} {and} {Peter~L. Bartlett}. 1999.
-\newblock {\em Neural Network Learning - Theoretical Foundations}.
-\newblock Cambridge University Press, New York, NY, USA. I--XIV, 1--389 pages.
+\newblock {\em Neural Network Learning -- Theoretical Foundations}.
+\newblock Cambridge University Press, New York, NY, USA.
 %\newblock
 %\showISBNx{978-0-521-57353-5}
 
@@ -1753,10 +2032,10 @@ Issue 2.
 {Michael Benedikt} {and} {Leonid Libkin}. 2002.
 \newblock \showarticletitle{Aggregate Operators in Constraint Query Languages}.
 \newblock {\it J. Comput. System Sci.} {64}, 3 (2002), 628--654.
-%\newblock
+\newblock
 %\showISSN{0022-0000}
-%\showDOI{%
-%\url{http://dx.doi.org/DOI: 10.1006/jcss.2001.1810}}
+\showDOI{%
+\url{http://dx.doi.org/DOI: 10.1006/jcss.2001.1810}}
 
 
 \bibitem[\protect\citeauthoryear{Blum, Ligett, and Roth}{Blum
@@ -1766,10 +2045,10 @@ Issue 2.
 \newblock \showarticletitle{A learning theory approach to non-interactive
   database privacy}. In {\em Proceedings of the 40th annual ACM symposium on
   Theory of computing} {\em (STOC '08)}. ACM, New York, NY, USA, 609--618.
-%\newblock
+\newblock
 %\showISBNx{978-1-60558-047-0}
-%\showDOI{%
-%\url{http://dx.doi.org/10.1145/1374376.1374464}}
+\showDOI{%
+\url{http://dx.doi.org/10.1145/1374376.1374464}}
 
 
 \bibitem[\protect\citeauthoryear{Blumer, Ehrenfeucht, Haussler, and
@@ -1783,8 +2062,8 @@ Issue 2.
 \newblock
 Issue 4.
 %\showISSN{0004-5411}
-%\showDOI{%
-%\url{http://dx.doi.org/10.1145/76359.76371}}
+\showDOI{%
+\url{http://dx.doi.org/10.1145/76359.76371}}
 
 
 \bibitem[\protect\citeauthoryear{Boucheron, Bousquet, and Lugosi}{Boucheron
@@ -1808,10 +2087,10 @@ Issue 4.
 \newblock \showarticletitle{Efficient data reduction with EASE}. In {\em
   Proceedings of the ninth ACM SIGKDD international conference on Knowledge
   discovery and data mining} {\em (KDD '03)}. ACM, New York, NY, USA, 59--68.
-%\newblock
+\newblock
 %\showISBNx{1-58113-737-0}
-%\showDOI{%
-%\url{http://dx.doi.org/10.1145/956750.956761}}
+\showDOI{%
+\url{http://dx.doi.org/10.1145/956750.956761}}
 
 
 \bibitem[\protect\citeauthoryear{Calders, Rigotti, and Boulicaut}{Calders
@@ -1823,9 +2102,9 @@ Issue 4.
   Sets}. In {\em Constraint-Based Mining and Inductive Databases} {\em (Lecture
   Notes in Computer Science)}, Vol. 3848. Springer, Berlin / Heidelberg,
   64--80.
-%\newblock
-%\showDOI{%
-%\url{http://dx.doi.org/10.1007/11615576_4}}
+\newblock
+\showDOI{%
+\url{http://dx.doi.org/10.1007/11615576_4}}
 
 
 \bibitem[\protect\citeauthoryear{Ceglar and Roddick}{Ceglar and
@@ -1837,8 +2116,8 @@ Issue 4.
 \newblock
 Issue 2.
 %\showISSN{0360-0300}
-%\showDOI{%
-%\url{http://dx.doi.org/10.1145/1132956.1132958}}
+\showDOI{%
+\url{http://dx.doi.org/10.1145/1132956.1132958}}
 
 
 \bibitem[\protect\citeauthoryear{Chakaravarthy, Pandit, and
@@ -1851,8 +2130,8 @@ Issue 2.
   Database Theory} {\em (ICDT '09)}. ACM, New York, NY, USA, 276--283.
 %\newblock
 %\showISBNx{978-1-60558-423-2}
-%\showDOI{%
-%\url{http://dx.doi.org/10.1145/1514894.1514927}}
+\showDOI{%
+\url{http://dx.doi.org/10.1145/1514894.1514927}}
 
 
 \bibitem[\protect\citeauthoryear{Chandra and Bhaskar}{Chandra and
@@ -1861,12 +2140,11 @@ Issue 2.
 {B. Chandra} {and} {Shalini Bhaskar}. 2011.
 \newblock \showarticletitle{A new approach for generating efficient sample from
   market basket data}.
-\newblock {\em Expert Systems with Applications\/} {38}, 3 (2011), 1321 --
-  1325.
+\newblock {\em Expert Systems with Applications\/} {38}, 3 (2011), 1321--1325.
 %\newblock
 %\showISSN{0957-4174}
-%\showDOI{%
-%\url{http://dx.doi.org/DOI: 10.1016/j.eswa.2010.07.008}}
+\showDOI{%
+\url{http://dx.doi.org/DOI: 10.1016/j.eswa.2010.07.008}}
 
 
 \bibitem[\protect\citeauthoryear{Chazelle}{Chazelle}{2000}]%
@@ -1888,8 +2166,8 @@ Issue 2.
   '02)}. ACM, New York, NY, USA, 462--468.
 %\newblock
 %\showISBNx{1-58113-567-X}
-%\showDOI{%
-%\url{http://dx.doi.org/10.1145/775047.775114}}
+\showDOI{%
+\url{http://dx.doi.org/10.1145/775047.775114}}
 
 
 \bibitem[\protect\citeauthoryear{Chen, Horng, and Huang}{Chen
@@ -1898,12 +2176,11 @@ Issue 2.
 {Chyouhwa Chen}, {Shi-Jinn Horng}, {and} {Chin-Pin Huang}. 2011.
 \newblock \showarticletitle{Locality sensitive hashing for sampling-based
   algorithms in association rule mining}.
-\newblock {\em Expert Systems with Applications\/} {38}, 10 (2011), 12388 --
-  12397.
+\newblock {\em Expert Systems with Applications\/} {38}, 10 (2011), 12388--12397.
 %\newblock
 %\showISSN{0957-4174}
-%\showDOI{%
-%\url{http://dx.doi.org/DOI: 10.1016/j.eswa.2011.04.018}}
+\showDOI{%
+\url{http://dx.doi.org/10.1016/j.eswa.2011.04.018}}
 
 
 \bibitem[\protect\citeauthoryear{Cheung and Fu}{Cheung and Fu}{2004}]%
@@ -1916,8 +2193,8 @@ Issue 2.
 \newblock
 Issue 9.
 %\showISSN{1041-4347}
-%\showDOI{%
-%\url{http://dx.doi.org/10.1109/TKDE.2004.44}}
+\showDOI{%
+\url{http://dx.doi.org/10.1109/TKDE.2004.44}}
 %
 
 \bibitem[\protect\citeauthoryear{Chuang, Chen, and Yang}{Chuang
@@ -1929,9 +2206,9 @@ Issue 9.
 \newblock In {\em Advances in Knowledge Discovery and Data Mining}, {Tu~Ho},
   {David Cheung}, {and} {Huan Liu} (Eds.). Lecture Notes in Computer Science,
   Vol. 3518. Springer, Berlin / Heidelberg, 37--44.
-%\newblock
-%\showURL{%
-%\url{http://dx.doi.org/10.1007/11430919_59}}
+\newblock
+\showDOI{%
+\url{http://dx.doi.org/10.1007/11430919_59}}
 
 
 \bibitem[\protect\citeauthoryear{Chuang, Huang, and Chen}{Chuang
@@ -1941,17 +2218,18 @@ Issue 9.
 \newblock \showarticletitle{Power-law relationship and self-similarity in the
   itemset support distribution: analysis and applications}.
 \newblock {\em The VLDB Journal\/} {17}, 5 (Aug. 2008), 1121--1141.
-%\newblock
+\newblock
 %\showISSN{1066-8888}
-%\showDOI{%
-%\url{http://dx.doi.org/10.1007/s00778-007-0054-1}}
+\showDOI{%
+\url{http://dx.doi.org/10.1007/s00778-007-0054-1}}
 
 
 \bibitem[\protect\citeauthoryear{Dean and Ghemawat}{Dean and Ghemawat}{2004}]%
         {DeanS04}
 {Jeffrey Dean} {and} {Sanjay Ghemawat}. 2004.
 \newblock \showarticletitle{MapReduce: Simplified Data Processing on Large
-  Clusters}. In {\em OSDI}. 137--150.
+  Clusters}. In {\em 6th Symposium on Operating System Design and Implementation
+               (OSDI 2004)}. USENIX Association, 137--150.
 \newblock
 
 
@@ -1976,8 +2254,8 @@ Issue 9.
   {\em (STOC '06)}. ACM, New York, NY, USA, 375--384.
 %\newblock
 %\showISBNx{1-59593-134-1}
-%\showDOI{%
-%\url{http://dx.doi.org/10.1145/1132516.1132573}}
+\showDOI{%
+\url{http://dx.doi.org/10.1145/1132516.1132573}}
 
 \bibitem[\protect\citeauthoryear{Ford and Fulkerson}{Ford and Fulkerson}{1962}]%
   	{FordF62}
@@ -2006,24 +2284,24 @@ Issue 9.
   monitoring sensor networks}.
 \newblock {\em ACM Trans. Sen. Netw.\/} {6}, 1, Article 1 (Jan. 2010), 27
   pages.
-%\newblock
+\newblock
 %\showISSN{1550-4859}
-%\showDOI{%
-%\url{http://dx.doi.org/10.1145/1653760.1653761}}
+\showDOI{%
+\url{http://dx.doi.org/10.1145/1653760.1653761}}
 
 
 \bibitem[\protect\citeauthoryear{Gross-Amblard}{Gross-Amblard}{2011}]%
         {Gross11}
 {David Gross-Amblard}. 2011.
 \newblock \showarticletitle{Query-preserving watermarking of relational
-  databases and Xml documents}.
+  databases and XML documents}.
 \newblock {\em ACM Trans. Database Syst.\/}  {36}, Article 3 (March 2011), 24
   pages.
 \newblock
 Issue 1.
 %\showISSN{0362-5915}
-%\showDOI{%
-%\url{http://dx.doi.org/10.1145/1929934.1929937}}
+\showDOI{%
+\url{http://dx.doi.org/10.1145/1929934.1929937}}
 
 
 \bibitem[\protect\citeauthoryear{Han, Cheng, Xin, and Yan}{Han
@@ -2036,8 +2314,8 @@ Issue 1.
 \newblock
 Issue 1.
 %\showISSN{1384-5810}
-%\showDOI{%
-%\url{http://dx.doi.org/10.1007/s10618-006-0059-1}}
+\showDOI{%
+\url{http://dx.doi.org/10.1007/s10618-006-0059-1}}
 
 
 \bibitem[\protect\citeauthoryear{Har-Peled and Sharir}{Har-Peled and
@@ -2049,9 +2327,16 @@ Issue 1.
 \newblock {\em Discrete \& Computational Geometry\/} {45}, 3 (2011), 462--496.
 %\newblock
 %\showISSN{0179-5376}
-%\showURL{%
-%\url{http://dx.doi.org/10.1007/s00454-010-9248-1}}
+\showDOI{%
+\url{http://dx.doi.org/10.1007/s00454-010-9248-1}}
 
+\bibitem[\protect\citeauthoryear{Hastie, Tibshirani, and Friedman}{Hastie
+  et~al\mbox{.}}{2009}]%
+  {HastieTF09}
+  {Trevor Hastie}, {Robert Tibshirani}, {and} {Jerome Friedman}. 2009.
+  \newblock {\em The Elements of Statistical Learning: Data Mining, Inference,
+  and Prediction}.
+  \newblock Springer-Verlag, New York, NY, USA.
 
 \bibitem[\protect\citeauthoryear{Haussler and Welzl}{Haussler and
   Welzl}{1986}]%
@@ -2060,11 +2345,17 @@ Issue 1.
 \newblock \showarticletitle{Epsilon-nets and simplex range queries}. In {\em
   Proceedings of the second annual symposium on Computational geometry} {\em
   (SCG '86)}. ACM, New York, NY, USA, 61--71.
-\newblock
+%\newblock
 %\showISBNx{0-89791-194-6}
-%\showDOI{%
-%\url{http://dx.doi.org/10.1145/10515.10522}}
+\showDOI{%
+\url{http://dx.doi.org/10.1145/10515.10522}}
 
+\bibitem[\protect\citeauthoryear{He and Shapiro}{He and Shapiro}{2012}]%
+  {HeS12}
+  {R He} {and} {J Shapiro}. 2012.
+  \newblock \showarticletitle{Bayesian mixture models for frequent itemsets
+  discovery}. 
+  \newblock {\em CoRR\/} abs/1209.6001 (2012), 1--33.
 
 %\bibitem[\protect\citeauthoryear{Hirsch}{Hirsch}{2005}]%
 %        {Hirsch05}
@@ -2078,7 +2369,7 @@ Issue 1.
 \bibitem[\protect\citeauthoryear{Hopcroft and Karp}{Hopcroft and Karp}{1973}]%
   	{HopcroftK73}
 {John E. Hopcroft} {and} {Richard M. Karp}. 1973.
-\newblock \showarticletitle{"An $n^{5/2}$ algorithm for maximum matchings in
+\newblock \showarticletitle{An $n^{5/2}$ algorithm for maximum matchings in
 bipartite graphs}.
 \newblock  {\em SIAM Journal on Computing\/}  {2} (1973),
   225--231.
@@ -2093,9 +2384,9 @@ Issue 4.
 \newblock In {\em Rough Sets and Knowledge Technology}, {Guo-Ying Wang}, {James
   Peters}, {Andrzej Skowron}, {and} {Yiyu Yao} (Eds.). Lecture Notes in
   Computer Science, Vol. 4062. Springer, Berlin / Heidelberg, 496--501.
-%\newblock
-%\showURL{%
-%\url{http://dx.doi.org/10.1007/11795131_72}}
+\newblock
+\showDOI{%
+\url{http://dx.doi.org/10.1007/11795131_72}}
 
 
 \bibitem[\protect\citeauthoryear{Hwang and Kim}{Hwang and Kim}{2006}]%
@@ -2105,9 +2396,9 @@ Issue 4.
   Trimming}. In {\em Proceedings of the 6th IEEE International Conference on
   Computer and Information Technology} {\em (CIT '06)}. IEEE Computer Society,
   24.
-%\newblock
-%\showDOI{%
-%\url{http://dx.doi.org/10.1109/CIT.2006.101}}
+\newblock
+\showDOI{%
+\url{http://dx.doi.org/10.1109/CIT.2006.101}}
 
 
 \bibitem[\protect\citeauthoryear{Jia and Lu}{Jia and Lu}{2005}]%
@@ -2116,10 +2407,10 @@ Issue 4.
 \newblock \showarticletitle{Sampling Ensembles for Frequent Patterns}.
 \newblock In {\em Fuzzy Systems and Knowledge Discovery}, {Lipo Wang} {and}
   {Yaochu Jin} (Eds.). Lecture Notes in Computer Science, Vol. 3613. Springer,
-  Berlin / Heidelberg, 478--478.
-%\newblock
-%\showURL{%
-%\url{http://dx.doi.org/10.1007/11539506_150}}
+  Berlin / Heidelberg, 1197--1206.
+\newblock
+\showDOI{%
+\url{http://dx.doi.org/10.1007/11539506_150}}
 
 
 \bibitem[\protect\citeauthoryear{Jia and Gao}{Jia and Gao}{2005}]%
@@ -2132,8 +2423,8 @@ Issue 4.
 \newblock
 Issue 3.
 %\showISSN{1000-9000}
-%\showURL{%
-%\url{http://dx.doi.org/10.1007/s11390-005-0309-5}}
+\showDOI{%
+\url{http://dx.doi.org/10.1007/s11390-005-0309-5}}
 
 
 \bibitem[\protect\citeauthoryear{John and Langley}{John and Langley}{1996}]%
@@ -2152,9 +2443,9 @@ Issue 3.
 {J. Kleinberg}, {M. Sandler}, {and} {A. Slivkins}. 2008.
 \newblock \showarticletitle{Network Failure Detection and Graph Connectivity}.
 \newblock {\it SIAM J. Comput.} {38}, 4 (2008), 1330--1346.
-%\newblock
-%\showDOI{%
-%\url{http://dx.doi.org/10.1137/070697793}}
+\newblock
+\showDOI{%
+\url{http://dx.doi.org/10.1137/070697793}}
 
 
 \bibitem[\protect\citeauthoryear{Kleinberg}{Kleinberg}{2003}]%
@@ -2164,6 +2455,12 @@ Issue 3.
 \newblock {\em Internet Mathematics\/} {1}, 1 (2003), 37--55.
 %\newblock
 
+\bibitem[\protect\citeauthoryear{Lehmann and Casella}{Lehmann and
+  Casella}{1998}]%
+  {LehmannC98}
+  {Erich~L. Lehmann} {and} {George Casella}. 1998.
+  \newblock {\em Theory of Point Estimation}.
+  \newblock Springer-Verlag, New York, NY, USA.
 
 \bibitem[\protect\citeauthoryear{Li and Gopalan}{Li and Gopalan}{2005}]%
         {LiG04}
@@ -2173,8 +2470,8 @@ Issue 3.
   Webb} {and} {Xinghuo Yu} (Eds.). Lecture Notes in Computer Science, Vol.
   3339. Springer, Berlin / Heidelberg, 73--75.
 %\newblock
-%\showURL{%
-%\url{http://dx.doi.org/10.1007/978-3-540-30549-1_35}}
+\showDOI{%
+\url{http://dx.doi.org/10.1007/978-3-540-30549-1_35}}
 
 
 \bibitem[\protect\citeauthoryear{Li, Long, and Srinivasan}{Li
@@ -2184,10 +2481,10 @@ Issue 3.
 \newblock \showarticletitle{Improved Bounds on the Sample Complexity of
   Learning}.
 \newblock {\it J. Comput. System Sci.} {62}, 3 (2001), 516--527.
-%\newblock
+\newblock
 %\showISSN{0022-0000}
-%\showDOI{%
-%\url{http://dx.doi.org/DOI: 10.1006/jcss.2000.1741}}
+\showDOI{%
+\url{http://dx.doi.org/10.1006/jcss.2000.1741}}
 
 
 \bibitem[\protect\citeauthoryear{Linial, Mansour, and Rivest}{Linial
@@ -2197,10 +2494,10 @@ Issue 3.
 \newblock \showarticletitle{Results on learnability and the
   {V}apnik-{C}hervonenkis dimension}.
 \newblock {\em Information and Computation\/} {90}, 1 (1991), 33--49.
-%\newblock
+\newblock
 %\showISSN{0890-5401}
-%\showDOI{%
-%\url{http://dx.doi.org/10.1016/0890-5401(91)90058-A}}
+\showDOI{%
+\url{http://dx.doi.org/10.1016/0890-5401(91)90058-A}}
 %
 
 \bibitem[\protect\citeauthoryear{L\"{o}ffler and Phillips}{L\"{o}ffler and
@@ -2212,10 +2509,17 @@ Issue 3.
 \newblock In {\em Algorithms - ESA 2009}, {Amos Fiat} {and} {Peter Sanders}
   (Eds.). Lecture Notes in Computer Science, Vol. 5757. Springer, Berlin /
   Heidelberg, 313--324.
-%\newblock
-%\showURL{%
-%\url{http://dx.doi.org/10.1007/978-3-642-04128-0_29}}
+\newblock
+\showDOI{%
+\url{http://dx.doi.org/10.1007/978-3-642-04128-0_29}}
 
+
+\bibitem[\protect\citeauthoryear{McDonald, Shalizi, and Schervish}{McDonald et
+  al\mbox{.}}{2011}]%
+  {McDonaldSS11}
+  {Daniel~J. McDonald}, {Cosma Rohilla Shalizi}, {and} {Mark Schervish}. 2011.
+  \newblock \showarticletitle{Estimated VC Dimension for Risk Bounds}.
+  \newblock {\em arXiv preprint}, arXiv:1111.3404 (2011).
 
 \bibitem[\protect\citeauthoryear{Mahafzah, Al-Badarneh, and Zakaria}{Mahafzah
   et~al\mbox{.}}{2009}]%
@@ -2224,9 +2528,9 @@ Issue 3.
 \newblock \showarticletitle{A new sampling technique for association rule
   mining}.
 \newblock {\em Journal of Information Science\/} {35}, 3 (2009), 358--376.
-%\newblock
-%\showDOI{%
-%\url{http://dx.doi.org/10.1177/0165551508100382}}
+\newblock
+\showDOI{%
+\url{http://dx.doi.org/10.1177/0165551508100382}}
 
 
 \bibitem[\protect\citeauthoryear{Mampaey, Tatti, and Vreeken}{Mampaey
@@ -2239,8 +2543,8 @@ Issue 3.
   York, NY, USA, 573--581.
 \newblock
 %\showISBNx{978-1-4503-0813-7}
-%\showDOI{%
-%\url{http://dx.doi.org/10.1145/2020408.2020499}}
+\showDOI{%
+\url{http://dx.doi.org/10.1145/2020408.2020499}}
 
 
 \bibitem[\protect\citeauthoryear{Mannila, Toivonen, and Verkamo}{Mannila
@@ -2277,10 +2581,10 @@ Issue 3.
 {Thomas Natschl\"{a}ger} {and} {Michael Schmitt}. 1996.
 \newblock \showarticletitle{Exact {VC}-dimension of Boolean monomials}.
 \newblock {\it Inform. Process. Lett.} {59}, 1 (1996), 19--20.
-%\newblock
+\newblock
 %\showISSN{0020-0190}
-%\showDOI{%
-%\url{http://dx.doi.org/10.1016/0020-0190(96)00084-1}}
+\showDOI{%
+\url{http://dx.doi.org/10.1016/0020-0190(96)00084-1}}
 
 
 \bibitem[\protect\citeauthoryear{Newman and Rabinovich}{Newman and
@@ -2302,8 +2606,8 @@ Issue 3.
   rules}. In {\em Proceedings of the 2002 IEEE International Conference on Data
   Mining} {\em (ICDM '02)}. IEEE Computer Society, 354--361.
 \newblock
-%\showDOI{%
-%\url{http://dx.doi.org/10.1109/ICDM.2002.1183923}}
+\showDOI{%
+\url{http://dx.doi.org/10.1109/ICDM.2002.1183923}}
 
 
 \bibitem[\protect\citeauthoryear{Pietracaprina, Riondato, Upfal, and
@@ -2327,8 +2631,8 @@ Issue 3.
   {and} {Einoshin Suzuki} (Eds.). Lecture Notes in Computer Science, Vol. 4755.
   Springer, Berlin / Heidelberg, 275--280.
 \newblock
-%\showURL{%
-%\url{http://dx.doi.org/10.1007/978-3-540-75488-6_29}}
+\showDOI{%
+\url{http://dx.doi.org/10.1007/978-3-540-75488-6_29}}
 
 
 \bibitem[\protect\citeauthoryear{Riondato, Akdere, \c{C}etintemel, Zdonik, and
@@ -2388,6 +2692,21 @@ Issue 3.
 %\showURL{%
 %\url{http://portal.acm.org/citation.cfm?id=944919.944956}}
 
+\bibitem[\protect\citeauthoryear{Shao, Cherkassky and Li}{Shao et
+  al\mbox{.}}{2000}]%
+  {ShaoCL00}
+  {Xuhui Shao}, {Vladimir Cherkassky}, {and} {William Li}. 1994.
+  \newblock \showarticletitle{Measuring the VC-dimension using optimized
+  experimental design}.
+  \newblock {\em Neural Computation\/} {12}, 8 (2000), 1969--1986.
+ 
+\bibitem[\protect\citeauthoryear{Tan, Kumar, and Srivastava}{Tan et
+  al\mbox{.}}{2004}]%
+  {TanKS04}
+  {Pang-Ning Tan}, {Vipin Kumar}, {and} {Jaideep Srivastava}. 2004.
+  \newblock \showarticletitle{Selecting the right objective measure for
+  association analysis}.
+  \newblock {\em Information Systems\/} {29}, (2004), 293--313.
 
 \bibitem[\protect\citeauthoryear{Toivonen}{Toivonen}{1996}]%
         {Toivonen96}
@@ -2420,10 +2739,17 @@ Issue 3.
   of Events to Their Probabilities}.
 \newblock {\em Theory of Probability and its Applications\/} {16}, 2 (1971),
   264--280.
-%\newblock
-%\showDOI{%
-%\url{http://dx.doi.org/10.1137/1116025}}
+\newblock
+\showDOI{%
+\url{http://dx.doi.org/10.1137/1116025}}
 
+\bibitem[\protect\citeauthoryear{Vapnik and Levin and Le Cun}{Vapnik et
+  al\mbox{.}}{1994}]%
+  	{VapnikLLC94}
+    {Vladimir~N. Vapnik}, {Esther Levin}, {and} {Yann Le Cun}. 1994.
+    \newblock \showarticletitle{Measuring the VC-dimension of a learning
+    machine}.
+    \newblock {\em Neural Computation\/} {6}, 5 (1994), 851--876.
 
 \bibitem[\protect\citeauthoryear{Vasudevan and Vojonovi\'{c}}{Vasudevan and
   Vojonovi\'{c}}{2009}]%
@@ -2440,10 +2766,10 @@ Issue 3.
 \newblock \showarticletitle{An efficient algorithm for sequential random
   sampling}.
 \newblock {\em ACM Trans. Math. Softw.\/} {13}, 1 (March 1987), 58--67.
-%\newblock
+\newblock
 %\showISSN{0098-3500}
-%\showDOI{%
-%\url{http://dx.doi.org/10.1145/23002.23003}}
+\showDOI{%
+\url{http://dx.doi.org/10.1145/23002.23003}}
 
 
 \bibitem[\protect\citeauthoryear{Wang, Han, Lu, and Tzvetkov}{Wang
@@ -2457,8 +2783,8 @@ Issue 3.
 \newblock
 Issue 5.
 %\showISSN{1041-4347}
-%\showDOI{%
-%\url{http://dx.doi.org/10.1109/TKDE.2005.81}}
+\showDOI{%
+\url{http://dx.doi.org/10.1109/TKDE.2005.81}}
 
 
 \bibitem[\protect\citeauthoryear{Wang, Dash, and Chia}{Wang
@@ -2481,9 +2807,9 @@ Issue 5.
   association rules}. In {\em Proceedings of the Seventh International Workshop
   on Research Issues in Data Engineering} {\em (RIDE '97)}. IEEE Computer
   Society, 42 --50.
-%\newblock
-%\showDOI{%
-%\url{http://dx.doi.org/10.1109/RIDE.1997.583696}}
+\newblock
+\showDOI{%
+\url{http://dx.doi.org/10.1109/RIDE.1997.583696}}
 
 
 \bibitem[\protect\citeauthoryear{Zhang, Zhang, and Webb}{Zhang
@@ -2496,8 +2822,8 @@ Issue 5.
 \newblock
 Issue 1.
 %\showISSN{0924-669X}
-%\showURL{%
-%\url{http://dx.doi.org/10.1023/A:1020995206763}}
+\showDOI{%
+\url{http://dx.doi.org/10.1023/A:1020995206763}}
 
 
 \bibitem[\protect\citeauthoryear{Zhao, Zhang, and Zhang}{Zhao
@@ -2512,6 +2838,6 @@ Issue 1.
 %\showURL{%
 %\url{http://portal.acm.org/citation.cfm?id=1566561.1566582}}
 
-
 \end{thebibliography}
 \fi
+

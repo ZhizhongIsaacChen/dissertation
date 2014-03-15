@@ -1,0 +1,107 @@
+\section{Related work}\label{sec:centrsamplprevwork}
+Over the years, a number of centrality measures have been defined~\citep{Newman10}. In this work
+we focus on betweenness centrality and some of its variants. 
+
+Betweenness centrality was introduced in the sociology
+literature~\citep{Anthonisse71,Freeman77}. \citet{Brandes08} presents a number
+of minor variants. A particularly interesting one, $k$-bounded-distance
+betweenness, limits the length of the shortest paths considered when computing
+the centrality~\citep{BorgattiE06,Brandes08,PfefferC12}. This is not to be
+confused with $k$-path betweenness centrality defined
+by~\citet{KourtellisASIT12}, which considers simple random walks that are not
+necessarily shortest paths. \citet{DolevEP10} present a generalization of
+betweenness centrality which takes into account routing policies in the network. %
+\ifproof
+\citet{OpsahlAS10} define a new distance function between pair of vertices in
+order to penalize paths with a high number of hops in weighted network. This
+function induces a generalized and parametrized definition of betweenness.
+\fi
+
+The need of fast algorithms to compute the betweenness of vertices in a graph
+arose as large online social networks started to appear. \citet{Brandes01} presents the
+first efficient algorithm for the task, running in time $O(nm)$ on
+unweighted graphs and $O(nm+n^2\log n)$ on weighted ones. The
+algorithm computes, for each vertex $v$, the shortest path to every other vertex
+and then traverses these paths backwards to efficiently compute the contribution
+of the shortest paths from $v$ to the betweenness of other vertices. For very
+large networks, the cost of this algorithm would still be prohibitive in
+practice, so many approximation algorithms were
+developed~\citep{JacobKLPT05,BrandesP07,BaderKMM07,GeisbergerSS08,MaiyaBW10,LimMRTB11}.
+The use of random sampling was one of the more natural approaches to speed up
+the computation of betweenness. Inspired by the work of~\citet{EppsteinW04},
+\citet{JacobKLPT05} and independently \citet{BrandesP07} present an algorithm
+that mimics the exact one, with the difference that,
+instead of computing the contribution of all vertices to the betweenness of the
+others, it only considers the contributions of some vertices sampled uniformly
+at random. To guarantee that all estimates are within $\varepsilon$ from their
+real value with probability at least $1-\delta$, the algorithm
+from~\citep{JacobKLPT05,BrandesP07} needs $O(\log(n/\delta)/\varepsilon^2)$
+samples. The analysis for the derivation of the sample size uses Hoeffding bounds~\citep{Hoeffding63} 
+and the union bound~\citep{MitzenmacherU05}. 
+\citet{GeisbergerSS08} noticed that this can lead
+to an overestimation of the betweenness of vertices that are close to the
+sampled ones and introduced different unbiased estimators that are
+experimentally shown to have smaller variance and do not suffer from this
+overshooting. Our algorithm is different from these because we sample, each
+time, a single random shortest path. %between two randomly chosen nodes. 
+This leads to a much smaller sample size and less work done for each sample,
+resulting in a much faster way to compute approximations of the betweenness with
+the same probabilistic guarantees. 
+\ifproof
+Although existing algorithms \citep{BrandesP07,JacobKLPT05,GeisbergerSS08} can be extended to return a
+superset of the top-$K$ vertices with highest betweenness, they only offer an
+\emph{additive} approximation guarantee, while our algorithm for the top-$K$
+vertices offers a \emph{multiplicative} factor guarantee, which is much
+stricter. 
+\fi
+We delve more in the comparisons with these algorithms in
+Sect.~\ref{sec:centrsampldiscussion} and~\ref{sec:centrsamplexper}. 
+
+A number of works explored
+the use of adaptive sampling, in contrast with the previous algorithms (and
+ours) which use a fixed sample size. \citet{BaderKMM07} present an adaptive
+sampling algorithm which computes good estimations for the betweenness of
+high-centrality vertices, by keeping track of the partial contribution of each
+sampled vertex, obtained by performing a single-source shortest paths
+computation to all other vertices. \citet{MaiyaBW10} use concepts from expander
+graphs to select a connected sample of vertices. They estimate the betweenness
+from the sample, which includes the vertices with high centrality. They build
+the connected sample by adding the vertex which maximizes the number of
+connections with vertices not already in the sample. Modified versions
+of this algorithm and an extensive experimental evaluation appeared
+in~\citep{LimMRTB11}. The algorithm does not offer any guarantee on the quality
+of the approximations. Compared to these adaptive sampling approaches, our
+methods ensure that the betweenness of all (or top-$K$) vertices is well
+approximated, while using a fixed, predetermined amount of samples.
+\citet{SaryuceSKC13} present an algorithm that pre-processes the network in
+multiple ways by removing degree-1 vertices and identical vertices, and splits it
+in separate components where the computation of betweenness can be performed
+independently and then aggregated. They do not present an analysis of the
+complexity of the algorithm. 
+
+In the analysis of our algorithm we use results from VC-dimension
+theory~\citep{VapnikC71}, a key component of statistical learning theory. We
+compute an upper bound to the VC-dimension of a range set defined on shortest
+paths. \citet{KranakisKRUW97} present a number of results on the VC-dimension of
+various range sets for graphs (stars, connected sets of vertices, sets of
+edges), but do not deal with shortest paths. \citet{AbrahamDFGW11} use
+VC-dimension to speed up shortest path computation but their range set is
+different from the one we use: their ground set is the set of vertices while
+ours is defined on shortest paths.
+
+\ifproof
+The present work extends substantially the preliminary
+version~\citep{RiondatoK14WSDM}. The proof of all the theorems and lemmas are
+presented here for the first time. Examples of betweenness centrality and of the
+concept of VC-dimension have been added to Sect.~\ref{sec:centrsamplprelims}. A major new
+contribution is a tighter analysis of the algorithm from~\citep{BrandesP07},
+presented in Sect.~\ref{sec:centrsampldiscussion}. We also discuss many other variants of
+betweenness, including edge betweenness in Sect.~\ref{sec:centrsamplvariants}, where we
+also present a new tighter analysis of the algorithm for $k$-path betweenness
+centrality by~\citep{KourtellisASIT12}.  %An expanded
+%motivation for the top-$k$ algorithm opens Sect.~\ref{sec:centrsampltopk}. 
+%Finally, we report many additional
+%results of our experimental evaluation, including results on the top-$k$
+%algorithm, in Sect.~\ref{sec:centrsamplexper}.
+\fi
+

@@ -1,5 +1,5 @@
 \section{Experimental Evaluation}
-\label{sec:eval}
+\label{sec:parmaeval}
 
 We evaluate the performance of PARMA using Amazon's Elastic
 MapReduce platform. We used instances of type \emph{m1.xlarge}, which
@@ -33,9 +33,9 @@ experiments, $\varepsilon = 0.05$ and $\delta = 0.01$. This means that
 the collection of itemsets mined by PARMA will be a 0.05-approximation with
 probability 0.99. In practice, we show later that the results are
 much more accurate than what this. For all experiments other than the
-minimum frequency performance comparison in Figure \ref{fig:frequency} and for
-the accuracy comparison in Figures~\ref{fig:absfreqerr}
-and~\ref{fig:confintwidth}, $\theta$ was kept constant at 0.1.
+minimum frequency performance comparison in Figure \ref{fig:parmafrequency} and for
+the accuracy comparison in Figures~\ref{fig:parmaabsfreqerr}
+and~\ref{fig:parmaconfintwidth}, $\theta$ was kept constant at 0.1.
 
 \begin{comment}
 We focus on three main aspects in the experimental analysis of PARMA. First is the runtime
@@ -60,7 +60,7 @@ correlation among maximal potentially large itemsets & 0.1 \\
 corruption of maximal potentially large itemsets & 0.1 \\ \hline
 \end{tabular}
   \caption{Parameters used to generate the datasets for the runtime comparison between 
-  DistCount and PARMA in Figure \ref{fig:performance}.}
+  DistCount and PARMA in Figure \ref{fig:parmaperformance}.}
   \label{tab:param1}
 \end{table}
 
@@ -76,7 +76,7 @@ corruption of maximal potentially large itemsets & 0.1 \\
 \hline
 \end{tabular}
   \caption{Parameters used to generate the datasets for the runtime comparison
-  between PFP and PARMA in Figure \ref{fig:performance}.}
+  between PFP and PARMA in Figure \ref{fig:parmaperformance}.}
   \label{tab:param2}
 \end{table}
 Due to space limitations, we do not report the results of the experiments to
@@ -90,7 +90,7 @@ performance against two exact FIM algorithms on MapReduce,
 associated with each stage of PARMA.
 
 
-Figure~\ref{fig:performance} (top) shows the comparison
+Figure~\ref{fig:parmaperformance} (top) shows the comparison
 between PARMA and DistCount.
 \begin{comment}
 As discussed previously, due to
@@ -135,14 +135,14 @@ dataset sizes. The reasons for this will be discussed in detail later.
     \includegraphics[width=0.35\textwidth]{parma/distributed_counting}
     \includegraphics[width=0.35\textwidth]{parma/performance}
   \caption{A runtime comparison of PARMA with DistCount (top) and PFP (bottom).}
-\label{fig:performance}
+\label{fig:parmaperformance}
 \end{figure}
 
 For the performance comparison with PFP, 10 datasets were generated
 using parameter values from Table \ref{tab:param2} and ranging in size
 from 10 to 50 million transactions.
 The results are shown in
-Figure~\ref{fig:performance} (bottom).
+Figure~\ref{fig:parmaperformance} (bottom).
   For every dataset tested, PARMA was able
 to mine the dataset roughly 30-55\% faster than PFP. The reason for the
 relative performance advantage of PARMA is twofold. The first (and
@@ -171,7 +171,7 @@ have implemented runtime timers at very fine granularities throughout
 our algorithm. The timers' values are written to Hadoop job logs for
 analysis. This breakdown allows us to not only analyze the overall
 runtime, but also the sections of the algorithm whose runtimes are
-affected by an increase in data size. In Figure \ref{fig:breakdown1}, a
+affected by an increase in data size. In Figure \ref{fig:parmabreakdown1}, a
 breakdown of PARMA runtimes is shown for each of the six segments of the
 algorithm, which include a map, shuffle and reduce phase for each of the
 two stages. 
@@ -200,7 +200,7 @@ due to the relatively greater number of frequent itemsets.
 
 \begin{comment}
 To see that this is indeed what is
-happening, we refer again to Figure \ref{fig:breakdown1}. As expected,
+happening, we refer again to Figure \ref{fig:parmabreakdown1}. As expected,
 the sample generation phase (stage 1, map) is smaller relative to the
 larger datasets. However, the local frequent itemset mining phase (stage
 1, reduce) is longer than any of the larger datasets. This is because
@@ -228,7 +228,7 @@ itemsets.
   \caption{A comparison of runtimes of the map/reduce/shuffle phases
 of PARMA, as a function of number of transactions. Run on
 an 8 node Elastic MapReduce cluster.}
-\label{fig:breakdown1}
+\label{fig:parmabreakdown1}
 \end{figure}
 
 \begin{figure}[tb]
@@ -237,12 +237,12 @@ an 8 node Elastic MapReduce cluster.}
   \caption{A comparison of runtimes of the map/reduce/shuffle phases
 of PARMA, as a function of minimum frequency. Clustered by stage. Run
 on an 8 node Elastic MapReduce cluster.}
-\label{fig:frequency}
+\label{fig:parmafrequency}
 \end{figure}
 
 
 \begin{comment}
-In Figure \ref{fig:breakdown2}, a breakdown of total runtimes is shown
+In Figure \ref{fig:parmabreakdown2}, a breakdown of total runtimes is shown
 clustered by stage. In this view, it is apparent that most of the
 phases of the algorithm are nearly constant across data sizes. The
 obvious increase is the map of stage 1, which was discussed
@@ -254,13 +254,13 @@ appropriate reducer for counting. Thus, all this data is being moved
 across the network, which is manifested in the shuffle phase of stage
 2. The more frequent itemsets, the more data there is to shuffle
 across the network, which results in longer runtimes. Also, in
-Figure~\ref{fig:breakdown2} we once again notice that the 5 million
+Figure~\ref{fig:parmabreakdown2} we once again notice that the 5 million
 transaction dataset is an outlier. The longer than expected phase is
 the shuffle phase of stage 2, which again suggests that this dataset
 took longer to mine because more frequent itemsets were found.
 \end{comment}
 
-Figure \ref{fig:frequency} shows the breakdown of PARMA runtimes as
+Figure \ref{fig:parmafrequency} shows the breakdown of PARMA runtimes as
 the minimum frequency at which the data is mined at is changed. Data
 size was kept constant at 10 million transactions. Minimum frequency
 is used by the local frequent itemset mining algorithm to prune
@@ -280,7 +280,7 @@ lower frequencies are relatively small.
 %  \caption{A Comparison of runtimes of the map/reduce/shuffle phases
 %of PARMA, as a function of input dataset size. Clustered by stage. Run
 %on an 8 node Elastic MapReduce cluster.}
-%\label{fig:breakdown2}
+%\label{fig:parmabreakdown2}
 %\end{figure}
 
 %\vspace{-10pt}
@@ -290,7 +290,7 @@ baseline. Because PARMA is intended to be a parallel algorithm, the choice of a
 two-nodes cluster was more appropriate than the standard single node
 baseline. For the dataset, we used a 10 million transaction database
 generated using the parameters in Table \ref{tab:param2}. The results
-are shown in Figure \ref{fig:speedup}. The three lines on this graph
+are shown in Figure \ref{fig:parmaspeedup}. The three lines on this graph
 represent the relative speedup of both stage 1 and stage 2 as well as
 the overall PARMA algorithm. The graph indicates that stage 1 is highly
 parallelizable and follows a near-ideal speedup for up to 8 nodes,
@@ -318,14 +318,14 @@ would continue to scale.
  \centering
     \includegraphics[width=0.4\textwidth]{parma/speedup}
   \caption{The speedup analysis of PARMA, broken down by stages.}
-\label{fig:speedup}
+\label{fig:parmaspeedup}
 \end{figure}
 
 \begin{figure}[tb]
  \centering
     \includegraphics[width=0.4\textwidth]{parma/scalability}
   \caption{The scalability of PARMA as both data and cluster size are increased.}
-\label{fig:scalability}
+\label{fig:parmascalability}
 \end{figure}
 
 Also, as is clearly visible in the graph, the sub-ideal overall
@@ -345,7 +345,7 @@ fewer values, resulting in faster aggregation. The small but existent positive
 change in the line for stage 2 is a result of this slight speedup of the reduce
 phase. 
 
-Figure \ref{fig:scalability} depicts the scalability of PARMA as both
+Figure \ref{fig:parmascalability} depicts the scalability of PARMA as both
 the size of the dataset (i.e. number of transactions) and the number of
 nodes in the cluster are increased. The data and nodes are scaled
 proportionally so that the ratio of data to nodes remains constant
@@ -387,7 +387,7 @@ itemsets from the entire dataset, for different values of the parameters
 $\varepsilon$, $\delta$, and $\theta$, and for different datasets. A first important
 result is that in all the runs, the collection computed by PARMA was indeed a
 $\varepsilon$-approximation to the real one, i.e., all the properties from
-Definition~\ref{def:eapproxfi} were satisfied. This fact suggests that the confidence in
+Definition~\ref{def:parmaeapproxfi} were satisfied. This fact suggests that the confidence in
 the result obtained by PARMA is actually greater than the level $1-\delta$
 suggested by the analysis. This can be explained by considering that we had to
 use potentially loose theoretical bounds in the analysis to make it tractable. 
@@ -396,7 +396,7 @@ Given that all real frequent itemsets were included in the output, we then
 focused on how many itemsets with real frequency in the interval
 $[\theta-\varepsilon,\theta)$ were included in the output. It is important to
 notice that these itemsets would be \emph{acceptable} false positives, as
-Definition~\ref{def:eapproxfi} does not forbid them to be present in the output.
+Definition~\ref{def:parmaeapproxfi} does not forbid them to be present in the output.
 We stress again that the output of PARMA never contained \emph{non-acceptable}
 false positives, i.e. itemsets with real frequency less than the minimum
 frequency threshold $\theta$. The number of acceptable false positives included in the
@@ -436,13 +436,13 @@ these collections.
 We conducted an evaluation of the accuracy of two other components of the
 output of PARMA, namely the estimated frequencies for the itemsets in the output
 and the width of the confidence bounds for these estimations. In
-Figure~\ref{fig:absfreqerr} we show the distribution of the absolute error in
+Figure~\ref{fig:parmaabsfreqerr} we show the distribution of the absolute error in
 the estimation, i.e. $|\tilde{f}(X)-f_\Ds(X)|$ for all itemsets $X$ in the
 output of PARMA, as $\theta$ varies. The lower end of the ``whisker'' indicates the minimum error,
 the lower bound of the box corresponds to the first quartile, the segment across
 the box to the median, and the upper bound of the box to the third quartile. The
 top end of the whisker indicates the maximum error, and the central diamond
-shows the mean. This figure (and also Figure~\ref{fig:confintwidth}) shows the values
+shows the mean. This figure (and also Figure~\ref{fig:parmaconfintwidth}) shows the values
 for a run of PARMA on samples of the 10M dataset, with $\varepsilon=0.05$ and
 $\delta=0.01$. We can see that even the maximum values are one order of
 magnitude smaller than the threshold of $0.05$ guaranteed by the analysis, and
@@ -460,17 +460,17 @@ a very large portion of the output.
  \centering
     \includegraphics[width=0.3\textwidth]{parma/absfreqerr}
   \caption{Error in frequency estimations as frequency varies.}
-  \label{fig:absfreqerr}
+  \label{fig:parmaabsfreqerr}
 \end{figure}
 
 \begin{figure}[tb]
  \centering
     \includegraphics[width=0.3\textwidth]{parma/confintwidth}
   \caption{Width of the confidence intervals as frequency varies.}
-  \label{fig:confintwidth}
+  \label{fig:parmaconfintwidth}
 \end{figure}
 
-Finally, in Figure~\ref{fig:confintwidth} we show the distribution of the widths
+Finally, in Figure~\ref{fig:parmaconfintwidth} we show the distribution of the widths
 of the confidence intervals $\mathcal{K}(A)$ for the frequency estimations
 $\tilde{f}(A)$ of the itemsets $A$ in the output of PARMA. Given that
 $\varepsilon=0.05$, the maximum allowed width was $2\varepsilon=0.1$. It is
@@ -480,7 +480,7 @@ shown by the small height of the boxes, suggesting that PARMA is extremely
 consistent in giving very high quality confidence intervals for the estimations.
 We state again that in all runs of PARMA in our tests, all the confidence
 intervals contained the estimation and the real frequency, as requested by
-Definition~\ref{def:eapproxfi}. As seen in the case of the estimation
+Definition~\ref{def:parmaeapproxfi}. As seen in the case of the estimation
 error, the distribution of the widths shifts down at lower thresholds $\theta$.
 This is motivated by the higher number of itemsets in the output of PARMA at
 those frequencies. Their presence makes the distribution more robust to

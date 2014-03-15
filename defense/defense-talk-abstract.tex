@@ -8,12 +8,34 @@
 \usepackage{amssymb}
 \usepackage{mathtools}
 
-\title{Randomized }
-\author{Matteo Riondato}
+\title{Using VC-dimension for faster sampling and tighter analysis}
+\author{Matteo Riondato
 \date{}
 \begin{document}
 \maketitle
 \thispagestyle{empty}
+In my dissertation I show how it is possible to use concepts and results from
+statistical learning theory to develop fast sampling-based randomized algorithm
+for many important problems in data analytics, including pattern mining,
+selectivity estimation, and graph analysis. 
+
+In this talk I will show how to use VC-dimension to compute fast estimations
+of betweenness centrality, a useful measure for graph analysis that
+quantifies the importance of a vertex in a network in terms of the fraction of
+shortest paths (between all pairs of vertices in the network) that pass through
+that vertex. I'll present efficient randomized algorithms for approximating
+betweenness centrality. One algorithm computes an additive
+$(\varepsilon,\delta)$-approximation of the vector of betweenness centrality of
+all the vertices in the graph. The second algorithm focuses on the top-K
+vertices with highest betweenness and computes a multiplicative
+$(\varepsilon,\delta)$-approximation. This is the first algorithm that reaches
+such approximation for the top-K vertices. Both algorithms work by sampling
+shortest paths from the network. The sample size depends on the VC-dimension of
+the problem, which we show being bounded from above by the logarithm of the
+maximum number of nodes in a shortest path. This bound (and therefore the sample
+size) is tight in the sense that some graphs have exactly the VC-dimension that
+we compute. Our analysis also allows us to tighten the analysis of an algorithm
+by Brandes and Pich, and achieve even more accurate results.
 
 \end{document}
 

@@ -1,38 +1,34 @@
-\documentclass[11pt]{report}
-\usepackage[T1]{fontenc}
-\usepackage{ae,aecompl}
+%\documentclass{brownthesis}
+\documentclass[final,nofigures,notables]{brownthesis}
+\usepackage{lmodern}
+\usepackage[T1]{fontenc} 
+\usepackage{textcomp}
 \usepackage[utf8x]{inputenc}
-%\usepackage[cm]{fullpage}
-\usepackage{mdwlist}
-%\usepackage[small]{caption}
-\usepackage[sort&compress,square]{natbib}
-\usepackage{ctable}
-%\makeatletter
-%\renewcommand\bibsection%
-%{
-%  \section*{\refname
-%    \@mkboth{\MakeUppercase{\refname}}{\MakeUppercase{\refname}}}
-%}
-%\makeatother
-
-\usepackage{times}
-\usepackage{dsfont}
+\usepackage[ruled,linesnumbered]{algorithm2e}
 \usepackage{amsfonts}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{amsthm}
-\usepackage{mathtools}
-\usepackage{graphicx}
-\usepackage{subfig}
-\usepackage{multirow}
 \usepackage{bigstrut}
-\usepackage{url}
-\usepackage[ruled,linesnumbered]{algorithm2e}
-\usepackage{mathptmx}      % use Times fonts if available on your TeX system
-\DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n} % Use standard fonts for calligraphic
+\usepackage{booktabs}
+\usepackage{caption}
+\usepackage{ctable} % TODO TO REMOVE
+\usepackage{dsfont}
 \usepackage{float}
-\usepackage{xspace}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{mathtools}
+\usepackage{multirow}
+\usepackage[sort,compress,numbers]{natbib}
+\usepackage{multirow}
+\usepackage{setspace}
+\usepackage{subfig}
+%\usepackage{subfigure} % TODO UNDERSTAND WHICH ONE TO USE
+\usepackage{url}
 \usepackage{verbatim}
+\usepackage{xspace}
+
+\usepackage[show]{notes-alt}
 
 \newcommand{\Sam}{{\cal S}}
 \newcommand{\Ds}{{\cal D}}
@@ -41,11 +37,26 @@
 \newcommand\Itm{{\cal I}}
 \newcommand\TOPK{\mathsf{TOPK}}
 \newcommand\FI{\mathsf{FI}}
-\newcommand\RFI{\mathsf{RFI}}
+\newcommand\TFI{\mathsf{TFI}}
 \newcommand\AR{\mathsf{AR}}
 \newcommand\VC{\mathsf{VC}}
 \newcommand\EVC{\mathsf{EVC}}
 \newcommand{\PARMM}{PARMA\xspace}
+\newcommand\prob{\pi}
+\newcommand\tfreq{t_\prob}
+\newcommand\range{\mathcal{R}}
+\newcommand\eb{\mathsf{eb}}
+%\newcommand\b{\mathsf{b}}
+\newcommand\betw{\mathsf{b}}
+\newcommand\kboundbetw{\mathsf{bb}}
+\newcommand\kpathbetw{\mathsf{pb}}
+\newcommand\VD{\mathsf{VD}}
+\newcommand\expectation{\mathbb{E}}
+\newcommand\var{\mathrm{Var}}
+\newcommand\mse{\mathrm{MSE}}
+
+\newif\ifproof
+\prooftrue
 
 \DeclareMathOperator{\op}{op}
 \DeclareMathOperator{\eqop}{eqop}
@@ -54,27 +65,50 @@
 \newtheorem{corollary}{Corollary}
 \newtheorem{lemma}{Lemma}
 \newtheorem{theorem}{Theorem}
+\newtheorem{fact}{Fact}
+\newtheorem{claim}{Claim}
 
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}
 
-\author{Matteo Riondato \\ Department of Computer Science \\ Brown University}
-\title{Sampling-based Randomized Algorithms for Big Data Analytics}
+
 \begin{document}
-\maketitle
+\doublespacing
+\pagenumbering{alph} % hack to suppress hyperref errors
+
+\submitdate{May 2014}
+\title{Sampling-based Randomized Algorithms for Big Data Analytics}
+\author{Matteo Riondato}
+\degrees{Laurea, Universit\`a di Padova, Italy, 2007\\
+Laurea Specialistica, Universit\`a di Padova, Italy, 2009\\
+Sc.~M., Brown University, 2010}
+\principaladvisor{Eli Upfal}
+\reader{U\u gur \c Cetintemel}
+\reader[(Applied Mathematics)]{Basilis Gidas}
+\dean{Peter M.~Weber}
 \input{abstract.tex}
-\tableofcontents
-\input{intro.tex}
-\input{prelims/prelims.tex}
-\input{vcmine/vcmine.tex}
-\input{parma/parma.tex}
-\input{shatterfi/shatterfi.tex}
-\input{realfis/realfis.tex}
-\input{graphmine/graphmine.tex}
-\input{vcfreq/vcfreq.tex}
-\input{conclusions.tex}
+\abstractpage
+%\abstractpage
+\beforepreface
+%\prefacesection{Vita}
+%   It all started in a little log cabin ...
+%\prefacesection{Preface}
+%   This thesis tells you all you need to know about...
+\prefacesection{Preface}
+\input{preface.tex}
+\afterpreface
+
+\include{intro}
+\include{prelims/prelims}
+\include{vcmine/vcmine}
+\include{parma/parma}
+%\input{shatterfi/shatterfi.tex}
+\include{realfis/realfis}
+\include{centrsampl/centrsampl}
+%\input{graphmine/graphmine.tex}
+\include{vcfreq/vcfreq}
+\include{conclusions}
 \bibliographystyle{plainnat}
-\bibliography{biblio/fimine,biblio/graphmine,biblio/mr,biblio/mrfim,biblio/riondapubs,biblio/sperner,biblio/statisticaltesting,biblio/statsigfis,biblio/various,biblio/vcfreq,biblio/vcmine}
-
-
+\bibliography{biblio/fimine,biblio/graphmine,biblio/mr,biblio/mrfim,biblio/riondapubs,biblio/sperner,biblio/statisticaltesting,biblio/statsigfis,biblio/various,biblio/vcfreq,biblio/vcmine,biblio/vcgraph,biblio/bidirectionalsearch,biblio/centrality,biblio/diamapprox}
 \end{document}
+

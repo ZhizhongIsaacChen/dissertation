@@ -1,0 +1,195 @@
+\section{Preliminaries}\label{sec:centrsamplprelims}
+In this section we introduce the definitions and lemmas that we will use to
+develop and analyze our results throughout the paper.
+
+\subsection{Graphs and betweenness centrality}\label{sec:centrsamplgraphprelims}
+Let $G=(V,E)$ be a graph, where $E\subseteq V\times V$, with $n=|V|$ vertices
+and $m=|E|$ edges. The graph $G$ can be directed or undirected. We assume that
+there are no self-loops from one vertex to itself and no multiple edges between
+a pair of vertices. Each edge $e\in E$ has a non-negative weight
+$\mathsf{w}(e)$. Given a pair of distinct vertices $(u,v)\in V\times V$,
+$u\neq v$, a \emph{path $p_{uv}\subseteq V$ from $u$ to $v$} is an ordered sequence of
+vertices $p_{uv}=(w_1,\dotsc,w_{|p_{uv}|})$ such that $w_1=u$, $w_{|p_{uv}|}=v$ and
+for each $1\le i < |p_{uv}|$, $(w_i,w_{i+1})\in E$. The vertices $u$ and $v$ are
+called the \emph{end points} of $p_{uv}$ and the vertices in
+$\mathsf{Int}(p_{uv})=p_{uv}\setminus\{u,v\}$ are the \emph{internal vertices of
+$p_{uv}$}. The \emph{weight}
+$\mathsf{w}(p_{uv})$ of a path $p_{uv}=(u=w_1,w_2,\cdots,w_{p_{|uv|}}=v)$ from
+$u$ to $v$ is the sum of the weights of the edges composing the path:
+$\mathsf{w}(p_{uv})=\sum_{i=1}^{|p_{uv}|-1}\mathsf{w}((w_i,w_{i+1}))$. We denote with
+$|p_{uv}|$ the number of vertices composing the path and call this the
+\emph{size of the path $p_{uv}$}. Note that if the weights are not all unitary,
+it is not necessarily true that $\mathsf{w}(p_{uv})=|p_{uv}|-1$. A special and
+degenerate path is the \emph{empty path} $p_{\emptyset}=\emptyset$, which by
+definition has weight $\mathsf{w}(p_\emptyset)=\infty$, no end points, and
+$\mathsf{Int}(p_\emptyset)=\emptyset$.
+
+Given two distinct vertices $(u,v)\in V\times V$, the \emph{shortest path distance}
+$d_{uv}$ between $u$ and $v$ is the weight of a path with minimum weight 
+between $u$ and $v$ among all paths between $u$ and $v$. If there is no path
+between $u$ and $v$, $d_{uv}=\infty$. We call a path between $u$ and $v$ with
+weight $d_{uv}$ a \emph{shortest path between $u$ and $v$}. There can be
+multiple shortest paths between $u$ and $v$ and we denote the set of these paths
+as $\mathcal{S}_{uv}$ and the number of these paths as
+$\sigma_{uv}=|\mathcal{S}_{uv}|$. If there is no path between $u$ and $v$, then
+$\mathcal{S}_{uv}=\{p_\emptyset\}$\footnote{Note that even if
+$p_\emptyset=\emptyset$, the set $\{p_\emptyset\}$ is not empty. It contains
+one element.}.
+%By definition, $\mathcal{S}_{vv}=\emptyset$.
+We denote with $\mathbb{S}_G$ the union of all the $\mathcal{S}_{uv}$'s, for all
+pairs $(u,v)\in V\times V$ of distinct nodes $u\neq v$: 
+\[ \mathbb{S}_G=\bigcup_{\substack{(u,v)\in V\times V \\ u\neq v}}\mathcal{S}_{uv}\enspace.\]
+
+We now define a characteristic quantity of a graph that we will use throughout
+the paper.
+\begin{definition}\label{def:centrsamplvertexdiam}
+  Given a graph $G=(V,E)$, the \emph{vertex-diameter $\VD(G)$ of $G$} is the
+  size of the shortest path in $G$ with maximum size:
+  \[
+  \VD(G) = \max\left\{|p| ~:~ p\in \mathbb{S}_G\right\}\enspace.\]
+\end{definition}
+The vertex-diameter is the maximum number of vertices among all shortest paths
+in $G$. If all the edge weights are unitary, then $\VD(G)$ is equal to
+$\mathsf{diam}(G)+1$, where $\mathsf{diam}(G)$ is the number of edges composing
+the longest shortest path in $G$. 
+%\XXX Shall we make an example with a figure?
+
+Given a vertex $v$, let $\mathcal{T}_v\subseteq\mathbb{S}_G$ be the set of all
+shortest paths that $v$ is \emph{internal} to:
+\[
+\mathcal{T}_v=\{p\in\mathbb{S}_G ~:~ v\in\mathsf{Int}(p)\}\enspace.
+\]
+In this work we are interested in the \emph{betweenness centrality} of the
+vertices of a graph.
+
+%\begin{definition}[\citep{Anthonisse71,Freeman77}]\label{def:centrsamplbetwenness}
+\begin{definition}\label{def:centrsamplbetwenness}
+  \citep{Anthonisse71,Freeman77} Given a graph $G=(V,E)$, the \emph{betweenness
+  centrality of a vertex $v\in V$} is defined as\footnote{We use the normalized
+  version of betweenness as we believe it to be more suitable for presenting
+  approximation results.}
+  \[
+  \betw(v)=\frac{1}{n(n-1)}\sum_{p_{uw}\in\mathbb{S}_G}\frac{\mathds{1}_{\mathcal{T}_v}(p)}{\sigma_{uv}}%=\frac{1}{n(n-1)}\sum_{p_{uw}\in\mathcal{T}_v}\frac{1}{|\mathcal{S}_{uw}|}
+  \enspace.
+  \]
+\end{definition} 
+
+\ifproof
+Figure~\ref{fig:centrsamplexample-betw} shows an example of betweenness values for the
+vertices of a (undirected, unweighted) graph. It is intuitive, by looking at the
+graph, that vertices $\mathrm{b}$ and $\mathrm{g}$ should have higher
+betweenness than the others, given that they somehow act as bridges between two
+sides of the network, and indeed that is the case.
+\begin{figure}[ht]
+  \centering
+ % \begin{subfigure}[c]{0.2\textwidth}
+ \subfloat[Example graph]{
+ % \centering
+    \includegraphics[width=1.0\textwidth,keepaspectratio]{centrsampl/figures/eps/example-betw}
+    }
+ %   \caption{Example graph}
+ % \end{subfigure}
+ % \hfill
+ \hfill
+ \subfloat[Shortest paths]{
+ \begin{tabular}{ccl}
+   \toprule
+   From & To & Shortest Path(s) \\
+   \midrule
+   \multirow{6}{*}{$\mathrm{a}$} & $\mathrm{c}$ & $(\mathrm{a,b,g,c})$ \\
+   &  $\mathrm{d}$ & $(\mathrm{a,b,g,c,d})$ \\
+   &  $\mathrm{e}$ & $(\mathrm{a,b,f,e})$ \\
+   &  $\mathrm{f}$ & $(\mathrm{a,b,f})$ \\
+   &  $\mathrm{g}$ & $(\mathrm{a,b,g})$ \\
+   &  $\mathrm{h}$ & $(\mathrm{a,b,h})$  \\
+   \midrule
+   \multirow{3}{*}{$\mathrm{b}$} & $\mathrm{c}$ & $(\mathrm{b,g,c})$ \\
+   & $\mathrm{d}$ & $(\mathrm{b,g,c,d})$, $(\mathrm{b,f,e,d})$ \\
+   & $\mathrm{e}$ & $(\mathrm{b,f,e})$ \\
+   \midrule
+   \multirow{3}{*}{$\mathrm{c}$} & $\mathrm{e}$ & $(\mathrm{c,d,e})$ \\
+   & $\mathrm{f}$ & $(\mathrm{c,g,f})$ \\
+   & $\mathrm{h}$ & $(\mathrm{c,g,h})$ \\
+   \midrule
+   \multirow{3}{*}{$\mathrm{d}$} & $\mathrm{f}$ & $(\mathrm{d,e,f})$ \\
+   & $\mathrm{g}$ & $(\mathrm{d,c,g})$ \\
+   & $\mathrm{h}$ & $(\mathrm{d,c,g,h})$ \\
+   \midrule
+   \multirow{2}{*}{$\mathrm{e}$} & $\mathrm{g}$ & $(\mathrm{e,f,g})$ \\
+   & $\mathrm{h}$ & $(\mathrm{e,f,g,h})$, $(\mathrm{e,f,b,h})$ \\
+   \midrule
+   $\mathrm{f}$ & $\mathrm{h}$ & $(\mathrm{f,g,h})$, $(\mathrm{f,b,h})$ \\
+   \bottomrule
+ \end{tabular}
+ }
+ \qquad
+ \subfloat[Betweenness values]{
+ \begin{tabular}{cl}
+   \toprule
+   Vertex & Betweenness \\
+   \midrule
+   a & 0 \\
+   b & 0.250 \\
+   c & 0.125 \\
+   d & 0.036 \\
+   e & 0.054 \\
+   f & 0.080 \\
+   g & 0.268 \\
+   h & 0 \\
+   \bottomrule
+ \end{tabular}
+ }
+%  \begin{subtable}[c]{0.7\textwidth}
+%  \centering
+%    \begin{tabular}{ccccccccc}
+%      \toprule
+%      Vertex & $\mathrm{a}$ & $\mathrm{b}$ &$\mathrm{c}$ &$\mathrm{d}$ &$\mathrm{e}$ &$\mathrm{f}$ &$\mathrm{g}$ &$\mathrm{h}$ \\
+%      \midrule
+%      $\betw(v)$ & 0 & 0.250 & 0.125 & 0.036 & 0.054 & 0.080 & 0.268 & 0 \\
+%      \bottomrule
+%    \end{tabular}
+%    \caption{Betweenness values}
+%  \end{subtable}
+  \caption{Example of betweenness values}
+  \label{fig:centrsamplexample-betw}
+\end{figure}
+\fi
+
+It is easy to see that $\betw(v)\in[0,1]$. \citet{Brandes01} presented an
+algorithm to compute the betweenness centrality for all $v\in V$ in time
+$O(nm)$ for unweighted graphs and $O(nm + n^2 \log n)$ for weighted graphs. 
+
+\ifproof
+We present many variants of betweenness in Sect.~\ref{sec:centrsamplvariants}.
+\else
+A ``local'' variant of betweenness, called \emph{$k$-bounded-distance
+betweenness}\footnote{Bounded-distance betweenness is also known as
+$k$-betweenness. We prefer the former denomination to avoid confusion with
+$k$-path betweenness.} only considers
+the contribution of shortest paths of size up to $k+1$~\citep{BorgattiE06,Brandes08}.
+For $k>1$ and any pair of distinct vertices $u,v\in V$, $u\neq V$, let
+$\mathcal{S}^{(k)}_{uv}\subseteq\mathcal{S}_{uv}$ be the set of shortest paths
+from $u$ to $v$ of size at most $k+1$, with
+$\sigma^{(k)}_{uv}=|\mathcal{S}^{(k)}_{uv}|$, and let $\mathbb{S}^{(k)}_G$ be the
+union of all the $\mathcal{S}^{(k)}_{uv}$. Let
+$\mathcal{T}^{(k)}_v\subseteq\mathcal{T}_v$ be the set of all shortest paths
+\emph{of size up to $k$} that $v$ is internal to, for each $v\in V$.
+
+%\begin{definition}[\citep{BorgattiE06,Brandes08}]\label{def:centrsamplkboundbetweenness}
+\begin{definition}\label{def:centrsamplkboundbetweenness}
+  \citep{BorgattiE06,Brandes08} Given a graph $G=(V,E)$ and an integer $k>1$,
+  the \emph{$k$-bounded-distance betweenness centrality of a vertex $v\in V$} is
+  defined as
+  \[
+  %\betw(v)=\sum_{(u,w)\in V\times
+  %V}\sum_{p\in\mathcal{S}_{uw}}\frac{\mathds{1}_{\mathcal{T}_v}(p)}{|\mathcal{S}_{uw}|}\enspace.
+  %\betw(v)=\sum_{p_{uw}\in\mathbb{S}_G}\frac{\mathds{1}_{\mathcal{T}_v}(p)}{|\mathcal{S}_{uw}|}\enspace.
+  \kboundbetw^{(k)}(v)=\frac{1}{n(n-1)}\sum_{p_{uw}\in\mathbb{S}^{(k)}_G}\frac{\mathds{1}_{\mathcal{T}^{(k)}_v}(p)}{\sigma^{(k)}_{uw}}
+  %=\frac{1}{n(n-1)}\sum_{p_{uw}\in\mathcal{T}^{(k)}_v}\frac{1}{\left|\mathcal{S}^{(k)}_{uw}\right|}
+  \enspace.
+  \]
+\end{definition}
+Other variants of centrality are presented in the extended
+version~\citep{RiondatoK13}.
+\fi
+

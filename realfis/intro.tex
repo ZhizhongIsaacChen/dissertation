@@ -1,58 +1,305 @@
-\section{Introduction}\label{sec:realfisintro}
+\section{Introduction}\label{sec:intro}
 
-The mining of association rules is one of the fundamental primitives in the process
- of knowledge discovery from large data bases. In its most general definition, the problem
- can be reduced to identifying set of items, or \emph{itemsets},
-that appear in a fraction at least $\theta$ of all
- transactions, where $\theta$ is provided in input by the user.
+The extraction of association rules is one of the fundamental primitives in
+data mining and knowledge discovery from large databases~\citep{AgrawalIS93}.
+In its most general definition, the problem can be reduced to identifying
+frequent sets of items, or \emph{frequent itemsets}, appearing in at
+least a fraction  $\theta$ of all transactions in a dataset, where $\theta$ is provided in
+input by the user. Frequent itemsets and association rules are not only of
+interest for classic data mining applications (e.g., market basket analysis), but
+are also useful for further data analysis and mining task, including clustering,
+classification, and indexing~\citep{han2006data,HanCXY07}.
 
-One of the main issues in frequent itemsets mining is the presence of spurious
-discoveries, or false positives, in the output. These are itemsets that are
-reported in output even if their appearance is due only to random associations
-in the datasets, and are therefore not \emph{significant}. The presence of false
-positives undermines the success of subsequent analyses based on frequent
-itemsets.
+In most applications, the set of frequent itemsets is not interesting \emph{per
+se}. %
+%one is not interested in mining a dataset to extract the
+%frequent itemsets \emph{per se}. 
+Instead, the mining results %process is 
+are used to infer properties of the \emph{underlying process} that generated the
+dataset. Consider for example the following scenario: a researcher would like %wants 
+to identify frequent associations (i.e., itemsets) between preferences among
+Facebook users. To this end, she sets up an online survey %on Facebook 
+which is filled out by a \emph{small fraction} of Facebook users (some users may even
+take the survey multiple times). Using this information, the researcher wants to
+infer the associations (itemsets) that are frequent for the \emph{entire} Facebook
+population. In fact, the %one can 
+ whole Facebook population and the online survey define the underlying \emph{process} that
+generated the dataset \emph{observed} by the researcher. In this work we are
+interested in answering the following question: %and ask 
+how can we use the latter (the observed dataset) to identify itemsets that are
+frequent in the former (the whole population)?
+%from which the dataset observed by the researcher has been
+%generated, and wants to use the latter to identify frequent itemsets in the
+%former. 
+This is a very natural question, as is the underlying assumption that the
+observed dataset is \emph{representative} of the generating process. For
+example, in market basket analysis, 
+%Another example is given by market basket analysis: in this case 
+%one uses the %current, 
+the observed purchases of customers are used to infer the future
+purchase habits %pattern 
+of all customers while assuming that %in the future 
+the purchase behavior that generated the dataset is representative of the one
+that will be followed in the future.
+%that generated the current dataset %will be followed).
 
-A number of approaches have been recently proposed to identify
-\emph{significant} itemsets, whose appearance in the dataset is not due to
-random associations.  These approaches are based on \emph{statistical tests}
-that assess the significance of the itemsets by defining a random model that
-captures the properties characterizing the association between the items in a
-itemset.
+A natural and general model to describe these concepts %settings 
+is to assume that the transactions in the dataset $\Ds$ are \emph{independent
+identically distributed} (i.i.d) samples from an \emph{unknown} probability
+distribution $\prob$ defined on all possible transactions built on a set of
+items. %with items appearing in $\Ds$. %built on the sets of items appearing $\Ds$. 
+Since $\prob$ is fixed, each itemset $A$ has a fixed \emph{probability} $\tfreq(A)$
+to appear in a transaction sampled from $\prob$. We call $\tfreq(A)$ the
+\emph{true frequency} of $A$ (w.r.t.~$\prob$). The true frequency corresponds
+to the fraction of transactions that contain the itemset $A$ among an infinite
+set %number 
+of transactions. %, that contain the itemset $A$. % and each itemset has a fixed probability to appear in a random transaction from $\prob$. 
+The real goal of the mining process is then to identify itemsets that have
+true frequency $\tfreq$ at least $\theta$, i.e., the \emph{True Frequent
+Itemsets} (TFIs). %to appear in a random transaction drawn from $\prob$, given that for an itemset such
+%probability corresponds to the fraction of transactions, among an infinite
+%number of transactions, that contain the itemset. 
+In the market basket analysis example%above
+, $\Ds$ contains %is 
+the observed purchases of customers, the \emph{unknown} distribution $\prob$
+describes the purchase behavior of the customers as a whole, and we want to
+analyze $\Ds$ to find the itemsets that have probability (i.e., true frequency) %$\tfreq$ 
+at least $\theta$ to be bought by a customer.
 
-For example, consider two items $a$ and $b$ each appearing in $5\%$ of the %100
-transactions of a dataset, and assume that we are interested in significant
-itemsets that appear in at least $2\%$ of the transactions. In order to avoid to
-report spurious discoveries, one can test if the frequency of the itemset $\{a,b\}$ can be
-explained entirely by the frequencies of $a$ and $b$, by comparing the
-frequency of $\{a,b\}$ with the distribution of the frequency under the
-hypothesis that $a$ and $b$ are placed independently into transactions.  For
-example, if $\{a,b\}$ appears in $3\%$ of the transactions, they are highly
-associated, since the probability that $\{a,b\}$ appears in at least $3\%$ of
-the transactions if $a$ and $b$ are independent is only $6\times 10^{-4}$. This
-is an example of a statistical test, in which the probability, or $p$-value,
+Since $\Ds$ represents only a \emph{finite} sample from $\prob$, the set $F$ of frequent itemsets
+of $\Ds$ w.r.t.~$\theta$ %at threshold $\theta$ 
+only provides an \emph{approximation} of the True Frequent Itemsets: %, and 
+due to the stochastic nature of the generative process %the set 
+$F$ %of frequent itemsets of $\Ds
+may contain a number of \emph{false positives}, %\emph{spurious (or false) discoveries}
+ i.e., itemsets that appear among the frequent itemsets of
+ $\Ds$ but whose \emph{true} frequency is smaller than %are not generated with probability at least 
+$\theta$. %, may be reported. 
+At the same time, some itemsets with true frequency
+greater than $\theta$ may have a frequency in $\Ds$ that is \emph{smaller} than
+$\theta$ (\emph{false negatives}), and therefore not be in $F$. This implies
+that %Given that $\prob$ is not known, on one hand 
+one can not aim at identifying \emph{all and only} the itemsets having true frequency %probability 
+at least $\theta$.
+% in $\prob$.
+Even worse, from the data analyst's point of view, % On the other hand, 
+there is \emph{no guarantee or bound on the number of false positives} reported
+in $F$. %the collection of frequent itemsets of $\Ds$ w.r.t.~$\theta$.
+%using the frequent itemsets of $\Ds$ as a proxy for such itemsets does not
+%provide any \emph{guarantee on the number of false discoveries}. %that are reported. 
+Consider the following scenario as an example. Let $A$ and $B$ be two (disjoint)
+sets of pairs of items. The set $A$ contains 1,000 disjoint pairs, while $B$
+contains 10,000 disjoint pairs. Let $\prob$ be such that, for any pair $(a,a')\in
+A$, we have $\tfreq((a,a'))=0.1$, and for any pair $(b,b')\in B$, we have
+$\tfreq((b,b'))=0.09$. Let $\Ds$ be a dataset of 10,000 transactions sampled from
+$\prob$. %For example, assume that %in $\prob$ 
+%there are two sets $A$ and $B$ of pairs of items:
+%the set $A$ of 1000 (disjoint) pairs of items with  probability 0.1 in $\prob$, and
+%the set $B$ of 10000 (disjoint) pairs of items with probability 
+%0.09 in $\prob$. Assume that all pairs are independent in $\prob$, and we have 
+%a dataset $\Ds$ of 10000 transactions from $\prob$ .
+%If 
+We are interested in finding pairs of items that have true frequency at least %probability 
+$\theta=0.095$. %in $\prob$, and
+If we extract the pairs of items with frequency at least $\theta$ in $\Ds$,
+it is easy to see that in expectation %around 
+50 of the 1,000 pairs from $A$ will have frequency in $\Ds$ %appear in $\Ds$ with frequency
+\emph{below} $0.095$, and in expectation %around 
+400 pairs from $B$ will have frequency in $\Ds$ %appear in $\Ds$ with frequency 
+\emph{above} $0.095$.
+Therefore, the set of pairs that have frequency at least $\theta$ in $\Ds$ does
+\emph{not} contain % are missing 
+some of the pairs that have true frequency %probability 
+at least $\theta$ %in $\prob$ 
+(false negatives), but %and also 
+includes a huge number of %some 
+pairs that have true frequency smaller than $\theta$ (false positives). %below $\theta$ in $\prob$ (false positives or discoveries).
+
+In general, one would like to avoid false positives and 
+at the same time find as many TFIs as possible. These are somewhat contrasting
+goals, and care must be taken to achieve a good balance between them.
+A na\"ive but \emph{overly conservative} method to avoid false positives
+involves the use of \emph{Chernoff and union bounds}~\citep{MitzenmacherU05}.
+The frequency $f_\Ds(A)$ of an itemset $A$ in $\Ds$ is a random variable with
+Binomial distribution $\mathcal{B}(|\Ds|,\tfreq(A))$. It is possible to use
+standard methods like the Chernoff and the union bounds to bound the deviation
+of the frequencies in the dataset of \emph{all} itemsets from their
+expectations. These tools can be used to compute a value $\hat\theta$ such that
+the probability that a non-true frequent itemset $B$ has frequency
+greater or equal to $\hat\theta$ is at most $1-\delta$, for some
+$\delta\in(0,1)$. This method has the following serious drawback: in order to
+achieve such guarantee, it is \emph{necessary} to bound the deviation of the
+frequencies of \emph{all itemsets possibly appearing in the dataset}~\citep{KirschMAPUV12}. This means
+that, if the transactions are built on a set of $n$ items, the union bound must
+be taken over all $2^n-1$ potential itemsets, even if some or most of them may
+appear with very low frequency or not at all in samples from $\prob$. As a
+consequence, the chosen value of $\hat\theta$ is extremely \emph{conservative}, despite
+being sufficient to avoid the inclusion of false positives in mining results.  %Indeed the 
+The collection of itemsets with frequency at least $\hat\theta$ in $\Ds$,
+although consisting (probabilistically) only of TFIs, it only contains a
+\emph{very small} portion of them, due to the overly conservative choice of
+$\hat\theta$. (The results of our experimental evaluation
+in Sect.~\ref{sec:experiments} clearly show the limitations of this method.) More
+refined algorithms are therefore needed to achieve the correct balance between
+the contrasting goals of avoiding false positives and finding as many TFIs as
+possible.
+
+%The problem of identifying the itemsets that have true frequency %appear with probability 
+%at least $\theta$ with guarantees on the quality of the returned set has
+%received scant attention in the literature. 
+
+\subsection{Our contributions.}
+The contributions of this work are the following:
+\begin{itemize}
+  \item We formally define the problem of mining the \emph{True Frequent
+    Itemsets} w.r.t.~a minimum threshold $\theta$, and we develop and analyze an
+    algorithm to \emph{identify a value $\hat{\theta}$ such that, with
+    probability at least $1-\delta$, all itemsets
+with frequency at least $\hat{\theta}$ in the dataset have true frequency
+at least $\theta$}. Our method is completely \emph{distribution-free}, i.e., it
+does not make \emph{any} assumption about the unknown generative distribution
+$\prob$. %We only need to assume that the transactions are independent samples
+%from the distribution $\prob$, without any constraint on the properties of
+%$\prob$. 
+By contrast, existing methods to assess the significance of frequent patterns after their
+extraction %This is in contrast with the assumptions that are made by methods that assess
+%the significance of the frequent patterns after they have been identified: these
+%methods 
+require a well specified, limited generative model to characterize the
+significance of a pattern. When %Moreover, when %On the other hand, if 
+additional information about the distribution $\prob$ is available, it can be
+incorporated in our method to obtain even higher accuracy.
+\item %mathematical tools 
+We analyse our algorithm using results from \emph{statistical learning theory} and \emph{optimization}. %to develop and analyze our algorithm. 
+We define a range set associated to a collection of itemsets and give an upper
+bound to its (empirical) VC-dimension and a procedure to compute this bound,
+showing an interesting connection with the Set-Union
+Knapsack Problem (SUKP)~\citep{GoldschmidtNY94}. 
+%This generalizes results from~\citet{RiondatoU12}.
+To the best of our knowledge, ours is the first work to apply these
+techniques to the field of TFIs, and in general the first application of the
+sample complexity bound based on \emph{empirical} VC-dimension
+to the field of data mining. 
+\item We implemented our algorithm and assessed its performances on simulated
+  datasets with properties -- number of items, itemsets frequency distribution,
+  etc.-- similar to real datasets. We computed the fraction of TFIs contained in the set of frequent itemsets in
+  $\Ds$ w.r.t.~$\hat\theta$, and the number of false positives, if any. The
+  results show %We noticed 
+  that the algorithm is even \emph{more accurate} than the theory guarantees, since \emph{no
+  false positive} %discovery 
+is reported in any of the many experiments we performed,
+  and moreover allows the \emph{extraction of almost all TFIs}. %: only a very small fraction of the TFIs is not included in the output collection. 
+  We also
+compared the set of itemsets computed by our method to those obtained with the
+``Chernoff and union bounds'' method presented in the introduction, and found
+that our algorithm \emph{vastly outperforms} it.
+ %of the binomial distribution, and to the results of
+%``vanilla'' mining of the dataset $\Ds$ at frequency $\theta$.
+\end{itemize}
+
+%In this work %paper 
+%we define and address the problem of identifying the \emph{True
+%Frequent Itemsets} (TFIs ) with respect to a minimum frequency threshold
+%$\theta$ %, that is the itemsets that appear with probability at least $\theta$, % in $\prob$,
+%while providing \emph{rigorous probabilistic guarantees} on the number of false
+%discoveries, and \emph{without making any assumption} on the generative model of
+%the transactions (i.e., on the distribution $\prob$). This makes the method we
+%introduce completely \emph{distribution free}. 
+%%We develope our methods within the statistical hypothesis testing framework: 
+%%each itemset has an associated null hypothesis claiming that the itemset has
+%%probability less than $\theta$. This hypothesis is tested using information
+%%obtained from the dataset, and accepted or rejected accordingly. If the
+%%hypothesis is rejected, the itemsets is included in the output collection.
+%%in which
+%%each itemset is associated with a null hypothesis corresponding to the itemset
+%%being generated with probability less than $\theta$.
+%
+%In particular, we develop and analyze an algorithm to \emph{identify a threshold
+%$\hat{\theta}$ such that all itemsets with frequency at least $\hat{\theta}$
+%in the dataset have true frequency %probability 
+%at least $\theta$}. %in $\prob$; 
+%This guarantee is \emph{probabilistic}, in the sense that it holds with probability at
+%least $1 - \delta$, for some $\delta\in(0,1)$ specified by the user. (In the
+%language of hypothesis testing, we provide a method that returns a set of TFIs
+%with Family-Wise Error Rate -- FWER -- bounded by %the user-specified limit
+%$\delta$.)
+%
+%We use results %mathematical tools 
+%from \emph{statistical learning theory} and \emph{optimization} to develop and
+%analyze our algorithm. We define a range set associated to a collection of
+%itemsets and give an upper bound to its (empirical) VC-dimension and a procedure
+%to compute this bound, showing an interesting connection with the Set-Union
+%Knapsack Problem (SUKP)~\citep{GoldschmidtNY94}. 
+%%This generalizes results from~\citet{RiondatoU12}.
+%To the best of our knowledge, ours is the first work to apply these
+%techniques to the field of TFIs, and in general the first application of the
+%sample complexity bound based on \emph{empirical} VC-Dimension and of the SUKP
+%to the field of data mining. 
+%
+%We stress that we do not impose \emph{any restriction} on the generative model of the
+%transactions that are observed in the transactional dataset: our algorithm is
+%completely \emph{distribution-free}. In fact, we only assume that the
+%transactions are independent samples from the distribution $\prob$, without any
+%constraint on the properties of $\prob$. This is in contrast with the
+%assumptions that are made by methods that assess the significance of the
+%frequent patterns after they have been identified. In fact, these methods
+%require a well specified, limited generative model to characterize the
+%significance of a pattern. On the other hand, if additional information about
+%the distribution $\prob$ is available, it can be incorporated in our method to
+%obtain even higher accuracy.
+%% while this is usually not possible with traditional
+%% methods.
+%
+%We implemented our algorithm and evaluate its performances (on simulated datasets 
+%with properties -number of items, itemsets frequency distribution, etc.- similar to 
+%real datasets)
+%by analyzing
+%the set of itemsets with frequency in $\Ds$ at least $\hat{\theta}$: we computed
+%the fraction of TFIs contained in it and the number of false discoveries, if
+%any. We noticed that the algorithm is even more accurate than the theory
+%guarantees and allows the extraction of almost all TFIs: only a very small
+%fraction of the TFIs is not included in the output collection. Moreover, no
+%false discovery is reported in any of the many experiments we performed. We also
+%compared the set of itemsets computed by our method to those obtained with a
+%method based on the bounds of the binomial distribution, and to the results of
+%``vanilla'' mining of the dataset $\Ds$ at frequency $\theta$.
+%%Lastly, we tested whether the frequency in the dataset is a good
+%%estimator for the real frequency of a TFI, answering this questions positively.
+%%\XXX: only if
+%%we include these results. \MR 
+
+\paragraph*{Outline.} %The article is organized as follows. 
+In Sect.~\ref{sec:prevwork} we review relevant previous contributions.
+Sections ~\ref{sec:prelims} and~\ref{sec:range} contain preliminaries to formally define the problem
+and key concepts that we will use throughout the work. Our proposed algorithm is
+described and analyzed in Sect.~\ref{sec:main}. We present the methodology and
+results of our experimental evaluation %of the test 
+in Sect.~\ref{sec:experiments}. Conclusions and future work can be found %are presented 
+in Sect.~\ref{sec:concl}. 
+\ifarxiv
+\else
+Due to space restrictions, the proofs of our lemmas
+and theorems are reported in the extended version available
+online~\citep{RiondatoV14-full}.
+\fi
+%omitted from this version of the paper, as are some
+%experimental results. We refer the interested reader to the full version
+%available online~\citep{RiondatoV13}.
+
+\iffalse
+This is an example of a statistical test, in which the probability, or $p$-value,
 that a measure, or \emph{statistic} (in the example, the frequency of $\{a,b\}$)
 is at least as extreme as the value observed in real data is computed under a
 \emph{null hypothesis} that captures the properties of spurious discoveries (in
 the example, the independence of items). When the $p$-value is small enough, the
 itemset is flagged as significant, otherwise the itemset is discarded as a
-spurious discovery. A number of different procedures~\citep{SilversteinBM98,MegiddoS98,DuMouchelP01,BoltonHA02,GionisMMT07,Hamalainen10,KirschMAPUV12} have been proposed
+spurious discovery. A number of different procedures~\citep{SilversteinBM98,MegiddoS98,DuMouchelP01,GionisMMT07,Hamalainen10,KirschMAPUV12} have been proposed
 in recent years to control the number of spurious discoveries that are reported
-\emph{after} the frequent itemsets are identified. These procedures takes into
+\emph{after} the frequent itemsets are identified. These procedures take into
 account the fact that a transactional dataset contains a number of patterns, and
 the assessment of their significance therefore is a \emph{multiple
 hypothesis testing} problem.
 
-However, there is another source of false discoveries among frequent patterns
-that has received scant attention in the literature: the \emph{observed}
-transactional dataset is only a finite sample from all possible transactions that may be generated by the 
-process resulting in the transactional dataset.
-In its most general form, this process can be thought of as a sampling process
-from an unknown distribution $p$ over all possible transactions, and in reality
-one is not interested in the itemsets that are frequent in the observed dataset,
-but in the itemsets that are frequent according to $p$, in the sense that the
-probability that they appear in a transaction sampled from $p$ is at least
-$\theta$.
 
 For example, consider
 the transactions given by items that are bought together on Amazon; after
@@ -81,7 +328,7 @@ is crucial in order to obtain high quality patterns.
 
 In this paper we address the problem of
 identifying itemsets that appear with probability at least $\theta$ in $p$,
-that we call \emph{Real Frequent Itemsets} (RFI), while providing rigorous
+that we call \emph{True Frequent Itemsets} (RFI), while providing rigorous
 probabilistic guarantees on the number of false discoveries, without making any
 assumption on the particular generative model of the transactions. This makes
 our method completely \emph{distribution free}. In particular, we focus on
@@ -90,19 +337,11 @@ probability that one or more false discovery is reported among the RFI. A
 recently proposed alternative to  bound the FWER is to bound the False Discovery
 Rate (FDR), that in our case correspond to the proportion of false discoveries
 among the RFI. The use of the FDR allows to produce in output a larger number of
-patterns, since a small proportion of false discoveries are tolerated in output;
+patterns, since a small proportion of false discoveries are tolerated in the output;
 however, in data mining the number of patterns produced is usually high,
 therefore having a smaller number of high quality discoveries is preferable to
 reporting a larger number of patterns containing some false discoveries.
-
-We stress that we do not assume any generative model on the transactions that
-are observed in the transactional dataset. In fact, we only assume that the
-transactions in the datasets are independent samples from the distribution $p$,
-without any constraint on the properties of $p$. This is in contrast with the
-assumptions that are made by the methods that assess the significance after the
-frequent patterns have been identified. In fact, these methods require a well
-specified, limited model to characterize the significance of a pattern, as it is
-in the case of independence in the example above.
+\fi
 
 \iffalse
 {\bf XXX:} we should explain here what a statistical test is, what the FWER,
@@ -118,39 +357,4 @@ processes itemsets \emph{clearly} do not appear independently, so comparing the
 dataset to such a model is only of limited value. 
 \fi
 
-\subsection{Our contributions}
-We introduce a rigorous statistical test to identify real frequent itemsets that
-guarantees that the Family-Wise Error Rate is within the user-specified limits. 
-%This is the first
-%method that can guarantee a bound to the FWER without using the Bonferroni
-%correction. 
-The test is based on mathematical tools from statistical learning
-theory. We define a range set associated to the problem at hand and give an
-upper bound to its (empirical) VC-dimension, showing an interesting connection
-with a variant of the knapsack optimization problem.
-%, also proving that the bound is tight. XXX
-To the best of our knowledge, ours is the first work to apply these
-techniques to the field of RFI's, and in general the first application of the sample complexity
-bound based on empirical VC-Dimension to the field of data mining. We
-implemented our test and evaluated its performances. First of all, we assessed
-the values and the behaviour of key parameters of our method, finding them very
-reasonable. Secondly, we checked how well the test controls the FWER: we
-noticed that it performs in practice even better than what the theory
-guarantees. Thirdly, we empirically evaluated
-the statistical power of our method, noticing that only a small fraction of the
-RFI's is not included in the output collection, i.e., that the test has a high
-statistical power. We compared it with other available tests to extract RFI's
-and found the power of our method comparable or even better than the current
-state of the art. Lastly, we tested whether the frequency in the dataset is a
-good estimator for the real frequency of a RFI, answering this questions
-positively.
-
-\paragraph*{Outline} The article is organized as follows. In
-Section~\ref{sec:prevwork} we review relevant previous contributions.
-Section~\ref{sec:prelims} contains preliminaries to formally define the problem
-and key concepts that we will use throughout the work. Our statistical test is
-described and analyzed in Section~\ref{sec:main}. We present the methodology and
-results of our experimental evaluation of the test in
-Section~\ref{sec:experiments}. Conclusions and future work are presented in
-Section~\ref{sec:concl}.
 

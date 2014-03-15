@@ -1,0 +1,259 @@
+\documentclass{article}
+\usepackage{lmodern}
+\usepackage[T1]{fontenc} 
+\usepackage{textcomp}
+\usepackage{dsfont}
+\usepackage{fullpage}
+\usepackage{amssymb,amsmath,amsthm}
+\usepackage{datetime}
+\usepackage{natbib}
+\newtheorem{lemma}{Lemma}
+\def\betw{\mathsf{b}}
+\def\XXX{{\bf XXX}}
+\def\MR{{\bf MR}}
+\def\EK{{\bf EK}}
+\def\exp{\mathbb{E}}
+\def\var{\mathrm{Var}}
+\def\mse{\mathrm{MSE}}
+\title{}
+\author{}
+\begin{document}
+%\maketitle
+{\bf \large \today, \currenttime}
+
+\section{Tighter Analysis for the BP Algorithm}
+The analysis of Algorithm 1 allow us to obtain a tighter analysis for the
+algorithm by~\citet{BrandesP07}  (which we denote as \textsf{BP}).
+
+\begin{lemma}\label{lem:variance}
+  The estimator $\tilde\betw_\mathsf{BP}(w)$ is \emph{uniformly better} than the
+  estimator $\tilde\betw_\mathrm{A1}(w)$. I.e., for any value of $\betw(w)$, we
+  have
+  \[
+  \var[\tilde\betw_\mathsf{BP}(w)]\le\var[\tilde\betw_\mathrm{A1}(w)]\enspace.
+  \]
+\end{lemma}
+
+\begin{proof}
+  Consider the quantity
+  \[
+  \var[\tilde\betw_\mathrm{A1}(w)]-\var[\tilde\betw_\mathsf{BP}(w)]\enspace.\]
+  We will show that the above quantity is greater than or equal to 0, proving
+  the thesis.
+  Since
+  $\exp[\tilde\betw_\mathrm{A1}(w)]=\exp[\tilde\betw_\mathsf{BF}(w)]=\betw(w)$
+  and using the definition of variance, we only need to show 
+  \begin{equation}\label{eq:centrsamplinequal}
+    \exp[(\tilde\betw_\mathrm{A1}(w))^2]-\exp[(\tilde\betw_\mathsf{BF}(w))^2]\ge
+    0\enspace.
+  \end{equation}
+
+  Let start from computing $\exp[(\tilde\betw_\mathsf{BF}(w))^2]$. For every
+  vertex $v$, we define $\alpha_v$ as
+  \[
+  \alpha_v=\frac{1}{n-1}\sum_{\substack{u\in V
+  \\u\neq
+  v}}\sum_{p\in\mathcal{S}_{vu}}\frac{\mathds{1}_{\mathsf{Int}(p)}(w)}{\sigma_{vu}}\enspace.
+  \]
+  Note that 
+  \begin{equation}\label{eq:centrsamplbetwalpha}
+    \betw(w)=\frac{1}{n}\sum_{v\in V}\alpha(v)\enspace.
+  \end{equation}
+  Consider, for $1\le i \le r$, the contribution $X_i$ to $\tilde\betw_\mathsf{BP}(w)$
+  of the paths computed from the $i$\textsuperscript{th} sampled vertex. $X_i$
+  is a random variable that takes value $\alpha_v$ with probability $1/n$, for
+  all $v\in V$. We have
+  \begin{equation}\label{eq:centrsamplxiexpvar}
+    \exp[X_i]=\sum_{v\in V}\frac{1}{n}\alpha_v=\betw(w) \mbox{ and }
+    \exp[X_i^2]=\frac{1}{n}\sum_{v\in V}\alpha_v^2, \forall 1\le i\le r\enspace.
+  \end{equation}
+  Clearly
+  \[
+  \tilde\betw_\mathsf{BP}(w)=\frac{1}{r}\sum_{i=1}^r X_i\enspace.
+  \]
+  The variables $X_i$'s are independent and identically distributed so
+  \begin{align}\label{eq:centrsamplexpxisquared}
+    \exp[(\tilde\betw_\mathsf{BP}(w))^2]&=\frac{1}{r^2}\exp\left[\left(\sum_{i=1}^rX_i\right)^2\right]=\frac{1}{r^2}\sum_{i=1}^r\left(\exp[X_i^2]+\sum_{j=i+1}^r(\exp[X_i]\exp[X_j])\right)=\frac{1}{r}\frac{1}{n}\sum_{v\in
+    V}\alpha_v^2+\frac{r-1}{r}(\betw(w))^2,
+\end{align}
+where we used~\eqref{eq:centrsamplxiexpvar}.
+
+We now compute $\exp[(\tilde\betw_\mathrm{A1}(w))^2]$. 
+Consider the contribution $Y_i$ to $\tilde\betw_\mathrm{A1}(w)$ of the
+$i$\textsuperscript{th} sampled path by Algorithm 1, for $1\le i\le r$. $Y_i$ is a random variable that takes value
+$\mathds{1}_{\mathsf{Int}(p)}(w)$ with probability $\pi(p)$, for every shortest
+path $p\in\mathbb{S}_G$. We have
+\begin{equation}\label{eq:centrsamplyiexpvar}
+  \exp[Y_i]=\exp[Y_i^2]=\betw(w), \forall 1\le i \le r\enspace.
+\end{equation}
+By definition, 
+\[
+\tilde\betw_\mathrm{A1}(w)=\frac{1}{r}\sum_{i=1}^rY_i\enspace.
+\]
+The random variables $Y_i$ are independent and identically distributed so
+\begin{align}\label{eq:centrsamplexpyisquared}
+  \exp[(\tilde\betw_\mathrm{A1}(w))^2]&=\frac{1}{r^2}\exp\left[\left(\sum_{i=1}^r
+  Y_i\right)^2\right]=\frac{1}{r^2}\sum_{i=1}^r\left(\exp[Y_i^2]+\sum_{j=i+1}^r\exp[Y_i]\exp[Y_j]\right)=\frac{1}{r}\betw(w)+\frac{r-1}{r}(\betw(w))^2,
+\end{align}
+where we used~\eqref{eq:centrsamplyiexpvar}.
+
+We can now rewrite the left side of~\eqref{eq:centrsamplinequal} using
+~\eqref{eq:centrsamplbetwalpha},~\eqref{eq:centrsamplexpxisquared},~and~\eqref{eq:centrsamplexpyisquared}:
+\begin{align*}
+  \exp[(\tilde\betw_\mathrm{A1}(w))^2]-\exp[(\tilde\betw_\mathsf{BF}(w))^2] &=
+  \frac{1}{r}\betw(w)+\frac{r-1}{r}(\betw(w))^2 - \frac{1}{r}\frac{1}{n}\sum_{v\in
+    V}\alpha_v^2
+   -\frac{r-1}{r}(\betw(w))^2 =
+    \frac{1}{r}\frac{1}{n}\sum_{v\in V}(\alpha_v - \alpha_v^2)\enspace. 
+\end{align*}
+Since $\alpha_v\in[0,1]$, we have $\alpha_v-\alpha_v^2\ge 0$ for all $v$, and our proof
+is complete.
+\end{proof}
+
+The following lemma is an easy consequence of the above.
+
+\begin{lemma}\label{lem:MSE}
+  \textsf{BP} has lower expected Mean Squared Error than Algorithm~1:
+  \[
+  \exp[\mse_\mathsf{BP}]\le \exp[\mse_\mathrm{A1}]\enspace.
+  \]
+\end{lemma}
+
+\begin{proof}
+  We have
+  \[ 
+  \exp[\mse_\mathsf{BP}] = \exp\left[\frac{1}{n}\sum_{v\in
+  V}\left(\tilde\betw_\mathsf{BP}(w)-\betw(v)\right)^2\right]=\frac{1}{n}\sum_{v\in
+  V}\exp\left[\left(\tilde\betw_\mathsf{BP}(w)-\betw(v)\right)^2\right]=\frac{1}{n}\sum_{v\in
+  V}\var[\tilde\betw_\mathsf{BP}(w)],
+  \]
+  where we used the linearity of expectation and the fact that the estimator
+  $\tilde\betw_\mathsf{BP}(w)$ is unbiased for $\betw(w)$ ($\exp[\tilde\betw_\mathsf{BP}(w)]=\betw(w)]$).
+  Analogously for Algorithm~1:
+  \[
+  \exp[\mse_\mathrm{A1}] = \frac{1}{n}\sum_{v\in V}\var[\tilde\betw_\mathrm{A1}(w)]\enspace.
+  \]
+  Hence
+  \[
+  \exp[\mse_\mathrm{A1}]-\exp[\mse_\mathsf{BP}]=\frac{1}{n}\sum_{v\in
+  V}\left(\var[\tilde\betw_\mathrm{A1}(w)]-\var[\tilde\betw_\mathsf{BP}(w)]\right),
+  \]
+  and from Lemma~\ref{lem:variance} we have that each addend of the sum is
+  non-negative and so is the above expression, concluding our proof.
+\end{proof}
+
+
+\begin{lemma}
+  Let $G=(V,E)$ be a graph, and $\varepsilon,\delta\in(0,1)$. Let
+  \[
+  r =
+  \frac{c}{\varepsilon^2}\left(\lfloor\log_2(\mathsf{VD}(G)-2\rfloor+1+\ln\frac{1}{\delta}\right)\enspace.
+  \]
+  and let $S$ be a set of vertices of $G$ sampled uniformly at random with
+  replacement from $V$. Let $\tilde\betw_{\mathsf{BP}}(w)$ be the estimated
+  value for $\betw(w)$ computed by \textsf{BP} using $S$. Then
+  \[
+  \Pr(\exists w\in V \mbox{ s.t. }
+  |\tilde\betw_{\mathsf{BP}}(w)-\betw(w)|>\varepsilon)<\delta\enspace.
+  \]
+  %If Algorithm 1 computes an $(\varepsilon,\delta)$-approximation with $r$
+  %samples, then the algorithm by~\citet{BrandesP07} does the same with the same
+  %number of samples.
+\end{lemma}
+
+\begin{proof}
+  Consider a simple coupling of the executions of Algorithm 1 and \textsf{BP}
+  for $r$ samples: when Algorithm 1 samples a shortest path from a vertex $v$ to a vertex $u$,
+  \textsf{BP} samples the vertex $v$. 
+
+Consider an execution of the algorithms and let $X_v$ be the number of times
+that vertex $v$ is the starting point of a sampled path. 
+
+The estimation for the betweenness of vertex $w$ computed by \textsf{BP} is
+\[
+\tilde\betw_{\mathsf{BP}}(w)=\frac{1}{r}\sum_{v\in V}
+X_v\underbrace{\left(\frac{1}{n-1}\sum_{\substack{u\in V \\u\neq
+v}}\sum_{p\in\mathcal{S}_{vu}}\frac{\mathds{1}_{\mathsf{Int}(p)}(w)}{|\mathcal{S}_{vu}|}\right)}_{Y_v(w)}\enspace.
+\]
+The estimation for the betweenness of vertex $w$ computed by Algorithm 1
+is
+\[
+\tilde\betw_{\mathrm{A1}}(w)=\frac{1}{r}Z_w,
+\]
+where $Z_w$ is the number of times that a path containing the vertex $w$ gets
+sampled. Now, for each $v$ and for $1\le i\le X_v$, let $p_v^{(i)}$ be the path
+sampled the $i$\textsuperscript{th} time that the sampled path had $v$ as
+starting vertex, and let $A_v^{(i)}(w)=1$ if $w\in\mathsf{Int}(p_v^{(i)}$, and
+$A_v^{(i)}(w)=0$ otherwise. Then it is clear that 
+\[
+\tilde\betw_{\mathrm{A1}}(w)=\frac{1}{r}\sum_{v\in V}
+X_v\frac{\sum_{i=1}^{X_v}A^{(i)}_v(w)}{X_v}\enspace.
+\]
+We claim that
+\[
+\mathbb{E}\left[\left.\frac{\sum_{i=1}^{X_v}A^{(i)}_v(w)}{X_v}\right|X_v\right]=Y_v(w),\]
+where the expectation is taken over the choice of the paths, which are sampled
+according to the distribution $\pi$.
+To see this, consider $\mathbb{E}[A_v^{(i)}(w) ~|~ X_v]$. It
+is clear that $A^{(i)}(w)$ and $X_v$ are independent, for $1\le i\le X_v$. From
+this and the definition of expectation we have 
+\[
+\mathbb{E}\left[\left.A_v^{(i)}(w)\right|X_v\right] =
+\mathbb{E}\left[A_v^{(i)}(w)\right]=\frac{1}{n-1}\sum_{\substack{u\in V
+\\u\neq
+v}}\sum_{p\in\mathcal{S}_{vu}}\frac{\mathds{1}_{\mathsf{Int}(p)}(w)}{|\mathcal{S}_{vu}|}
+=Y_v(w)\enspace.
+\]
+This expression does not depend on $i$.
+
+The claim then follows easily from the linearity of expectation:
+\[
+\mathbb{E}\left[\left.\frac{\sum_{i=1}^{X_v}A^{(i)}_v(w)}{X_v}\right|X_v\right] =
+\sum_{i=1}^{X_v}\mathbb{E}\left[\left.\frac{A^{(i)}_v(w)}{X_v}\right|X_v\right]=\sum_{i=1}^{X_v}\frac{1}{X_v}\mathbb{E}\left[A_v^{(i)}(w)\right]=\mathbb{E}\left[A_v^{(1)}(w)\right]=Y_v(w)\enspace.
+\]
+Recall from Lemma~\ref{lem:variance} that the estimator
+$\tilde\betw_{\mathsf{BP}}(w)$ has lower variance than the estimator
+$\tilde\betw_{\mathrm{A1}}(w)$, for all vertices $w$. 
+
+\XXX: The following is not actually true \MR. Since both estimators have
+the same expectation $\betw(w)$, this means that for any $a\in[0,1]$ we have
+\[
+\Pr\left(|\tilde\betw_{\mathsf{BP}}(w)-\betw(w)|>a\right)\le\Pr(\left(|\tilde\betw_{\mathrm{A1}}(w)-\betw(w)|>a\right)\enspace.
+\]
+
+This means that for every collection of $r$ samples for which Algorithm 1 computes estimates
+$\tilde\betw_\mathrm{A1}(w)$ such that
+\begin{equation}\label{eq:centrsampledapprox}
+|\tilde\betw_\mathrm{A1}(w)-\betw(w)|\le\varepsilon, \forall w\in W,
+\end{equation}
+so would \textsf{BP} using the $r$ samples according to the coupling. For
+Algorithm $1$ the event in~\eqref{eq:centrsampledapprox} occurs with probability at least
+$1-\delta$ over the choice of samples, and so would be for \textsf{BP},
+concluding our proof.
+\end{proof}
+
+The estimator $\tilde\betw_{\mathsf{BP}}(w)$ has lower variance than
+$\tilde\betw_{\mathrm{A1}}(w)$, which means that it converges faster to the
+expectation $\betw(w)$, achieving at least the same guarantees with the same
+number of samples. Before always opting for \textsf{BP} (or for the algorithm
+by~\citet{GeisbergerSS08}, whose estimators have even lower variance than those
+of \textsf{BP}), one should nevertheless take
+into account the fact that, per sample, the
+computation of $\tilde\betw_{\mathsf{BP}}(w)$ requires more time than the one
+for $\tilde\betw_{\mathrm{A1}}(w)$. The difference is even larger if Algorithm 1
+uses bidirectional search~\citep{KaindlK97,Pohl69}. We can then see that
+Algorithm 1, \textsf{BP}, and the algorithm
+by~\citet{GeisbergerSS08} share the same design
+principles, but choose different trade-offs between accuracy and speed.  
+
+\MR: my intuition is that we can actually analyze \textsf{BP} using the
+VC-dimension and showing that their sampling is ergodic. Recent results show
+that the VC-dimension can be used when the sampling process is ergodic~\citep{AdamsN10}.
+
+
+
+\bibliographystyle{abbrvnat}
+\bibliography{bidirectionalsearch,diamapprox,vcmine,vcgraph,centrality,various}
+
+\end{document}
+

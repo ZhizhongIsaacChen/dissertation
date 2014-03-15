@@ -1,4 +1,4 @@
-\section{Introduction}\label{sec:intro}
+\section{Introduction}\label{sec:parmaintro}
 The discovery of (top-K) Frequent Itemsets and Association Rules (FIM)
 is a fundamental primitive in data mining and databases applications. The
 computational problem is defined in the general setting of a transactional dataset
@@ -59,11 +59,11 @@ component of the cost.
 %
 Due to the use of random sampling, the output of PARMA is an approximation of
 the collection of FI's or AR's in the dataset, but leveraging on previous
-work~\cite{RiondatoU11}, PARMA offers tight probabilistic guarantees on the
+work~\cite{RiondatoU12}, PARMA offers tight probabilistic guarantees on the
 quality of the approximated collections returned in output. In particular it
 guarantees that the output is an $\varepsilon$-approximation of the real
 collection with probability at least $1-\delta$, where $\varepsilon$ and
-$\delta$ are parameters specified by the user (see Section~\ref{sec:def} for
+$\delta$ are parameters specified by the user (see Section~\ref{sec:parmadef} for
 formal definitions). 
 PARMA is designed on
 MapReduce~\cite{DeanG08}, a novel parallel/distributed architecture that has
@@ -76,7 +76,7 @@ random sampling and parallelization for the task of Association Rules Mining.  A
 number of previous works explored either parallel
 algorithms~\cite{BuehrerPTKS07,CongHHP05,EHZaiane06,FangEtAl08,LiuLZT07,OzkuralUA11,JinYA05,Zaki99}
 or random
-sampling~\cite{Toivonen96,ZakiPLO97,Parthasarathy02,PietracaprinaRUV10,LiG04,RiondatoU11}
+sampling~\cite{Toivonen96,ZakiPLO97,Parthasarathy02,PietracaprinaRUV10,LiG04,RiondatoU12}
 for the FIM task, but the two approaches have been seen somewhat orthogonal
 until today. In PARMA, the disadvantages of either approach are evened out by
 the advantages of the other. In the spirit of \emph{moving computation to the
@@ -109,7 +109,7 @@ shows that PARMA consistently computes approximated collections
 of higher quality than what can be analytically guaranteed.
 
 In this paper:
-\begin{enumerate*}
+\begin{enumerate}
 \item We present PARMA, the first randomized MapReduce algorithm for discovering
   approximate collections of frequent itemsets or association rules with
   near-linear speedup.
@@ -118,7 +118,7 @@ In this paper:
 \item We demonstrate the effectiveness of PARMA on many datasets and compare
   the performance of our implementation to that of several exact FIM algorithms
   on MapReduce.
-\end{enumerate*}
+\end{enumerate}
 
 
 %We can see the
@@ -198,7 +198,7 @@ In this paper:
 %A number of previous works explored either parallel
 %algorithms~\cite{BuehrerPTKS07,CongHHP05,EHZaiane06,FangEtAl08,LiuLZT07,OzkuralUA11,JinYA05,Zaki99}
 %or random
-%sampling~\cite{Toivonen96,ZakiPLO97,Parthasarathy02,PietracaprinaRUV10,LiG04,RiondatoU11}
+%sampling~\cite{Toivonen96,ZakiPLO97,Parthasarathy02,PietracaprinaRUV10,LiG04,RiondatoU12}
 %for the FIM task, but the two approaches have been seen somewhat orthogonal
 %until today. They are both aimed at the same final result, faster FIM, but they
 %tackle the issues in two different ways, and offers different advantages, while
@@ -239,7 +239,7 @@ In this paper:
 %applications. Recent works presented algorithms that mine only a random subset
 %of the dataset to obtain high-quality approximations of the collections of
 %Frequent Itemsets and Association
-%Rules~\cite{Toivonen96,ZakiPLO97,Parthasarathy02,PietracaprinaRUV10,LiG04,RiondatoU11}.
+%Rules~\cite{Toivonen96,ZakiPLO97,Parthasarathy02,PietracaprinaRUV10,LiG04,RiondatoU12}.
 %There is an inherent trade-off between the size of the random sample and the
 %accuracy of the approximation that can be obtained from it, but a larger sample
 %requires more time to be mined. While these algorithms are designed to obtain
@@ -254,11 +254,11 @@ In this paper:
 %random sampling and parallelization for the task of Association Rules Mining.
 %Due to the use of random sampling, the output of PARMA is an approximation of
 %the collection of FI's or AR's in the dataset, but leveraging on previous
-%work~\cite{RiondatoU11}, PARMA offers tight probabilistic guarantees on the
+%work~\cite{RiondatoU12}, PARMA offers tight probabilistic guarantees on the
 %quality of the approximated collections returned in output. In particular it
 %guarantees that the output is an $\varepsilon$-approximation of the real
 %collection with probability at least $1-\delta$, where $\varepsilon$ and
-%$\delta$ are parameters specified by the user (see Section~\ref{sec:def} for
+%$\delta$ are parameters specified by the user (see Section~\ref{sec:parmadef} for
 %formal definitions). We conducted an extensive experimental evaluation of PARMA
 %and our results suggest that it consistently computes approximated collections
 %of higher quality than what can be guaranteed by the analysis. A comparison of

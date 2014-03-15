@@ -1,0 +1,102 @@
+\documentclass{article}
+\usepackage{amsthm}
+
+\newcommand{\Sam}{{\cal S}}
+\newcommand{\Ds}{{\cal D}}
+\def\Itm{{\cal I}}
+\def\TOPK{\mathsf{TOPK}}
+\def\FI{\mathsf{FI}}
+\def\RFI{\mathsf{RFI}}
+\def\AR{\mathsf{AR}}
+\def\VC{\mathsf{VC}}
+\def\EVC{\mathsf{EVC}}
+
+\newtheorem{lemma}{Lemma}
+
+\begin{document}
+\title{ }
+\author{ }
+
+This method is inspired by the holdout statistical test presented by Webb. The
+dataset is randomly split in two portions, not necessarily of the same size: an
+\emph{exploratory} part $\Ds_\mathrm{e}$ and an
+\emph{evaluation} part $\Ds_\mathrm{v}$. 
+%The method does not require the sizes $|\Ds_\mathrm{e}|$ and $|\Ds_\mathrm{v}|$ to be the same.
+
+The method works in two phases. The intuition behind it is the following: in the
+first phase we use the exploratory part
+$\Ds_\mathrm{e}$ to identify a small set of hypotheses (i.e.~candidate TFI's)
+which will then, in the second phase,be tested on the evaluation part $\Ds_\mathrm{v}$. 
+
+Let $\delta_1=\delta_2=1-\sqrt{1-\delta}$. Given that $\Ds_\mathrm{e}$ is still
+a collection of i.i.d.~samples from the generative distribution $p$, then
+through Thm.~\ref{thm:XXX} we know that there exists an $\varepsilon'$ such that
+$\Ds_\mathrm{e}$ is a $\varepsilon'$-approximation to XXX the range space of all
+itemsets with probability at least $1-\delta_1$. 
+
+In the first phase of the set we compute the collection of itemsets
+$\mathcal{T}_\mathrm{e}=\{X\subseteq\Itm ~:
+f_{\Ds_\mathrm{e}}(X)\ge\theta+\varepsilon'\}$
+and $\mathcal{G}=\{X\subseteq\Itm \theta\ge
+f_{\Ds_\mathrm{e}}(X)<\theta+\varepsilon'\}$. This can be done by extracting the
+frequent itemsets of $\Ds_\mathrm{e}$ with respect to $\theta$ and partitioning
+this collection appropriately into $\mathcal{T}_\mathrm{e}$ and $\mathcal{G}$.
+In the second phase, we compute a value $\varepsilon''$ such that the evaluation dataset
+$\Ds_\mathrm{v}$ is an $\varepsilon''$-approximation to XXX the range space of
+the itemsets in $\mathcal{G}$, with
+probability at least $1-\delta_2$. To obtain $\varepsilon''$ using
+Thms.~\ref{thm:XXX} and~\ref{thm:XXX}, we need to compute upper bounds to the
+VC-dimension and to the empirical VC-dimension of XXX the range space of
+the itemsets in $\mathcal{G}$. The d-index {XXX} of
+$\Ds_\mathrm{v}$ gives an upper bound to the former but a more refined
+technique is needed to compute the latter. We need to solve the SUKP on
+$\mathcal{G}$ using the length of the transactions of $\Ds_\mathcal{v}$ {XXX:
+need better description, but it will depend on how we organize the paper}.
+Once we have obtained $\varepsilon''$, we compute the set
+\[
+\mathcal{T}_\mathrm{v}=\{X\subseteq\Itm ~:~ X\in\mathcal{G} \mbox{ and }
+f_{\Ds_\mathrm{v}}(X)\ge\theta+\varepsilon''\}.\]
+The test returns the collection of itemsets $\mathcal{T}_\mathrm{e}\cup\mathcal{T}_\mathrm{v}$.
+
+XXX: Add pseudocode?
+
+\begin{lemma}
+  The FWER of the test is at most $\delta$.
+\end{lemma}
+
+\begin{proof}
+  XXX outline
+
+  Consider the two events $\mathrm{E}_1$=``$\Ds_\mathrm{e}$ is an
+  $\varepsilon'$-approximation for XXX the range space of all itemsets'' and $\mathrm{E}_2=$``$\Ds_\mathrm{v}$ is an
+  $\varepsilon''$-approximation for XXX the range space of the itemsets in $\mathcal{G}$. From
+  the definition of $\varepsilon'$, $\varepsilon''$, $\delta'$ and $\delta''$ we
+  know that the event $\mathrm{E}=\mathrm{E}_1\cap\mathrm{E}_2$ occurs with probability at
+  least $1-\delta$. Suppose that indeed $\mathrm{E}$ occurs.
+
+  Given that $\mathrm{E}_1$ occurs, $\Ds_\mathrm{e}$ is a
+  $\varepsilon'$-approximation for XXX the range space of all itemsets. Then all
+  the itemsets with frequency in $\Ds_\mathrm{e}$ at least $\theta+\varepsilon'$
+  must have a real frequency at least $\theta$. This equals to say that all
+  itemsets in $\mathcal{T}_\mathrm{e}$ are True Frequent Itemsets
+  ($\mathcal{T}_\mathrm{e}\subseteq TFI(\theta)$.
+
+  Given that $\mathrm{E}_2$ occurs, then we know that all itemsets in
+  $\mathcal{G}$ have frequency in $\Ds_\mathrm{v}$ that is at most
+  $\varepsilon''$ far from their real frequency. In particular, this means that
+  if they have a true frequency less than $\theta$, then their frequency in
+  $\Ds_\mathrm{v}$ is less than $\theta+\varepsilon''$. Hence, all itemsets in
+  $\mathcal{G}$ that have frequency at least $\theta+\varepsilon''$ must have
+  real frequency at least $\theta$ and therefore be True Frequent Itemsets.
+  These are exactly the itemsets in $\mathcal{T}_\mathrm{v}$, so
+  $\mathcal{T}_\mathrm{v}\subseteq TFI(\theta)$. 
+
+  We can then conclude that if $\mathrm{E}$ occurs, we have
+  $\mathcal{T}_\mathrm{e}\cup \mathcal{T}_\mathrm{v}\subseteq TFI(\theta)$.
+  Since $\mathrm{E}$ occurs with probability at least $1-\delta$, this equals to
+  say that the probability of the event ``$\exists X\in\mathcal{T}_\mathrm{e}\cup
+  \mathcal{T}_\mathrm{v}$ such that $r_p(X)<\theta$'' is at most $\delta$, and
+  the thesis follows.
+ \end{proof}
+\end{document}
+

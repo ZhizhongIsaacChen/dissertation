@@ -1,206 +1,259 @@
 \section{Preliminaries}\label{sec:prelims}
-In this section we introduce with the right level of formalism all the necessary
-definitions, lemmas, and tools that we will use throughout the work.
+In this section we introduce the
+definitions, lemmas, and tools that we will use throughout the work, providing the details that are
+needed in later sections.
 
-\subsection{Itemsets mining}\label{sec:itemdef}
-Given a ground set $\Itm$ of \emph{items}, let $p$ be a
-probability distribution on $2^{\Itm}$. We call a single sample drawn from $p$
-a \emph{transaction}. Given a transaction $\tau\in2^{\Itm}$, let $|\tau|$ denote
-the number of items in $\tau$. A \emph{dataset} $\Ds$ is a bag of $n$
-transactions $\Ds=\{\tau_1,\dots,\tau_n ~:~ \tau_i\subseteq\Itm\}$, i.e., of $n$
-\emph{independent identically distributed} (i.i.d.) samples from $p$. Starting
-from $p$, we can define another function on the members of $2^{\Itm}$:
+\subsection{Itemsets mining.}\label{sec:itemdef}
+Given a ground set $\Itm$ of \emph{items}, let $\prob$ be a
+probability distribution on $2^{\Itm}$. A \emph{transaction} $\tau\subseteq\Itm$
+is a single sample drawn from $\prob$. The \emph{length} $|\tau|$ of
+a transaction $\tau$ is the number of items in $\tau$.
+A \emph{dataset}
+$\Ds$ is a bag of $n$ transactions $\Ds=\{\tau_1,\dots,\tau_n ~:~
+\tau_i\subseteq\Itm\}$, i.e., of $n$
+\emph{independent identically distributed} (i.i.d.) samples from $\prob$. We
+call a subset of $\Itm$ an \emph{itemset}. For any itemset $A$, let
+$T(A)=\{\tau\subseteq\Itm ~:~ A\subseteq \tau\}$ be the \emph{support set}
+of $A$. %The members of the set $T(A)$ are all the transactions built on $\Itm$
+%that contain the itemset $A$. 
+%For each itemset $A\subseteq\Itm$, 
+We define the
+\emph{true frequency} $\tfreq(A)$ of $A$ with respect to $\prob$ as the
+probability that a transaction sampled from $\prob$ contains $A$:
 \[
-r_p(A) = \sum_{\tau\in 2^\Itm,A\subseteq\tau}p(\tau).
+\tfreq(A) = \sum_{\tau\in T(A)}\prob(\tau)\enspace.
 \]
-Overloading the namespace a little, we say that $r$ is a function on
-\emph{itemsets}, which are just members of $2^{\Itm}$. The
-difference between itemsets and transactions is that a transaction $\tau$ contains
-multiple itemsets $A_1,A_2,\dots,A_{2^{|\tau|}-1}$ (all $\tau$'s non-empty subsets
-are itemsets). Given an itemset $A$ we call $r_p(A)$ the \emph{real frequency} of
-$A$.
 
-Define $T(A)=\{\tau\in 2^{\Itm} ~:~ A\subseteq \tau\}$. The members of the set
-$T(A)$ are all the transactions built on $\Itm$
-that contain the itemset $A$. Analogously, given a dataset $\Ds$, let $T_\Ds(A)$ denote
-the set of transactions in $\Ds$ that contain $A$. The \emph{frequency} of $A$ is
-the fraction of transactions in $\Ds$ that contain $A$: $f_\Ds(A)=
-\frac{|T_\Ds(A)|}{|\Ds|}$. It is easy to see that $f_\Ds(A)$ is the
-\emph{empirical average} and an \emph{unbiased estimator} for $r_p(A)$. 
+%Overloading the namespace a little, we say that $r$ is a function on
+%\emph{itemsets}, which are just members of $2^{\Itm}$. The
+%difference between itemsets and transactions is that a transaction $\tau$ contains
+%multiple itemsets $A_1,A_2,\dots,A_{2^{|\tau|}-1}$ (all $\tau$'s non-empty subsets
+%are itemsets). Given an itemset $A$ we call $r_p(A)$ the \emph{real frequency} of
+%$A$.
 
-In this work, we are interested in finding the itemsets that have
-real frequency at least $\theta$ for some $\theta\in(0,1]$. We call the set of
-such itemsets the \emph{Real Frequent Itemsets} (RFI's).
+Analogously, given a (observed) dataset $\Ds$, let $T_\Ds(A)$ denote
+the set of transactions in $\Ds$ containing $A$. The \emph{frequency} of $A$
+in $\Ds$ is the fraction of transactions in $\Ds$ that contain $A$: $f_\Ds(A)=
+|T_\Ds(A)|/|\Ds|$. It is easy to see that $f_\Ds(A)$ is the
+\emph{empirical average} (and an \emph{unbiased estimator}) for $\tfreq(A)$:
+${\mathbf E}[f_\Ds(A)]=\tfreq(A)$.
+
+Traditionally, the interest has been on extracting the set
+of \emph{Frequent Itemsets} (FIs) from $\Ds$ with respect to a minimum frequency
+threshold $\theta\in(0,1]$~\citep{AgrawalIS93}, that is, the set 
+\[
+\FI(\Ds,\Itm,\theta)=\{A\subseteq\Itm ~:~ f_\Ds(A)\ge\theta\}\enspace.\]
+
+In most applications the final goal of data mining is to gain a better
+understanding of the \emph{process generating the data}, i.e., of the
+distribution $\prob$, through the true frequencies $\tfreq$, which are
+\emph{unknown} and only approximately reflected in the dataset $\Ds$. Therefore, %in this work, 
+we are interested in finding the itemsets with \emph{true} frequency
+$\tfreq$ at least $\theta$ for some $\theta\in(0,1]$. We call these itemsets the
+\emph{True Frequent Itemsets} (TFIs) and denote their set as %the set they form as
+\[
+\TFI(\prob,\Itm,\theta)=\{A\subseteq\Itm ~:~ \tfreq(A)\ge\theta\}\enspace.\]
 
 %{\bf FV: changed. I think that if we define the problem only based on the distribution, it will not be clear where the problem is.}
-\begin{definition}\label{def:mineprobthreshold}
-  Given a set of items $\Itm$, a dataset $\Ds$ of i.i.d. samples from a probability distribution $p$ on the transactions
-  in $2^\Itm$, and a \emph{minimum real frequency threshold} $\theta$, $0<\theta\le 1$,
-  the \emph{RFI's mining task with respect to $\theta$} consists of finding all itemsets
-  with real frequency $\geq\theta$, i.e., the set 
-  \[ \RFI(p,\Itm,\theta)=\{A ~:~ A \in 2^\Itm \mbox{ and } r_p(A)\ge
-  \theta\}.\]
-\end{definition}
-Note that the definition of RFI's mining task does not depend on the observed dataset $\Ds$, but only on $p,\Itm$, and $\theta$.
-It should be clear that, if one is only given a \emph{finite} number of random
-samples (the dataset $\Ds$) from $p$ as it is usually the case, one can not aim at finding the exact
-set $\RFI(p,\Itm,\theta)$. Indeed, in this work, we will present a method to
-extract a collection of itemsets for which we can give probabilistic guarantees
-to only include RFI's.
+%begin{definition}\label{def:mineprobthreshold}
+%  Given a set of items $\Itm$, a dataset $\Ds$ of i.i.d. samples from a
+%  probability distribution $\prob$ on the transactions
+%  built on $\Itm$, and a \emph{minimum true frequency threshold} $\theta\in(0,1]$,
+%  the \emph{TFI's mining task with respect to $\theta$} consists of finding all itemsets
+%  with true frequency at least $\theta$, i.e., the set 
+%  \[ \RFI(p,\Itm,\theta)=\{A ~:~ A \in 2^\Itm \mbox{ and } r_p(A)\ge
+%  \theta\}.\]
+%\end{definition}
+%Note that the definition of the set of TFIs mining task does not depend on the
+%observed dataset $\Ds$, but only on $p,\Itm$, and $\theta$.
+%It should be clear that, i
+If one is only given a \emph{finite} number of random
+samples (the dataset $\Ds$) from $\prob$ as it is usually the case, one can not
+aim at finding the exact set $\TFI(\prob,\Itm,\theta)$: no assumption can be
+made on the set-inclusion relationship between $\TFI(\prob,\Itm,\theta)$ and
+$\FI(\Ds,\Itm,\theta)$,
+because an itemset $A\in\TFI(\prob,\Itm,\theta)$ may not appear in
+$\FI(\Ds,\Itm,\theta)$, and vice versa. One can instead try
+to \emph{approximate} the set of TFIs. This is what we are interested in this
+work.
 
-Traditionally, the interest has been on extracting the set of \emph{Frequent
-Itemsets} (FI's) from $\Ds$, given a minimum frequency threshold $\theta$.
-\begin{definition}\label{def:minefreqthreshold}
-  Given a dataset $\Ds$ with transactions built on a ground set $\Itm$, and a
-  \emph{minimum frequency threshold} $\theta$, $0<\theta\le 1$, the \emph{FI's
-  mining task with respect to $\theta$} consist of finding all itemsets with
-  frequency $\geq\theta$, i.e., the set 
-  \[ \FI(\Ds,\Itm,\theta)=\{A ~:~ A \in 2^\Itm \mbox{ and } f_{\Ds}(A)\ge
-  \theta\}.\]
-\end{definition}
-Given that $\Ds$ is a set of independent random samples from $p$, no
-assumption can be made on the set-inclusion relationship between
-$\RFI(p,\Itm,\theta)$ and $\FI(\Ds,\Itm,\theta)$, that is an itemset $A$ in $\RFI(p,\Itm,\theta)$ may 
-not appear in $\FI(\Ds,\Itm,\theta)$, and the opposite may happen as well.
+\paragraph{Goal.} Given an user-specified
+parameter $\delta\in(0,1)$, we aim at providing a threshold
+$\hat{\theta}\ge\theta$ such that $\mathcal{C}=\FI(\Ds,\Itm,\hat{\theta})$
+\emph{well approximates} $\TFI(\prob,\Itm,\theta)$, in the sense that 
+\begin{enumerate}
+  \item With probability at least $1-\delta$, $\mathcal{C}$ does not contain any
+    false positive: %discovery% that is not True Frequent:
+  \[
+  \Pr(\exists A\in\mathcal{C} ~:~ \tfreq(A)<\theta)<\delta\enspace.\]
+\item $\mathcal{C}$ contains as many TFIs as possible.
+%(i.e.,
+  %$\hat{\theta}-\theta$ is as small as possible, while guaranteeing 1.)
 
-While previous work has focused on identifying the FI's, in this work we consider the problem of finding the RFI's instead,
-as the final goal of market basket analysis is to gain a better
-understanding of the \emph{process generating the data}, i.e., of the real
-frequency function $r_p$, which is only partially and noisily captured by the
-dataset $\Ds$.
+  \end{enumerate}
+%At the same time, we want to maximize the size of $\mathcal{C}$, i.e., finding
+%as many TFIs as possible. 
+%In this work we present methods to identify a collection %a large
+%number of the TFIs. 
+The %These 
+method we present does not make \emph{any} assumption about %assume \emph{anything} about %limitation on 
+$\prob$. It uses information from $\Ds$, and guarantees a small probability of
+false positives while achieving a high success rate.
+%method to extract a collection of itemsets for which we can give probabilistic
+%guarantees to only include RFI's.
+
+%Traditionally, the interest has been on extracting the set of \emph{Frequent
+%Itemsets} (FI's) from $\Ds$, given a minimum frequency threshold $\theta$.
+%\begin{definition}\label{def:minefreqthreshold}
+%  Given a dataset $\Ds$ with transactions built on a ground set $\Itm$, and a
+%  \emph{minimum frequency threshold} $\theta$, $0<\theta\le 1$, the \emph{FI's
+%  mining task with respect to $\theta$} consist of finding all itemsets with
+%  frequency $\geq\theta$, i.e., the set 
+%  \[ \FI(\Ds,\Itm,\theta)=\{A ~:~ A \in 2^\Itm \mbox{ and } f_{\Ds}(A)\ge
+%  \theta\}.\]
+%\end{definition}
+%Given that $\Ds$ is a set of independent random samples from $p$, no
+%assumption can be made on the set-inclusion relationship between
+%$\RFI(p,\Itm,\theta)$ and $\FI(\Ds,\Itm,\theta)$, that is an itemset $A$ in $\RFI(p,\Itm,\theta)$ may 
+%not appear in $\FI(\Ds,\Itm,\theta)$, and the opposite may happen as well.
+
+%While previous work has focused on identifying the FIs, in this work we consider the problem of finding the RFI's instead,
+%as 
+%We believe that the final goal of market basket analysis is to gain a better
+%understanding of the \emph{process generating the data}, i.e., of the true 
+%frequency $\tfreq$, which is only partially and noisily captured by the
+%dataset $\Ds$. Thi
+
+%We believe that the collection of RFI's is more interesting than the set of
+%FI's, as the final goal of market basket analysis is to gain a better
+%understanding of the \emph{process generating the data}, i.e., of the real
+%frequency function $r_p$, which is only partially and noisily captured by the
+%dataset $\Ds$.
+
+%We give here one additional definition that we will use in the analysis of our
+%method.
+%
+%\begin{definition}\label{def:negborder}
+%  Given a collection $S\subseteq 2^{\Itm}$ of itemsets closed with respect to the
+%  set inclusion relation, the \emph{negative border} $\mathcal{B}^-(S)$ consists
+%  of the minimal (i.e., smallest) itemsets from $2^{\Itm}$ that are not in $S$.
+%\end{definition}
+%The collections of TFIs and of FIs are always closed with respect to set
+%inclusion, thanks to the \emph{antimonotonicity} property of $\tfreq$ and
+%$f_\Ds$. In these cases, the negative border consists of all the non (true)
+%frequent itemsets such that all their subsets are (true) frequent itemsets.
+
 
 \iffalse
-We believe that the collection of RFI's is more interesting than the set of
-FI's, as the final goal of market basket analysis is to gain a better
-understanding of the \emph{process generating the data}, i.e., of the real
-frequency function $r_p$, which is only partially and noisily captured by the
-dataset $\Ds$.
-\fi
+\subsection{Statistical hypothesis testing}\label{sec:stat_tests}
+We develope our methods to identify the True Frequent Itemsets within the
+framework of \emph{statistical
+hypothesis testing}. In statistical hypothesis testing, one uses some data
+$Y$ to evaluate a \emph{null hypothesis} $H$, whose rejection corresponds to claiming
+the identification of a significant phenomenon. A \emph{test statistic} $t_H(Y)$ associated
+to the hypothesis is computed from the data. If the $t_H(Y)$ belongs to a predefined
+\emph{acceptance region} (a subset of the domain of $t_H$), then $H$ is
+accepted, otherwise it is rejected. The acceptance region is defined a priori
+in such a way that the probability of a \emph{false positive}, i.e., the
+probability of accepting a true null hypothesis (corresponding to a non significant 
+phenomenon), is at most some \emph{critical
+value} $\alpha$. Accepting a true null hypothesis is also called a ``Type-1
+error''. Often, defining an acceptance region as function of $\alpha$ is done
+implicitly, and instead of verifying whether the statistics belongs to it, one
+evaluates the associated \emph{$p$-value}, that is, the probability that the
+statistic $t_H$ is at least as extreme as the value observed on the given data,
+conditioning on the null hypothesis being true, and reject $H$ if the $p$-value
+is not larger than $\alpha$. Another important factor for a
+statistical test is its \emph{power}, that is the probability that the test
+correctly rejects the null hypothesis when the null hypothesis is false (also
+defined as $1-\Pr[\text{Type-2 error}]$, where a ``Type-2 error'' consists in
+non rejecting a false null hypothesis).
 
-We give here one additional definition that we will use in the analysis of our
-method.
-
-\begin{definition}\label{def:negborder}
-  Given a collection $S$ of itemsets from $2^{\Itm}$ closed with respect to the
-  set inclusion relation, the \emph{negative border} $\mathcal{B}^-(S)$ consists
-  of the
-  minimal itemsets from $2^{\Itm}$ not in $S$.
-\end{definition}
-The collection of RFI's and of FI's are always closed with respect to set
-inclusion. In these cases, the negative border consists of all the non (real)
-frequent itemsets such that all their subsets are (real) frequent itemsets.
-\\
-
-\subsection{VC-dimension}\label{sec:prelvcdim}
-The Vapnik-Chernovenkis (VC) Dimension of a class of subsets defined
-on a set of points is a measure of the complexity or expressiveness of such
-class~\citep{VapnikC71}. A finite bound on the VC-dimension of a
-structure implies a bound on the number of random samples required to
-approximate the expectation of each indicator function associated to a set with
-its empirical average. We outline here some basic definitions and results and
-refer the reader to the works of~\citet[Sect.~12.4]{DevroyeGL96},
-\citet[Sect.~3]{BoucheronBL05}, \citet[Sect.~14.4]{AlonS08}, and
-\citet{Vapnik99} for more details on VC-dimension.
-
-Let $X_1^k=(X_1,\dotsc,X_k)$ be a collection of independent identically
-distributed random variables taking values in some domain $D$.
-For a set $A\subseteq D$, let $\nu(A)=\Pr[X_1\in A]$ and let
-\[
-\nu_{X_1^k}(A)=\frac{1}{k}\sum_{j=1}^k\mathds{1}_{X_j\in A},\]
-
-where $\mathds{1}_{X_j\in A}$ is the indicator variable for $X_j\in A$.
-Let $\mathcal{F}$ be a collection of subsets from $D$. We call $\mathcal{F}$ a
-\emph{range set on $D$}.
-Given $B\subseteq D$, the \emph{projection of $B$ on $\mathcal{F}$} is the set 
-\[
-P_\mathcal{F}(X_1^n)=\{ B\cap A; A\in\mathcal{F}\}.\]
-The set $B$ is \emph{shattered} by $\mathcal{F}$ if $P_\mathcal{F}(B)=2^B$.
-
-\begin{definition}\label{def:empvcdim}
-  Given a set $B\subseteq D$, the \emph{empirical Vapnik-Chervonenkis
-  (VC) dimension of $\mathcal{A}$ on $B$}, denoted as $\EVC(\mathcal{F},B)$ is
-  the cardinality of the largest subset of $B$ that is shattered by
-  $\mathcal{F}$.
-\end{definition}
-
-\begin{definition}\label{def:vcdim}
-  The \emph{Vapnik-Chervonenkis (VC) dimension of $\mathcal{F}$} is defined as
-  $\VC(\mathcal{F})=\EVC(\mathcal{F},D)$.
-\end{definition}
-
-The main application of (empirical) VC-dimension in statistics and learning
-theory is in computing the size of the sample needed to approximate the $\nu(A)$
-with their empirical averages $\nu_{X_1^k}(A)$, for all $A\in\mathcal{A}$.
-
-\begin{definition}\label{def:eapprox}
-  Given $\varepsilon\in(0,1)$, a $\varepsilon$-approximation for $\mathcal{F}$
-  is a set $S\subseteq D$ such that 
-  \[
-  \sup_{A\in\mathcal{F}}|\nu(A)-\nu_S(A)|\le\varepsilon.\]
-\end{definition}
-
-An $\varepsilon$-approximation can be constructed by random sampling points of
-the point space.
-
-\begin{theorem}\label{thm:eapprox}
-  \emph{(\citep[Thm.~2.12]{HarPS11}, see also~\citep{LiLS01})}
-  Let $\mathcal{F}$ be a range set on $D$ with $\VC(\mathcal{F})\le v$. Given
-  $\delta\in(0,1)$ and a positive integer $\ell$, let
-  \begin{equation}\label{eq:vceapprox}
-    \varepsilon = \sqrt{\frac{c}{\ell}\left(v + \log\frac{1}{\delta}\right)}
-  \end{equation}
-  where $c$ is an universal positive constant. Then, a set of $\ell$
-  i.i.d.~random variables $X_1,\dotsc,X_\ell$ taking values in $D$ is an
-  $\varepsilon$-approximation to $\mathcal{A}$ with probability at least
-  $1-\delta$.
-\end{theorem}
-\citet{LofflerP09} showed experimentally that the absolute
-constant $c$ is approximately $0.5$.
-
-A similar result holds when an upper bound to the empirical VC-Dimension is
-available~\citep{BoucheronBL05}.
-\begin{theorem}\label{thm:eapproxempir}
-  Let $\mathcal{F}$ be range set on $D$ and
-  $X_1^\ell=(X_1,\dotsc,X_\ell)$ be a set of i.i.d. random variables taking
-  values in $D$. Let $v$ be an integer such that $\EVC(\mathcal{F},X_1^\ell)\le v$.
-   Then, with probability at least $1-\delta$, $X_1^\ell$ is a
-  $\varepsilon$-approximation for $X$ for 
-  \begin{equation}\label{eq:evceapprox}
-    \varepsilon =
-    2\sqrt{\frac{2v\log(\ell+1)}{\ell}}+\sqrt{\frac{2\log\frac{2}{\delta}}{\ell}}.
-  \end{equation}
-\end{theorem}
-
-\subsection{Statistical tests}
-\label{sec:stat_tests}
-
-To identify the real frequent itemsets, we use the framework of statistical
-hypothesis testing. In statistical hypothesis testing, one is given a \emph{null
-hypothesis}, whose rejection, based on a measure, or \emph{statistic}, of the
-observed data, corresponds to the identification of a significant phenomenon.
-
- In our scenario, the naive method to employ statistical hypothesis testing to find the real frequent itemsets is to associate with every itemset $A$ a corresponding null hypothesis $H_A =$ ``$r_p(A) < \theta$'', and compute the $p$-value  for such null hypothesis using  $f_\Ds (A)$ as statistic. In particular, the $p$-value is given by the probability that the frequency of $A$ in a random dataset (with the same number of transactions of $\Ds$) sampled from $p$ is $\ge f_\Ds (A)$ \emph{conditioning} on the event ``$r_p(A)< \theta$''. If the $p$-value is small enough, the null hypothesis is rejected, that is $A$ is flagged as a real significant itemset. When only one hypothesis is considered, the null hypothesis is rejected when the $p$-value is $\le \alpha$, with $\alpha$ usually set to $0.05$ or $0.01$. This guarantees that the  \emph{significance level}, that is the probability of incorrectly reporting an itemset as being in $\RFI(p,\Itm,\theta)$ (type I error), is bounded by $\alpha$.
-
-In our scenario, since we are considering a number of itemsets, we are facing a
-\emph{multiple hypothesis testing} problem. In this case, if we use the same
-procedure as the single hypothesis case, we could potentially produce a number
-of spurious discoveries~\cite{LiuZW11}. In order to avoid this issue, a multiple
-hypothesis correction is employed, like the Bonferroni
-correction~\cite{DudoitSB03} (see Section~\ref{sec:statpow}).
+In our scenario, the na\"{i}ve method to employ statistical hypothesis testing
+to find the TFIs is to define a null hypothesis $H_A$ for every itemset $A$,
+with $H_A =$ ``$\tfreq(A) < \theta$'', and to compute the $p$-value for such null
+hypothesis using $f_\Ds (A)$ as statistic. In particular, the $p$-value is given
+by the probability that the frequency of $A$ in a random dataset (with the same
+number of transactions of $\Ds$) sampled from $\prob$ is $\ge f_\Ds (A)$
+\emph{conditioning} on the event ``$\tfreq(A)< \theta$''. This is easy to
+compute given that the number of transactions in a dataset that contain $A$ has
+a Binomial distribution whose parameters are the size of the dataset and the
+true frequency of $A$ (\emph{Binomial test}). If the $p$-value is ``small enough'', the
+null hypothesis is rejected, that is $A$ is flagged as a TFI. The issue, in
+our case, is that we are considering a number of itemsets, that is we are facing a
+\emph{multiple hypothesis testing} problem~\cite{LiuZW11}. In this case, one is
+interested in controlling the probability of false discoveries among all the
+hypotheses tested, i.e., in controlling the \emph{Family-Wide Error Rate}.
 
 \begin{definition}\label{def:FWER}
-  The Family-Wise Error Rate (FWER) of a statistical test is the probability that at
-  least one false positive is reported as significant.
+  The Family-Wise Error Rate (FWER) of a statistical test is the probability of reporting
+  at least one false discovery.
 \end{definition}
 
-The Bonferroni correction guarantees that the FWER is bounded by $\alpha$. Sometimes it is useful to relax the guarantees given by the FWER, for examples considering the \emph{False Discovery Rate}.
+In order to achieve the desired FWER, one must define a sequence of critical
+values for the individual hypotheses, that is, implicitly define a sequence of
+acceptance region for the test statistics. The \emph{Bonferroni
+correction}~\citep{DudoitSB03} is a widely-employed method to define such a
+sequence. In its simplest form, the Bonferroni correction suggests to compare
+the $p$-value of each hypothesis to the critical value $\alpha/m$, where $\alpha$ is the
+desired FWER, and $m$ is the number of hypotheses to be tested.  The Bonferroni
+correction is not a good choice to identify TFIs,
+%as it is known to be
+l%oose when the hypotheses are correlated, which is indeed the case
+fo%r TFIs.  Moreover, 
+since the statistical power of methods that use the Bonferroni
+correction decreases with the number of hypotheses tested. In practical cases
+there would be hundreds or thousands of TFIs, making the use of the Bonferroni
+correction impractical if one wants to achieve high statistical power.
+\fi
 
-\begin{definition}\label{def:FDR}
- The False Discovery Rate~\citep{BenjaminiH95} (FDR) is the expected proportion of
- false positives among all itemsets that are reported as significant.
-\end{definition}
+%If we were to use the same critical
+%value $\alpha$ as in the single case, we could potentially produce a number
+%of spurious discoveries~\cite{LiuZW11}. In order to avoid this issue, a multiple
+%hypothesis correction is employed, like the Bonferroni
+%correction~\citep{DudoitSB03} %(see Section~\ref{sec:statpow}).
 
-We focus in this work on identifying a highly reliable collections of high quality itemsets, and therefore aim to identify real frequent itemsets while bounding the FWER of our method, that is we bound the probability that the collection of itemsets reported by our method contains \emph{any} spurious discovery. 
+%When only one hypothesis is considered,
+%the null hypothesis is rejected when the $p$-value is at most $\alpha$, with
+%$\alpha$ usually set to $0.05$ or $0.01$. This guarantees that the
+%\emph{significance level}, that is the probability of incorrectly flagging an
+%itemset as True Frequent (Type-1 error), is bounded by $\alpha$.
 
-Another important factor for a statistical test is its \emph{power}, that is the probability that the test correctly
-rejects the null hypothesis when the null hypothesis is false (also defined as $1-\Pr[\text{type II error}]$).
+%In our scenario, since we are considering a number of itemsets, we are facing a
+%\emph{multiple hypothesis testing} problem. If we were to use the same
+%procedure as the single hypothesis case, we could potentially produce a number
+%of spurious discoveries~\cite{LiuZW11}. In order to avoid this issue, a multiple
+%hypothesis correction is employed, like the Bonferroni
+%correction~\citep{DudoitSB03} %(see Section~\ref{sec:statpow}).
+
+%\begin{definition}\label{def:FWER}
+%  The Family-Wise Error Rate (FWER) of a statistical test is the probability that at
+%  least one false positive is reported as significant.
+%\end{definition}
+
+%The Bonferroni correction guarantees that the FWER is bounded by $\alpha$.  A
+%recently proposed alternative to  bound the FWER is to bound the False Discovery
+%Rate (FDR), that in our case correspond to the proportion of false discoveries
+%among the TFI. The use of the FDR allows to produce in output a larger number of
+%patterns, since a small proportion of false discoveries are tolerated in the output;
+%however, in frequent itemset mining mining the number of patterns produced is usually high,
+%therefore having a smaller number of high quality discoveries is preferable to
+%reporting a larger number of patterns containing some false discoveries.
+
+%\iffalse
+%\begin{definition}\label{def:FDR}
+% The False Discovery Rate~\citep{BenjaminiH95} (FDR) is the expected proportion of
+% false positives among all itemsets that are reported as significant.
+%\end{definition}
+%\fi
+
+%We focus in this work on identifying a highly reliable collections of high
+%quality itemsets, and therefore aim to identify True Frequent Itemsets while
+%bounding the FWER of our method, that is we bound the probability that the
+%collection of itemsets reported by our method contains \emph{any} spurious
+%discovery (any itemeset that is not True Frequent) 
+%
+%Another important factor for a statistical test is its \emph{power}, that is the
+%probability that the test correctly rejects the null hypothesis when the null
+%hypothesis is false (also defined as $1-\Pr[\text{Type-2 error}]$).
+
