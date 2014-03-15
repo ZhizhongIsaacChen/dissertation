@@ -16,7 +16,7 @@ memory, this can be prohibitively expensive. Furthermore, such extensive
 computation is often unnecessary, since high quality approximations are
 sufficient for most practical applications.  Indeed, a number of recent
 papers (see~\ref{sec:vcmineprevwork} for more details)
-%~\cite{MannilaTV94,Toivonen96,ZakiPLO97,JiaL05,LiG04,ZhangZW03,ZhaoZZ06,BronnimanCDHS03,ChandraB11,ChenHS02,ChenHH11,ChuangCY05,HuY06,HwangK06,JiaG05,JohnL96,MahafzahABAZ09,Parthasarathy02,WangDC05,ChuangHC08,ChakaravarthyPS09,PietracaprinaV07,WangHLT05,PietracaprinaRUV10,SchefferW02,VasudevanV09}
+%~\citep{MannilaTV94,Toivonen96,ZakiPLO97,JiaL05,LiG04,ZhangZW03,ZhaoZZ06,BronnimanCDHS03,ChandraB11,ChenHS02,ChenHH11,ChuangCY05,HuY06,HwangK06,JiaG05,JohnL96,MahafzahABAZ09,Parthasarathy02,WangDC05,ChuangHC08,ChakaravarthyPS09,PietracaprinaV07,WangHLT05,PietracaprinaRUV10,SchefferW02,VasudevanV09}
 explored the application of sampling for approximate solutions to these
 problems. However, the efficiency and practicality of the sampling approach
 depends on a tight relation between the size of the sample and the quality of
@@ -29,14 +29,14 @@ the most frequent ones, and the number of subsets is exponential in the number
 of distinct items appearing in the dataset. A standard analysis begins with a bound on
 the probability that a given itemset is either over or under represented in the
 sample. Such bound is easy to obtain using a large deviation bound such as the
-Chernoff bound or the Central Limit theorem~\cite{MitzenmacherU05}. The
+Chernoff bound or the Central Limit theorem~\citep{MitzenmacherU05}. The
 difficulty is in combining the bounds for individual itemsets
 into a global bound that holds simultaneously for all the itemsets. A simple
 application of the union bound vastly overestimates the error probability
 because of the large number of possible itemsets, a large fraction of which may
 not be present in the dataset and therefore should not be considered. More
 sophisticated techniques, developed in recent
-works~\cite{ChakaravarthyPS09,PietracaprinaRUV10,ChuangCY05}, give better
+works~\citep{ChakaravarthyPS09,PietracaprinaRUV10,ChuangCY05}, give better
 bounds only in limited cases. A loose bound 
  on the required sample size for achieving the user defined
  performance guarantees, decreases the gain obtained from the use of sampling. 
@@ -45,7 +45,7 @@ In this work we circumvent this problem
 through a novel application of the \emph{Vapnik-Chervonenkis (VC)} dimension
 concept, a fundamental tool in statistical learning theory.  Roughly speaking,
 the VC-dimension of a collection of indicator functions (a range space) is a
-measure of its complexity or expressiveness. A major result~\cite{VapnikC71} relates the VC-dimension of
+measure of its complexity or expressiveness. A major result~\citep{VapnikC71} relates the VC-dimension of
 a range space to a sufficient size for a random sample to simultaneously
 approximate all the indicator functions within predefined parameters. The main
 obstacle in applying the VC-dimension theory to particular computation problems
@@ -110,12 +110,12 @@ exploited in other data mining problems.
 	label   = {table:comparsamsizeform},
 	pos = tphb,
 ]{lll}{
-	\tnote[$\dag$]{\cite{Toivonen96,JiaL05,LiG04,ZhangZW03}}
-	\tnote[$\ddag$]{\cite{ChakaravarthyPS09}}
-	\tnote[$\S$]{\cite{SchefferW02,PietracaprinaRUV10}}
-	\tnote[$\P$]{\cite{ChakaravarthyPS09}}
+	\tnote[$\dag$]{\citep{Toivonen96,JiaL05,LiG04,ZhangZW03}}
+	\tnote[$\ddag$]{\citep{ChakaravarthyPS09}}
+	\tnote[$\S$]{\citep{SchefferW02,PietracaprinaRUV10}}
+	\tnote[$\P$]{\citep{ChakaravarthyPS09}}
 	}{ \FL
-    \toprule
+    %\toprule
     Task/Approx. & This work & Best previous work \ML
     FI's/abs. & $\frac{4c}{\varepsilon^2}\left(v+\log\frac{1}{\delta}\right)$&
     $O\left(\frac{1}{\varepsilon^2}\left(|\Itm|+\log\frac{1}{\delta}\right)\right)$\tmark[$\dag$]\bigstrut \NN
@@ -186,12 +186,12 @@ analysis proves.
 
 Other works tried to improve the bound to the sample size by using different
 techniques from statistics and probability theory like the central limit
-theorem~\cite{ZhangZW03,LiG04,JiaL05} or hybrid Chernoff
-bounds~\cite{ZhaoZZ06}.
+theorem~\citep{ZhangZW03,LiG04,JiaL05} or hybrid Chernoff
+bounds~\citep{ZhaoZZ06}.
 
 Since theoretically-derived bounds to the sample size were too loose to be
 useful, a corpus of works applied progressive sampling to extract
-FI's~\cite{JohnL96,ChenHS02,Parthasarathy02,BronnimanCDHS03,ChuangCY05,JiaG05,WangDC05,HwangK06,HuY06,MahafzahABAZ09,ChenHH11,ChandraB11}.
+FI's~\citep{JohnL96,ChenHS02,Parthasarathy02,BronnimanCDHS03,ChuangCY05,JiaG05,WangDC05,HwangK06,HuY06,MahafzahABAZ09,ChenHH11,ChandraB11}.
 Progressive sampling algorithms work by selecting a random sample and then
 trimming or enriching it by removing or adding new sampled transactions
 according to a heuristic or a self-similarity measure that is fast to evaluate,
@@ -211,19 +211,19 @@ also the first to present an algorithm that uses a random sample of the dataset
 to mine approximated solutions to the AR's problem with quality guarantees. No
 experimental evaluation of their methods is presented, and they do not address
 the top-K FI's problem. Our approach gives better bounds for the problems
-studied in~\cite{ChakaravarthyPS09} and applies to related problems such as the
+studied in~\citep{ChakaravarthyPS09} and applies to related problems such as the
 discovery of top-$K$ FI's and absolute approximations.
 
 Extracting the collection of top-$K$ frequent itemsets is a more difficult task
 since the corresponding minimum frequency threshold is not known in
-advance~\cite{CheungF04,FuKT00}. Some works solved the problem by looking at
+advance~\citep{CheungF04,FuKT00}. Some works solved the problem by looking at
 \emph{closed} top-$K$ frequent itemsets, a concise representation of the
-collection~\cite{WangHLT05,PietracaprinaV07}, but they suffers from the same
+collection~\citep{WangHLT05,PietracaprinaV07}, but they suffers from the same
 scalability problems as the algorithms for exactly mining FI's with a fixed
 minimum frequency threshold.
 
 Previous works that used sampling to approximation the collection of top-$K$
-FI's~\cite{SchefferW02,PietracaprinaRUV10} used progressive sampling. Both
+FI's~\citep{SchefferW02,PietracaprinaRUV10} used progressive sampling. Both
 works provide (similar) theoretical guarantees on the quality of the
 approximation. What is more interesting to us, both works present a theoretical
 upper bound to the sample size needed to compute such an approximation. The size
@@ -246,7 +246,7 @@ greater than one.
  To our knowledge, this work is the
 first application of VC-dimension to knowledge discovery.
 
-In this present article we extend our previous published work~\cite{RiondatoU12}
+In this present article we extend our previous published work~\citep{RiondatoU12}
 in a number of ways. The first prominent change is the development and analysis
 of a tighter bound to the VC-dimension of the range space associated to the
 dataset, together with a new polynomial time algorithm to compute such bound and
@@ -267,7 +267,7 @@ the connection of our results with other known results in statistical learning
 theory. As far as the experimental evaluation is concerned, we added comments on
 the precision and recall of our methods and on their scalability, which is also
 evident from their use inside a parallel/distributed algorithm for FI's and AR's
-mining~\cite{RiondatoDFU12} for the MapReduce~\cite{DeanS04} platform that we
+mining~\citep{RiondatoDFU12} for the MapReduce~\citep{DeanS04} platform that we
 describe in the conclusions.
 
 \section{Preliminaries}\label{sec:vcmineprelim}
@@ -321,7 +321,7 @@ support and confidence, how likely it is for the itemset $B$ to appear in the
 same transactions as itemset $A$. The confidence of the association rule
 can be interpreted the conditional probability of $B$ being present in a transaction that 
 contains $A$. Many other measures can be used to quantify the interestingness of
-an association rule~\cite{TanKS04} (see also Sect.~\ref{sec:vcminealternative}).
+an association rule~\citep{TanKS04} (see also Sect.~\ref{sec:vcminealternative}).
 
 \begin{definition}\label{def:vcmineminear}
   Given a dataset $\Ds$ with transactions
@@ -446,7 +446,7 @@ It is easy to see that in practice the collection $R$ of ranges contains all and
 the sets $T_\Ds(A)$ where $A$ is a \emph{closed itemset}, i.e., a set such that
 for each non-empty $B\subseteq A$ we have $T_\Ds(B)=T_\Ds(A)$ and for any
 $C\supset A$, $T_\Ds(C)\subsetneq T_\Ds(A)$. Closed itemsets are used to
-summarize the collection of frequent itemsets~\cite{CaldersRB06}.
+summarize the collection of frequent itemsets~\citep{CaldersRB06}.
 
 The VC-Dimension of this range space is the maximum size of a set of
 transactions that can be shattered by the support sets of the itemsets, as
@@ -574,7 +574,7 @@ is at most equal to the length of the longest transaction in the dataset and in
 any case no greater than $|\Itm|-1$.
 
 %The d-index can be viewed as a stricter version of the h-index measure for
-%published work~\cite{Hirsch05}.
+%published work~\citep{Hirsch05}.
 %Consider a dataset corresponding to the publications of one scientist.
 %Each transaction corresponds to an article,
 %and items in a transaction correspond to citations of that article.
@@ -713,8 +713,8 @@ from $\Ds$. If $w\ge\ell$, then the d-index is at least $\ell$. The maximum $\el
 for which $w_\ell\ge\ell$ is the d-index of $\Ds$. The size of the largest
 anti-chain that can be built on the elements of a set can be computed by solving
 a maximum matching problem on a bipartite graph that has two nodes for each
-element of the set~\cite{FordF62}. Computing the maximum matching can be done in
-polynomial time~\cite{HopcroftK73}.
+element of the set~\citep{FordF62}. Computing the maximum matching can be done in
+polynomial time~\citep{HopcroftK73}.
 
 %The pseudocode for this procedure is presented in Alg.~\ref{alg:dindex}.
 In practice, this approach can be quite slow as it requires, for each value
@@ -954,7 +954,7 @@ a Bayesian approach is justified, one views the dataset $\Ds$ as a sample of $n$
 transactions generated by a random process with some known (or assumed) priors.
 A number of mixture models have been proposed in the literature for modeling
 dataset generation, the most commonly used is the Dirichlet Process Mixture
-model~\cite{HeS12}.
+model~\citep{HeS12}.
 %that
 %generates transactions. Under the assumption of knowing, for all
 %$i\in[1,|\Itm|]$, the probability that the process generates a transaction of
@@ -968,14 +968,14 @@ $\Pi(\alpha)$ where $\alpha$ represents the parameters of the distribution.
 Deriving the parameter $\bar\alpha$ corresponding to the distribution of
 transaction lengths according to which the dataset $\Ds$ was generated can be
 done by sampling transactions from $\Ds$ and using techniques for parameter
-estimation for a distribution from $\Pi(\alpha)$~\cite{LehmannC98,HastieTF09}.
+estimation for a distribution from $\Pi(\alpha)$~\citep{LehmannC98,HastieTF09}.
 Once the parameter $\bar\alpha$ is (probabilistically) known, an upper bound $b$
 to the d-index $d$ can be easily derived (probabilistically).  
 %in the same way as when the entire transaction length distribution was assumed to be known. 
 Estimating the parameter $\bar\alpha$ through sampling may take less time than
 performing a scan of the entire dataset to compute the d-bound, especially when
 the dataset is very large, a fast sequential sampling algorithm like Vitter's
-Method D~\cite{Vitter87} is used, and the estimation procedure is fast.
+Method D~\citep{Vitter87} is used, and the estimation procedure is fast.
 
 \subsection{Connection with monotone monomials}\label{sec:vcminemonomials}
 There is an interesting connection between itemsets built on a ground set
@@ -1314,7 +1314,7 @@ to $\FI(\Ds,\Itm,\theta)$ and $\TOPK(\Ds,\Itm,K)$.
 Confidence is not the only
 measure for the interestingness of an association rule. Other measures include
 lift, IS (cosine), all-confidence, Jaccard index, leverage, conviction, and many
-more~\cite{TanKS04}. In this section we apply our general technique to obtain good approximations with 
+more~\citep{TanKS04}. In this section we apply our general technique to obtain good approximations with 
 respect to a number of these measures, while also showing the limitation of our technique
 with respect to other criteria.
 %the collection of AR's when some of these measures are used to quantify the
@@ -1545,7 +1545,7 @@ therefore, good approximation of the collection of AR's.
 \subsection{Closed Frequent Itemsets}\label{sec:vcmineclosed}
 A Closed Frequent Itemset (CFI) is a FI $A$ whose subsets have all the same frequency
 $f\_Ds(A)$ of $A$. The collection of CFI's is a lossless compressed
-representation of the FI's~\cite{CaldersRB06}. The collection of CFI's is quite
+representation of the FI's~\citep{CaldersRB06}. The collection of CFI's is quite
 sensitive to sampling, as shown by the following example. Consider the %following
 dataset 
 \[
@@ -1586,7 +1586,7 @@ d\le q \le \Delta$, with the first inequality being strict in the worst case
 \Delta$: a single very long transaction has minimal impact on the VC-dimension
 or its upper bounds. One can envision cases where an anomalous transaction
 contains most items from $\Itm$, while all other transactions have constant
-length. This would drive up the sample size from~\cite{ChakaravarthyPS09}, while
+length. This would drive up the sample size from~\citep{ChakaravarthyPS09}, while
 the bounds presented in this work would not be impacted by this anomality.
 
 Moreover, in practice one could expect $v$ to be much smaller than the d-index
@@ -1611,7 +1611,7 @@ We conclude this discussion noting that all the bounds we presented have a
 dependency on $1/\varepsilon^2$. This is due to the use of tail bounds dependent
 on this quantity in the proof of the bound~\eqref{eq:vceapprox} to the sample size
 needed to obtain an $\varepsilon$-approximation. Given that the
-bound~\eqref{eq:vceapprox} is in general tight up to a constant~\cite{LiLS01},
+bound~\eqref{eq:vceapprox} is in general tight up to a constant~\citep{LiLS01},
 there seems to be little room for improvement of the bounds we presented as
 function of $\varepsilon$.
 
@@ -1628,7 +1628,7 @@ achieved at sample sizes smaller than those computed by the theoretical analysis
 We then show that our methods can significantly speed-up the mining process,
 fulfilling the motivating promises of the use of sampling in the market basket
 analysis tasks. Lastly, we compare the sample sizes from our results to the best
-previous work~\cite{ChakaravarthyPS09}.
+previous work~\citep{ChakaravarthyPS09}.
 
 We tested our methods on both real and artificial datasets. The real datasets
 come from the FIMI'04 repository (\url{http://fimi.ua.ac.be/data/}). Since most
@@ -1640,7 +1640,7 @@ have VC-dimension equal to the maximum transaction length, which is the
 maximum possible as shown in Thm.~\ref{lem:vcdimupperb}. To create these
 datasets, we followed the proof of Thm.~\ref{lem:vcdimlowerb} and used the
 generator included in ARtool (\url{http://www.cs.umb.edu/~laur/ARtool/}), which
-is similar to the one presented in~\cite{AgrawalS94}. The artificial datasets
+is similar to the one presented in~\citep{AgrawalS94}. The artificial datasets
 had ten million transactions. We used the FP-Growth and
 Apriori implementations in ARtool to extract frequent itemsets and association
 rules. To compute the d-bound $q$, which is an upper bound to the d-index $d$,
@@ -1649,7 +1649,7 @@ In all our experiments we fixed $\delta=0.1$. In the experiments involving
 absolute (resp.~relative) $\varepsilon$-close approximations we set
 $\varepsilon=0.01$ (resp.~$\varepsilon=0.05$). The absolute constant $c$ was fixed to
 $0.5$ as %suggested
-estimated by~\cite{LofflerP09}. This is reasonable because, again, $c$
+estimated by~\citep{LofflerP09}. This is reasonable because, again, $c$
 does not depend in any way from $\Ds$, $\varepsilon$, $\delta$, the VC-dimension
 $v$ of the range space, the d-index $d$ or the d-bound $q$, or any
 characteristic of the collection of FI's or AR's. No upper bound is currently
@@ -1815,7 +1815,7 @@ therefore the time needed to mine the sample, does not grow with the size of the
 dataset as long as the d-bound remains constant, that the d-index computation
 can be performed online, and that the time to create the sample can be made
 dependent only on the sample size using Vitter's Method D
-algorithm~\cite{Vitter87}, our method is very scalable as the dataset grows, and
+algorithm~\citep{Vitter87}, our method is very scalable as the dataset grows, and
 the speed up becomes even more relevant because the mining time for the large
 dataset would instead grow with the size of the dataset.
 
@@ -1831,7 +1831,7 @@ dataset would instead grow with the size of the dataset.
 Comparing our results to previous work we note that the bounds generated by our
 technique are always linear in the VC-dimension $v$ associated with the dataset.
 As reported in Table~\ref{table:comparsamsizeform}, the best previous
-work~\cite{ChakaravarthyPS09} presented bounds that are linear in the maximum
+work~\citep{ChakaravarthyPS09} presented bounds that are linear in the maximum
 transaction length $\Delta$ for two of the six problems studied here.
 Figures~\ref{fig:compareSamSizeTheta} and~\ref{fig:compareSamSizeEpsilon} show
 a comparison of the actual sample sizes for relative $\varepsilon$-close
@@ -1847,12 +1847,12 @@ similar, but not equal, dependencies on $\theta$ and $\varepsilon$. More
 precisely the bound presented in this work is less dependent on $\varepsilon$
 and only slightly more dependent on $\theta$. It also evident that the sample
 sizes given by the bound presented in this work are always much smaller than
-those presented in~\cite{ChakaravarthyPS09} (the vertical axis has logarithmic
+those presented in~\citep{ChakaravarthyPS09} (the vertical axis has logarithmic
 scale). In this comparison we used $\Delta=v$, but almost all real datasets
 we encountered have $v\ll\Delta$ as shown in Table~\ref{tab:deltadrealds} which
 would result in a larger gap between the sample sizes provided by the two
 methods. On the other hand, we should mention that the sample size given
-by~\cite{ChakaravarthyPS09} can be slightly optimized by using a stricter
+by~\citep{ChakaravarthyPS09} can be slightly optimized by using a stricter
 version of the Chernoff bound, but this does not change the fact that it
 depends on the maximum transaction length rather than on the VC-Dimension.
 
@@ -1900,8 +1900,8 @@ of our method is demonstrated in the extensive experimental evaluation which
 confirming our theoretical analysis and suggests that in practice it is possible
 to achieve even better results than what the theory guarantees. Moreover, we
 used this method as the basic building block of an algorithm for the
-MapReduce~\cite{DeanS04} distributed/parallel framework of computation.
-PARMA~\cite{RiondatoDFU12}, our MapReduce algorithm, computes an absolute
+MapReduce~\citep{DeanS04} distributed/parallel framework of computation.
+PARMA~\citep{RiondatoDFU12}, our MapReduce algorithm, computes an absolute
 $\varepsilon$-approximation of the collection of FI's or AR's by mining a number
 of small random samples of the dataset in parallel and then aggregating and
 filtering the collections of patterns that are frequent in the samples. It
@@ -1914,7 +1914,7 @@ Samples of size as computed by our methods can be used to mine approximations
 of other collection of itemsets, provided that one correctly define the
 approximation taking into account the guarantees on the estimation of the
 frequency provided by the $\varepsilon$-approximation theorem. For example, one
-can can use techniques like those presented in~\cite{MampaeyTV11} on a sample
+can can use techniques like those presented in~\citep{MampaeyTV11} on a sample
 to obtain a small collection of patterns that describe the dataset as best as
 possible.
 
@@ -1925,8 +1925,8 @@ practical methods to solve important problems in knowledge discovery.
 
 It may be possible to develop procedures that give a stricter upper bound to the
 VC-dimension for a given dataset, or that other measures of sample complexity
-like the triangular rank~\cite{NewmanR12}, shatter coefficients, or Rademacher
-inequalities~\cite{BoucheronBL05}, can suggest smaller samples sizes. 
+like the triangular rank~\citep{NewmanR12}, shatter coefficients, or Rademacher
+inequalities~\citep{BoucheronBL05}, can suggest smaller samples sizes. 
 
 \paragraph{Acknowledgements.} The authors are thankful to Luc De Raedt for
 suggesting the connection between itemsets and monotone monomials. We also thank
