@@ -10,9 +10,8 @@
 \usepackage{amssymb}
 \usepackage{amsthm}
 \usepackage{bigstrut}
-\usepackage{booktabs}
 \usepackage{caption}
-\usepackage{ctable} % TODO TO REMOVE
+\usepackage{ctable} 
 \usepackage{dsfont}
 \usepackage{float}
 \usepackage{graphicx}
@@ -20,15 +19,22 @@
 \usepackage{mathtools}
 \usepackage{multirow}
 \usepackage[sort,compress,square]{natbib}
-\usepackage{multirow}
 \usepackage{setspace}
-\usepackage{subfig}
-%\usepackage{subfigure} % TODO UNDERSTAND WHICH ONE TO USE
+\usepackage{subcaption}
 \usepackage{url}
 \usepackage{verbatim}
 \usepackage{xspace}
 
 \usepackage[show]{notes-alt}
+
+
+\newcommand\nomarkfootnote[1]{%
+  \begingroup
+  \renewcommand\thefootnote{}\footnote{#1}%
+  \addtocounter{footnote}{-1}%
+  \endgroup
+}
+
 
 \newcommand{\Sam}{{\cal S}}
 \newcommand{\Ds}{{\cal D}}

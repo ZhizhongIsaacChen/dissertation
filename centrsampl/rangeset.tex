@@ -4,23 +4,24 @@ a strict upper bound to its VC-dimension. %We show that this upper bound is stri
 We use the range space and the bound in the analysis of our algorithms for estimating
 the betweenness centrality of vertices of $G$.
 
-The range space $\range_G$ is defined on the set $\mathbb{S}_G$ of all shortest
-paths between vertices of $G$. It contains, for each vertex $v\in V$, the set
-$\mathcal{T}_v$ of shortest paths that $v$ is internal to:
+The domain of the range space is the set $\mathbb{S}_G$ of all shortest
+paths between vertices of $G$. The set $\range_G$ of ranges contains a subset of
+$\mathbb{S}_G$ for each vertex $v\in V$, that is the set $\mathcal{T}_v$ of
+shortest paths that $v$ is internal to:
 \[
 \range_G = \{\mathcal{T}_v ~:~ v\in V\}\enspace.
 \]
+We denote this range space as $R_G$.
 
 \begin{lemma}\label{lem:vcdimuppbound}
   %Given a graph $G=(V,E)$ with vertex-diameter $\Delta_G$, the range space
   %$\range_G$ associated to the shortest paths in $G$ has VC-dimension
-  $\VC(\range_G)\le\lfloor\log_2(\VD(G)-2)\rfloor+1$.
+  $\VC(R_G)\le\lfloor\log_2(\VD(G)-2)\rfloor+1$.
 \end{lemma}
 
 \begin{proof}
-%\begin{IEEEproof}
 Let $\ell>\lfloor\log_2(\VD(G)-2)\rfloor+1$ and assume for the sake of contradiction
-that $\VC(\range_G)=\ell$. From the definition of the VC-dimension there is a set
+that $\VC(R_G)=\ell$. From the definition of the VC-dimension there is a set
 $Q\subseteq\mathbb{S}_G$ of size $\ell$ that is shattered by $\range_G$. Let $p$ be
 an element of $Q$. There are  $2^{\ell-1}$ non-empty subsets of
 $Q$ containing the path $p$. Let us label these non-empty subsets of $Q$ containing $p$ as
@@ -38,47 +39,34 @@ can belong to at most $\VD(G)-2$ ranges from $\range_G$. Given that
 $2^{\ell-1}>\VD(G)-2$, we reached a contradiction and there cannot be $2^{\ell-1}$
 distinct ranges containing $p$, hence not all the sets $S_i$ can be expressed as
 $Q\cap R_i$ for some $R_i\in\range_G$. Then $Q$ cannot be shattered and
-$\VC(\range_G)\le\lfloor\log_2(\VD(G)-2)\rfloor+1$.%\qed
+$\VC(R_G)\le\lfloor\log_2(\VD(G)-2)\rfloor+1$.%\qed
 \end{proof}
-%\end{IEEEproof}
 
 \paragraph{Unique shortest paths}\label{sec:centrsamplrangeunique}
 In the restricted case when the graph is undirected and
 every pair of distinct vertices has either none or a unique shortest path
-between them, the VC-dimension of $\range_G$ reduces %collapses 
-to a \emph{constant}. This is a
-somewhat surprising result with interesting consequences. From a theoretical
-point of view, it suggests that there should be other characteristic
-quantities of the graph different from the vertex diameter that control the
-VC-dimension of the range space of shortest paths, and these quantities are
-constant on graph with unique shortest paths between vertices. From a more
-practical point of view, we will see in Sect.~\ref{sec:centrsamplalgo} that this result has an
-impact on the sample size needed to approximate %for approximating 
-the betweenness centrality of
-networks where the unique-shortest-path property is satisfied or even enforced,
-like road networks~\citep{GeisbergerSS08}. In particular, the resulting sample
-size will be \emph{completely independent} from any characteristic of the
-network, and will only be a function of the parameters controlling the desired
-approximation guarantees. We are currently investigating whether this result can
-be extended to the case of directed graphs.
-\ifproof
-\else
-Due to space constraints, we defer the proof to the extended online version of
-the paper~\citep{RiondatoK13}.
-\fi
+between them, the VC-dimension of $R_G$ reduces %collapses 
+to a \emph{constant}. This is a somewhat surprising result with interesting
+consequences. From a theoretical point of view, it suggests that there should be
+other characteristic quantities of the graph different from the vertex diameter
+that control the VC-dimension of the range space of shortest paths, and these
+quantities are constant on graph with unique shortest paths between vertices.
+From a more practical point of view, we will see in
+Sect.~\ref{sec:centrsamplalgo} that this result has an impact on the sample size
+needed to approximate the betweenness centrality of networks where the
+unique-shortest-path property is satisfied or even enforced, like road
+networks~\citep{GeisbergerSS08}. In particular, the resulting sample size will
+be \emph{completely independent} from any characteristic of the network, and
+will only be a function of the parameters controlling the desired approximation
+guarantees. We currently do not know whether this result can be extended to he
+case of directed graphs.
 
 \begin{lemma}\label{lem:vcdimuppboundunique}
   Let $G=(V,E)$ be an undirected graph with $|\mathcal{S}_{uv}|\le1$ for all
-  pairs $(u,v)\in V\times V$. Then $\VC(\range_G)\le 3$.
-%  Given an undirected
-%  graph $G=(V,E)$ such that $|\mathcal{S}_{uv}|\le1$ for all
-%  pairs $(u,v)\in V\times V$, the range space $\range_G$ of the
-%  shortest paths in $G$ has VC-Dimension $\VC(\range_G)\le3$.
+  pairs $(u,v)\in V\times V$. Then $\VC(R_G)\le 3$.
 \end{lemma}
 
-\ifproof
 \begin{proof}
-%\begin{IEEEproof}
   First of all, notice that in this restricted setting, if two different
   shortest paths $p_1$ and $p_2$ meet at a vertex $u$, then they either go on
   together or %at a certain point 
@@ -88,7 +76,7 @@ the paper~\citep{RiondatoK13}.
   between $u$ and $v$, which is a contradiction of the hypothesis. Let us denote
   this fact as $\mathsf{F}$.
 
-  Assume now that $\VC(\range_G)>3$, then there must be a set
+  Assume now that $\VC(R_G)>3$, then there must be a set
   $Q=\{p_1,p_2,p_3,p_4\}$ of four shortest paths that can be shattered by
   $\range_G$. Then there is a vertex $w$ such that $\mathcal{T}_w\cap Q=Q$, i.e.,
   all paths in $Q$ go through $w$. Let $x$ be the farthest predecessor of $w$
@@ -131,36 +119,20 @@ the paper~\citep{RiondatoK13}.
   $y$. This implies that $Q$ can not be shattered.
 
   We showed that in all possible cases we reached a contradiction and $Q$,
-  which has size $4$, can not be shattered by $\range_G$. Hence $\VC(\range_G)\le
+  which has size $4$, can not be shattered by $\range_G$. Hence $\VC(R_G)\le
   3$.
-%\end{IEEEproof}
 \end{proof}
-\fi
-
-\ifproof
-\else
-%\subsection{Variants}\label{sec:centrsamplrangevariants}
-\paragraph{Bounded-distance betweenness}
-For the case of $k$-bounded-distance betweenness, if we let
-$\range_G^{(k)}=\{\mathcal{T}_v^{(k)}~:~ v\in V\}$, it is easy to bound
-$\VC(\range_G^{(k)})$ following the same reasoning as in
-Lemma~\ref{lem:vcdimuppbound}.
-\begin{lemma}\label{lem:vcdimuppboundk}
-$\VC(\range_G^{(k)})\le\lfloor\log_2(k-1)\rfloor+1$.
-\end{lemma}
-\fi
 
 \subsection{Tightness}\label{sec:centrsampltightness}
 The bound presented in Lemma~\ref{lem:vcdimuppbound} is strict in the sense that
 for each $d\ge 1$ we can build a graph $G_d$ with vertex-diameter
-$\VD(G_d)=2^d+1$ and such that the range space $\range_{G_d}$ associated to the set of
+$\VD(G_d)=2^d+1$ and such that the range space $R_{G_d}$ associated to the set of
 shortest paths of $G_d$ has VC-dimension exactly
 $d=\lfloor\log_2(\VD(G_d)-2)\rfloor+1$. 
 %For the sake of clarity, we will discuss
 %only the case of undirected graphs with equal edge weights, but all we say can
 %be easily adapted to the general case.
 
-\ifproof
 We now introduce a class $\mathcal{G}=(G_d)_{d\ge 1}$ of graphs indexed by $d$.
 The graphs in $\mathcal{G}$ are the ones for which we can show the tightness of
 the bound to the VC-dimension of the associated range space.
@@ -179,24 +151,14 @@ vertices, the two with degree 1 are special and are called the \emph{end
 vertices} of $G_d$ and denoted as $v_\ell$ and $v_\mathrm{r}$, where the
 labels can be arbitrarily assigned. We now build a set $Q$ of $d$
 shortest paths from $v_\ell$ to $v_\mathrm{r}$ and show that it is
-shattered by $\range_{G_d}$, therefore proving that $\VC(\range_{G_d})\ge d$.
+shattered by $\range_{G_d}$, therefore proving that $\VC(R_{G_d})\ge d$.
 This fact, together with Lemma~\ref{lem:vcdimuppbound}, allows us to conclude
-that $\VC(\range_{G_d})=d$. 
-\else
-There is a class $\mathcal{G}=(G_d)_{d\ge 1}$ of graphs indexed by d, such that
-the graphs in $\mathcal{G}$ are the ones for which we can show the tightness of
-the bound to the VC-dimension of the associated range space. We call the graph
-$G_d\in\mathcal{G}$ the \emph{$d$-th concertina graph}.
-Figure~\ref{fig:centrsampltightgraphs} shows $G_1$, $G_2$, $G_3$, and $G_4$. The
-generalization to higher values of $d$ should be straightforward. Each graph
-$G_d$ has $3(2^{d-1}$ vertices and vertex-diameter $d$.
-\fi
+that $\VC(R_{G_d})=d$. 
+
 \begin{lemma}\label{lem:vcdimlowbound}
-  $\VC(\range_{G_d})=d$.
+  $\VC(R_{G_d})=d$.
 \end{lemma}
-\ifproof
 \begin{proof}
-%\begin{IEEEproof}
   As we said, the $d$ paths in $Q$  go from $v_\ell$ to $v_\mathrm{r}$.
   From this and the definition of $G_d$ it should be clear that they must go through
   all the middle vertices of $G_d$. Consider now the set
@@ -230,7 +192,7 @@ $G_d$ has $3(2^{d-1}$ vertices and vertex-diameter $d$.
 
   \begin{figure}[ht]
     \centering
-    \includegraphics[scale=0.4]{centrsampl/figures/eps/tight-mapexample}
+    \includegraphics[width=0.75\textwidth,keepaspectratio]{centrsampl/figures/eps/tight-mapexample}
     \caption{An example of the $\mathsf{r}$ map for $G_3$. The set next to
     each top and bottom vertex $u$ is the set $s$ such that $\mathsf{r}(s)=u$.}
     \label{fig:centrsamplmapexample}
@@ -250,59 +212,45 @@ $G_d$ has $3(2^{d-1}$ vertices and vertex-diameter $d$.
   from $\range_{G_d}$, which means that $Q$ can be shattered and therefore
   $\VC(\range_{G_d})\ge d$.
 
-  From Lemma~\ref{lem:vcdimuppbound} we know that $\VC(\range_{G_d})\le d$, so
-  it must be $\VC(\range_{G_d})=d$.
-%\end{IEEEproof} 
+  From Lemma~\ref{lem:vcdimuppbound} we know that $\VC(R_{G_d})\le d$, so
+  it must be $\VC(R_{G_d})=d$.
 \end{proof}
-\else
-Due to space constraints, we defer the proof to the extended online version of
-the paper~\citep{RiondatoK13}.
-\fi
 
 \begin{figure}[th]
   \centering
-  \includegraphics[scale=0.3]{centrsampl/figures/eps/tight}
+  \includegraphics[width=0.75\textwidth,keepaspectratio]{centrsampl/figures/eps/tight}
   \caption{Examples of concertina graphs $G_d$ for $d=1,2,3,4$.}
   \label{fig:centrsampltightgraphs}
 \end{figure}
 
 The upper bound presented in Lemma~\ref{lem:vcdimuppboundunique}  for the case
 of unique shortest paths is also strict in the same sense.
-\ifproof
-\else
-The proof can be found in the extended online version of the
-paper~\citep{RiondatoK13}.
-\fi
 
 \begin{lemma}\label{lem:vcdimlowboundunique}
   There is a graph $G=(V,E)$ with $|\mathcal{S}_{uv}|\le1$ for all
-  pairs $(u,v)\in V\times V$ such that the range space $\range_G$ associated to the
+  pairs $(u,v)\in V\times V$ such that the range space $R_G$ associated to the
   shortest paths in $G$ has VC-Dimension exactly $3$.
 \end{lemma}
 
-\ifproof
 \begin{figure}[ht]
   \centering
-  \includegraphics[scale=0.35]{centrsampl/figures/eps/uniqueshortestpathtight}
+  \includegraphics[width=0.75\textwidth,keepaspectratio]{centrsampl/figures/eps/uniqueshortestpathtight}
   \caption{Graph $G$ with $\VC(\range_G)= 3$.}
   \label{fig:centrsampluniquetight}
 \end{figure}
 
 \begin{proof}
-%\begin{IEEEproof}
   Consider the graph $G$ in Fig.~\ref{fig:centrsampluniquetight}.
   Let $p_1=(a,b,c,e,i,j)$, $p_2=(m,f,e,i,k,l)$, $p_3=(d,c,e,f,g,h)$ be three
   paths. We now show that $Q=\{p_1,p_2,p_3\}$ can be shattered by $\range_G$, which
-  implies $\VC(\range_G)\ge 3$. We have $\emptyset=Q\cap\mathcal{T}_a$,
+  implies $\VC(R_G)\ge 3$. We have $\emptyset=Q\cap\mathcal{T}_a$,
   $\{p_1\}=Q\cap\mathcal{T}_b$, $\{p_2\}=Q\cap\mathcal{T}_k$,
   $\{p_3\}=Q\cap\mathcal{T}_g$, $\{p_1,p_2\}=Q\cap\mathcal{T}_i$,
   $\{p_1,p_3\}=Q\cap\mathcal{T}_c$, $\{p_2,p_3\}=Q\cap\mathcal{T}_f$,
   $\{p_1,p_2,p_3\}=Q\cap\mathcal{T}_e$,  
   Hence all subsets of $Q$ can be expressed as the intersection between $Q$ and
   some range in $\range_G$ which means that $Q$ can be shattered and
-  $\VC(\range_G)\ge 3$. Lemma~\ref{lem:vcdimuppboundunique} gives us an upper
-  bound $\VC(\range_G)\le3$, so we can conclude that $\VC(\range_G)=3$.
-%\end{IEEEproof}
+  $\VC(R_G)\ge 3$. Lemma~\ref{lem:vcdimuppboundunique} gives us an upper
+  bound $\VC(R_G)\le3$, so we can conclude that $\VC(R_G)=3$.
 \end{proof}
-\fi
 

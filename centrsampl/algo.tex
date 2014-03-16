@@ -32,7 +32,7 @@ $\betw(w)$ of a vertex $w$ is the sample average
 \mathds{1}_{\mathcal{T}_w}(p)\enspace.
 \]
 
-There are two crucial steps in this algorithm:centrsampl the computation of $\VD(G)$ and
+There are two crucial steps in this algorithm: the computation of $\VD(G)$ and
 the sampling of a path uniformly at random from $\mathcal{S}_{uv}$. We first
 deal with the latter, and then present a linear-time constant-factor approximation algorithm for $\VD(G)$.
 %in Sect.~\ref{sec:centrsampldiam}. 
@@ -62,26 +62,10 @@ extremely fast on graphs with this property. Unique shortest paths are common or
 even enforced in road networks by slightly perturbing the edge weights or having
 a deterministic tie breaking policy~\citep{GeisbergerSS08}.
 
-\ifproof
-\else
-\paragraph{Bounded-distance betweenness} For the case of
-$k$-bounded-distance betweenness, the sample size on line~\ref{algline:forloop}
-of Alg.~\ref{alg:algorithm} can be reduced to 
-\[ 
-  r= \frac{c}{\varepsilon^2}\left(\lfloor\log_2(k-1)\rfloor + 1 +\ln\frac{1}{\delta}\right)
-\]
-and the computation of the shortest paths on line~\ref{algline:shortestpaths}
-can be stopped after we reached the vertices that are $k$ ``hops'' far from $u$.
-\fi
-
 \paragraph{Sampling a shortest path}
 Our procedure to select a random shortest path from $\mathcal{S}_{uv}$ is
 inspired by the dependencies accumulation procedure used in Brandes' exact
-algorithm~\citep{Brandes01}. 
-%Given a vertex $w$, ~\citet{Brandes01} showed how
-%to compute, for every vertex $z$, the amount $\sigma_{wz}$ of shortest paths
-%from $w$ to $z$, while computing the set $\mathcal{S}_{wz}$. 
-Let $u$ and $v$ be the vertices sampled by our algorithm
+algorithm~\citep{Brandes01}. Let $u$ and $v$ be the vertices sampled by our algorithm
 (Step~\ref{algline:samplevertices} of Alg.~\ref{alg:algorithm}). We assume that $u$ and
 $v$ are connected otherwise the only possibility is to select the empty path
 $p_\emptyset$. Let $y$ be any vertex belonging to at least one shortest path
@@ -106,7 +90,6 @@ $p^*$.
 \end{lemma}
 
 \begin{proof}
-%\begin{IEEEproof}
   The probability of sampling $p^*=(u,z_1,\dotsc,z_{|p^*|-2},v)$ equals to the
   product of the probabilities of sampling the vertices internal to $p^*$, hence
   \[
@@ -118,7 +101,6 @@ $p^*$.
   \sigma_{uw}=\sum_{j\in P_u(w)}\sigma_{uj}
   \]
   and the fact that for $z_1$, which is a neighbor of $u$, $\sigma_{uz_1}=1$.
-%\end{IEEEproof}
 \end{proof}
 
 \begin{algorithm}[ht]
@@ -130,7 +112,6 @@ $p^*$.
   \SetKwFunction{SampleUniform}{sampleUniformPath}
   \SetKwFunction{PairShortestPaths}{computeAllShortestPaths}
    \DontPrintSemicolon
-  %\dontprintsemicolon
   \Input{Graph $G=(V,E)$ with $|V|=n$, $\varepsilon,\delta\in(0,1)$}
   \Output{A set of approximations of the betweenness centrality of the vertices
   in $V$}
@@ -193,15 +174,12 @@ the following way: 1.~select a vertex $v\in V$ uniformly at random, 2.~compute
 the shortest paths from $v$ to all other vertices in $V$, and 3.~finally take
 $\widetilde\VD(G)$ to be the sum of the lengths of the two shortest paths with
 maximum size (which equals to the two longest shortest paths) from $v$ to two
-distinct other nodes $u$ and $w$. 
-\ifproof
-The approximation guarantee follows from the next lemma.
+distinct other nodes $u$ and $w$. The approximation guarantee follows from the next lemma.
 
 \begin{lemma}\label{lem:diam}
   $\VD(G)\le\widetilde\VD(G)\le 2\VD(G)$.
 \end{lemma}
 \begin{proof}
-%\begin{IEEEproof}
   Let $v\in V$ be a vertex that we choose uniformly at random from the set $V$.
   Let also $u,w\in V$ be the two vertices such that the sum of the sizes of the
   shortest paths $p_{vu}$ and $p_{vw}$ is maximized among all the shortest paths
@@ -223,10 +201,7 @@ The approximation guarantee follows from the next lemma.
   the shortest path from $x$ to $z$, then every other path (in this case
   $p'_{xz}$ which is the merge of $p_{xv}$ and $p_{vz}$) has greater or equal
   length from $p_{x,z}$.
-  %$\qed$
-%\end{IEEEproof}
 \end{proof}
-\fi
 In case we have multiple connected components in $G$, we compute an upper bound
 to the vertex diameter of each component separately by running the above
 algorithm on each component, and then taking the maximum. 
@@ -245,7 +220,7 @@ The use of the above $2$-approximation in the computation of the
 sample size from line~\ref{algline:forloop} of Alg.~\ref{alg:algorithm} results
 in at most $c/\varepsilon^2$ additional samples than if we
 used the exact value $\VD(G)$. The computation of $\widetilde\VD(G)$
-does not affect the running time of our algorithm:centrsampl for the construction of
+does not affect the running time of our algorithm: for the construction of
 the first sample we can reuse the shortest paths from the sampled
 vertex $v$ that we used to obtain the approximation. Specifically, we can sample
 a new vertex $u\neq v$ and then choose with uniform probability one of the
@@ -575,12 +550,13 @@ edges in the graph \emph{at every sample}, while our computation exhibits a much
 higher \emph{locality}, exploring only a neighborhood of $u$ until $v$ is
 reached. The results of our experimental evaluation presented in
 Sect.~\ref{sec:centrsamplexper} highlights this and other advantages of our method over
-the one from~\citep{JacobKLPT05,BrandesP07}. In the future, we plan to
-investigate the possibility of using \emph{bidirectional A$^*$
+the one from~\citep{JacobKLPT05,BrandesP07}. 
+It would be interesting to explore the %In the future, we plan to
+%investigate 
+the possibility of using \emph{bidirectional A$^*$
 search}~\citep{Pohl69,KaindlK97} to further speed up the computation for each
 sample of our algorithms.
 
-\ifproof
 The analysis of Algorithm 1 allow us to obtain a tighter analysis for the
 algorithm by~\citet{BrandesP07} and~\citet{JacobKLPT05}.
 
@@ -808,12 +784,11 @@ vertices with probability at least $1-\delta$.\footnote{We conjecture that this
 is true and are currently working on a proof.}
 Secondly we already argued that per sample, the computation of
 $\tilde\betw_{\mathsf{BP}}(w)$ requires more time than the one for
-$\tilde\betw_{\mathrm{A1}}(w)$. The difference is even larger if
-Algorithm~\ref{alg:algorithm} uses bidirectional
+$\tilde\betw_{\mathrm{A1}}(w)$. The difference would be even larger if
+Algorithm~\ref{alg:algorithm} can be adapted to use bidirectional
 search~\citep{KaindlK97,Pohl69}. 
 
 We can conclude this discussion stating that Algorithm~\ref{alg:algorithm},
 \textsf{BP}, and the algorithm by~\citet{GeisbergerSS08} share the same design
 principles, but choose different trade-offs between accuracy and speed.  
-\fi
 

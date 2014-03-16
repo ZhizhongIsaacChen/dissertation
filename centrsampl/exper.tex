@@ -1,8 +1,7 @@
-\begin{figure*}
+\begin{figure}[htb]
   \centering
-%  \begin{subtable}[b]{0.47\textwidth}
-\subfloat[Undirected graphs]{
-  \begin{small}
+  \begin{subtable}[b]{\linewidth}
+    \centering
     \begin{tabular}{cccccc}
       \toprule
       &  & & &  \multicolumn{2}{c}{$\frac{\mbox{Time}_\mathsf{BP}}{\mbox{Time}_\mathsf{VC}}$} \\
@@ -19,19 +18,12 @@
       email-Enron & 36,692 & 421,578 & 12 & 3.60 & 4.16\\
       \bottomrule
     \end{tabular}
-  \end{small}
-  %\caption{Undirected graphs}
+  \caption{Undirected graphs}
   \label{tab:expUndir}
-  }
-  %\end{subtable}
-\ifproof
-\\
-\else
-\hspace{-5pt}
-\fi
- % \begin{subtable}[b]{0.47\textwidth}
- \subfloat[Directed graphs] {
-  \begin{small}
+  \end{subtable}
+
+  \begin{subtable}[b]{\linewidth}
+    \centering
     \begin{tabular}{cccccccc}
       \toprule
       & & & & \multicolumn{4}{c}{$\frac{\mbox{Time}_\mathsf{BP}}{\mbox{Time}_\mathsf{VC}}$} \\
@@ -49,14 +41,12 @@
       soc-Epinions1 & 75,879 & 508,837 & 13 & 4.20 & 4.25 & 1.35 & 1.38\\
       \bottomrule
     \end{tabular} 
-  \end{small}
-  %\caption{Directed graphs}
+  \caption{Directed graphs}
   \label{tab:expDir}
-  }
-  %\end{subtable}
+  \end{subtable}
   \caption{Graph properties and running time ratios.}
   \label{fig:centrsampltables}
-\end{figure*}
+\end{figure}
 
 \section{Experimental evaluation}\label{sec:centrsamplexper}
 We conducted an experimental evaluation of our algorithms, with two major
@@ -65,12 +55,6 @@ paper and compare it with that of other related
 algorithms~\citep{Brandes01,BrandesP07,JacobKLPT05,GeisbergerSS08}, in terms of
 accuracy of the estimation, execution time, work performed, and scalability as
 function of the network size.
-\ifproof 
-\else
-Due to space limitations, we only report a subset
-of our results and refer the reader to the extended online version of the
-paper~\citep{RiondatoK13}.
-\fi
 
 \paragraph{Implementation and environment}
 We implemented our algorithms, the one presented in~\citep{BrandesP07,JacobKLPT05}
@@ -247,104 +231,68 @@ theoretical analysis indicates. This is due to a number of factors, like the
 fact that we use an \emph{upper bound} to the VC-dimension of the range set. 
 %Morev the inherent looseness of the formula of the sample size~\eqref{eq:centrsamplvceapprox}.
 
-\begin{figure*}[ht]
+\begin{figure}[htb]
   \centering
-  %\begin{subfigure}[b]{0.45\textwidth}
-  \subfloat[p2p-Gnutella30 (directed)]{
-    \includegraphics[width=0.99\textwidth,keepaspectratio]{centrsampl/figures/eps/p2p-Gnutella30-error}
-    %\caption{p2p-Gnutella30 (directed)}
+  \begin{subfigure}[b]{0.49\textwidth}
+    \includegraphics[width=\textwidth]{centrsampl/figures/eps/p2p-Gnutella30-error}
+    \caption{p2p-Gnutella30 (directed)}
     \label{fig:centrsamplgnutella:error}
-    }
-  %\end{subfigure}
+  \end{subfigure}
   \ifproof
   \hfill
-  %\begin{subfigure}[b]{0.45\textwidth}
-  \subfloat[soc-Epinions1 (directed)] {
-    \includegraphics[width=0.99\textwidth,keepaspectratio]{centrsampl/figures/eps/soc-Epinions1-error}
-    %\caption{soc-Epinions1 (directed)}
+  \begin{subfigure}[b]{0.49\textwidth}
+    \includegraphics[width=\textwidth]{centrsampl/figures/eps/soc-Epinions1-error}
+    \caption{soc-Epinions1 (directed)}
     \label{fig:centrsamplEpinions:error}
-  }
-  %\end{subfigure}
+  \end{subfigure}
 
-  %\begin{subfigure}[b]{0.45\textwidth}
-  \subfloat[ca-HepPh (directed)]{
-    \includegraphics[width=0.99\textwidth,keepaspectratio]{centrsampl/figures/eps/ca-HepPh-error}
-    %\caption{ca-HepPh (directed)}
+  \begin{subfigure}[b]{0.49\textwidth}
+    \includegraphics[width=\textwidth]{centrsampl/figures/eps/ca-HepPh-error}
+    \caption{ca-HepPh (directed)}
     \label{fig:centrsamplHepPh:error}
-    }
-  %\end{subfigure}
+  \end{subfigure}
   \fi
   \hfill
-  %\begin{subfigure}[b]{0.45\textwidth}
-  \subfloat[email-Enron (undirected)]{
-    \includegraphics[width=0.99\textwidth,keepaspectratio]{centrsampl/figures/eps/email-Enron-error}
-    %\caption{email-Enron (undirected)}
+  \begin{subfigure}[b]{0.49\textwidth}
+    \includegraphics[width=\textwidth]{centrsampl/figures/eps/email-Enron-error}
+    \caption{email-Enron (undirected)}
     \label{fig:centrsamplemail:error}
-    }
-  %\end{subfigure}
-  % TODO RESTORE \caption{Betweenness estimation error $|\tilde\betw(v)-\betw(v)|$ evaluation for directed and undirected graphs} 
+  \end{subfigure}
+  \caption{Betweenness estimation error $|\tilde\betw(v)-\betw(v)|$ evaluation for directed and undirected graphs} 
   \label{fig:centrsamplerror}
-%\begin{minipage}[b]{0.5\linewidth}
-%\flushleft
-%\includegraphics[width=3.8in, keepaspectratio]{p2p-Gnutella30-error.eps}
-%\caption{Error evaluation on p2p-Gnutella30} \label{fig:centrsamplgnutella:error}
-%\end{minipage}%
-%\begin{minipage}[b]{0.5\linewidth}
-%\centering
-%\includegraphics[width=3.8in, keepaspectratio]{email-Enron-error.eps}
-%\caption{Error evaluation on email-Enron} \label{fig:centrsamplemail:error}
-%\end{minipage}
-\end{figure*}
+\end{figure}
 
-\begin{figure*}[ht]
+\begin{figure}[ht]
   \centering
-  %\begin{subfigure}[b]{0.46\textwidth}
-  \subfloat[p2p-Gnutella30 (directed)]{
-    \includegraphics[width=0.99\textwidth,keepaspectratio]{centrsampl/figures/eps/p2p-Gnutella30-time}
-    %\caption{p2p-Gnutella30 (directed)}
+  \begin{subfigure}[b]{0.49\textwidth}
+    \includegraphics[width=\textwidth]{centrsampl/figures/eps/p2p-Gnutella30-time}
+    \caption{p2p-Gnutella30 (directed)}
     \label{fig:centrsamplgnutella:time}
-    }
-  %\end{subfigure}
+  \end{subfigure}
   \ifproof
   \hfill
-  %\begin{subfigure}[b]{0.46\textwidth}
-  \subfloat[soc-Epinions1 (directed)]{
-    \includegraphics[width=0.99\textwidth,keepaspectratio]{centrsampl/figures/eps/soc-Epinions1-time}
-    %\caption{soc-Epinions1 (directed)}
+  \begin{subfigure}[b]{0.49\textwidth}
+    \includegraphics[width=\textwidth]{centrsampl/figures/eps/soc-Epinions1-time}
+    \caption{soc-Epinions1 (directed)}
     \label{fig:centrsamplEpinions:time}
-    }
-  %\end{subfigure}
+  \end{subfigure}
 
-  %\begin{subfigure}[b]{0.46\textwidth}
-  \subfloat[ca-HepPh (directed)]{
-    \includegraphics[width=0.99\textwidth,keepaspectratio]{centrsampl/figures/eps/ca-HepPh-time}
-    %\caption{ca-HepPh (directed)}
+  \begin{subfigure}[b]{0.49\textwidth}
+    \includegraphics[width=\textwidth]{centrsampl/figures/eps/ca-HepPh-time}
+    \caption{ca-HepPh (directed)}
     \label{fig:centrsamplHepPh:time}
-    }
-  %\end{subfigure}
+  \end{subfigure}
   \fi
   \hfill
-  %\begin{subfigure}[b]{0.46\textwidth}
-  \subfloat[email-Enron (undirected)]{
-    \includegraphics[width=0.99\textwidth,keepaspectratio]{centrsampl/figures/eps/email-Enron-time}
-    %\caption{email-Enron (undirected)}
+  \begin{subfigure}[b]{0.49\textwidth}
+    \includegraphics[width=\textwidth]{centrsampl/figures/eps/email-Enron-time}
+    \caption{email-Enron (undirected)}
     \label{fig:centrsamplemail:time}
-    }
-  %\end{subfigure}
+  \end{subfigure}
   \caption{Running time (seconds) comparison between $\mathsf{VC}$, $\mathsf{BP}$, and the
   exact algorithm.}
   \label{fig:centrsampltime}
-%\begin{minipage}[b]{0.5\linewidth}
-%\flushleft
-%\includegraphics[width=3.8in, keepaspectratio]{p2p-Gnutella30-time.eps}
-%\caption{Running time comparison on p2p-Gnutella30} \label{fig:centrsamplgnutella:time}
-%\end{minipage}%
-%\begin{minipage}[b]{0.5\linewidth}
-%\centering
-%\includegraphics[width=3.8in, keepaspectratio]{email-Enron-time.eps}
-%\caption{Running time comparison on email-Enron} \label{fig:centrsamplemail:time}
-%\end{minipage}
-\end{figure*}
+\end{figure}
 
 \subsection{Runtime}\label{sec:centrsamplruntime}
 We compared the running time of Algorithm~\ref{alg:algorithm} (denoted in the
@@ -448,10 +396,9 @@ proportional to the number of edges touched during the shortest path
 computation. The use of bidirectional A\textsuperscript{*}
 search~\citep{Pohl69,KaindlK97} can help in lowering the number of touched edges
 for $\mathsf{VC}$ and therefore the runtime of our algorithm ($\mathsf{BP}$
-would not benefit from this improvement). We plan to explore this in future
-work.
-
-%\begin{figure*}[ht]
+would not benefit from this improvement). This is a possible direction for
+future research. 
+%\begin{figure}[ht]
 %  \centering
 %  \hfill
 %  \subfloat[p2p-Gnutella30
@@ -473,7 +420,7 @@ work.
 %\includegraphics[width=3.8in, keepaspectratio]{email-Enron-edges.eps}
 %\caption{Touched edges comparison on email-Enron}\label{fig:centrsamplemail:edges}
 %\end{minipage}
-%\end{figure*}
+%\end{figure}
 
 \subsection{Scalability}\label{sec:centrsamplscalability}
 
@@ -491,14 +438,14 @@ appreciate that this is the case for $\mathsf{VC}$, which is much more scalable
 and independent from the size of the sample than $\mathsf{BP}$. This is very
 important, as today's networks are not only huge, but they also grow rapidly,
 and algorithms to mine them must scale well with graph size.
-\begin{figure}[ht]
+\begin{figure}[htb]
   \centering
-  \includegraphics[width=.45\textwidth,keepaspectratio]{centrsampl/figures/eps/random-time}
+  \includegraphics[width=.5\textwidth,keepaspectratio]{centrsampl/figures/eps/random-time}
   \caption{Scalability on random Barab\'asi-Albert~\citep{BarabasiA99} graphs.}
   \label{fig:centrsamplrandom:time}
 \end{figure}
 
-%\begin{figure*}
+%\begin{figure}
 %  \centering
 %  \hfill
 %  \subfloat[Time]{\label{fig:centrsamplrandom:time}\includegraphics[width=.45\textwidth,keepaspectratio]{random-time}}
@@ -507,7 +454,7 @@ and algorithms to mine them must scale well with graph size.
 %  \hfill
 %  \label{fig:centrsamplrandom}
 %  \caption{Scalability comparison on random~\citep{BarabasiA99} graphs}
-%\end{figure*}
+%\end{figure}
 %\begin{minipage}[b]{0.5\linewidth}
 %\flushleft
 %\includegraphics[width=3.8in, keepaspectratio]{random-time.eps}
@@ -520,5 +467,5 @@ and algorithms to mine them must scale well with graph size.
 %\caption{Scalability on random~\citep{BarabasiA99} graphs (touched edges)}
 %\label{fig:centrsamplrandom:edges}
 %\end{minipage}
-%\end{figure*}
+%\end{figure}
 

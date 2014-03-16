@@ -1,47 +1,36 @@
 \section{Previous Work}
 \label{sec:parmarelated}
-
-The task of mining frequent itemsets is a fundamental primitive in computer
-science, with applications ranging from market basket analysis to network
-monitoring. The two most well known algorithms for extracting frequent itemsets
-from a dataset are APriori~\cite{AgrawalS94} and FP-growth~\cite{HanPY00}.
+We already discussed the relevant previous work about general FI mining and the
+use of sampling for this task in Sect.~\ref{sec:vcmineprevwork}. We now focus on the
+contributions that are relevant for this chapter: the mining of FIs in a
+parallel or distributed setting, the MapReduce framework of computation, and its
+use to compute FIs and ARs.
 
 The use of parallel and/or distributed algorithms for Association Rules Mining comes from the
 impossibility to handle very large datasets on a single machine. Early
-contributions in this area are presented in a survey by Zaki~\cite{Zaki99}.
+contributions in this area are presented in a survey by~\citet{Zaki99}.
 In recent years, the focus shifted to exploit architecture advantages as much as
-possible, such as shared memory~\cite{JinYA05}, cluster
-architecture~\cite{BuehrerPTKS07} or the massive parallelism of
-GPUs~\cite{FangEtAl08}. The main goal is to avoid communication
+possible, such as shared memory~\citep{JinYA05}, cluster
+architecture~\citep{BuehrerPTKS07} or the massive parallelism of
+GPUs~\citep{FangEtAl08}. The main goal is to avoid communication
 between nodes as much as possible and minimize the amount of data that are moved
 across the 
-network~\cite{CongHHP05,EHZaiane06,LiuLZT07,OzkuralUA11}.
+network~\citep{CongHHP05,EHZaiane06,LiuLZT07,OzkuralUA11}.
 
-The use of sampling to mine an approximation of the frequent itemsets and of
-association rules is orthogonal to the efforts for parallelizing frequent
-itemsets mining algorithm, but is driven by the same goal of making the mining
-of massive datasets possible. It was suggested in~\cite{MannilaTV94} almost as soon as the
-first efficient algorithms for Association Rules Mining appeared.
-Toivonen~\cite{Toivonen96} presented the first algorithm to extract an
-approximation of the Frequent Itemsets using sampling. Many other works used different tools
-from probability theory to improve the quality of the approximations and/or
-reduce the size of sample. We refer the interested reader
-to~\cite{RiondatoU12} for a review of many contributions in this area.
-
-The MapReduce~\cite{DeanG08} paradigm enjoys widespread success
+The MapReduce~\citep{DeanG08} paradigm enjoys widespread success
 across both industry and academia. Research communities in many different
 fields uses this novel approach to distributed/parallel computation to develop
 algorithms to solve important problems in computer
-science~\cite{ChierichettiKT10,ChuKLYBNO06,GoodrichSZ11,LinS10,PietracaprinaPRSU12}.
+science~\citep{ChierichettiKT10,ChuKLYBNO06,GoodrichSZ11,LinS10,PietracaprinaPRSU12}.
 Not only MapReduce can easily perform computation on very large datasets, but it
 is also extremely suited in executing embarassingly parallel algorithms which
 make a very limited use of communication. PARMA fits in this description so
 MapReduce is an appropriate choice for it.
 
 A number of previous
-works~\cite{CryansRC10,GhotingKPK11,Hammoud11,LiWZZC08,LiZ11,YangLF10,ZhouZCLF10}
+works~\citep{CryansRC10,GhotingKPK11,Hammoud11,LiWZZC08,LiZ11,YangLF10,ZhouZCLF10}
 looked at adapting APriori and FP-growth to the MapReduce setting. Somewhat
-naively, some authors~\cite{CryansRC10,LiZ11,YangLF10} suggest a distributed/parallel
+naively, some authors~\citep{CryansRC10,LiZ11,YangLF10} suggest a distributed/parallel
 counting approach, i.e. to compute the support of every itemset in the dataset
 in a single MapReduce round. This algorithm necessarily incurs in a huge data
 replication, given that an exponential number of messages are sent to the
@@ -59,7 +48,7 @@ computed in advance. Also the entire dataset needs to be scanned at each round, 
 can be very expensive, even if it is possible to keep additional data structures
 to speed up this phase.  
 
-An adaptation of FP-Growth to MapRreduce called PFP is presented in~\cite{LiWZZC08}. First,
+An adaptation of FP-Growth to MapRreduce called PFP is presented by~\citet{LiWZZC08}. First,
 a parallel/distributed counting approach is used to compute the frequent items,
 which are then randomly partitioned into groups. Then, in a single MapReduce
 round the transactions in the dataset are used to generate group-dependent
@@ -77,14 +66,13 @@ synchronization/communication (\emph{shuffle}) phase, which is usually the most
 expensive in a MapReduce algorithm.  Another practical downside of PFP is that
 the time needed to mine the dependent FP-tree is not uniform across the groups.
 An empirical solution to this load balancing problem is presented
-in~\cite{ZhouZCLF10}, although with no guarantees and by computing the groups
+by~\citet{ZhouZCLF10}, although with no guarantees and by computing the groups
 outside the MapReduce environment. An implementation of the PFP algorithm as
-presented in~\cite{LiWZZC08} is included in Apache
-Mahout~\cite{Mahout}.
-
-The authors of~\cite{GhotingKPK11} presents an high-level library to perform
-various machine learning and data mining tasks using MapReduce. They show how to
-implement the Frequent Itemset Mining task using their library. The approach is
-very similar to that in~\cite{LiWZZC08}, and the same observations apply about
-the performances and downsides of this approach.
+presented in~\citep{LiWZZC08} is included in Apache Mahout
+(\url{http://mahout.apache.org}). \citet{GhotingKPK11} present
+an high-level library to perform various machine learning and data mining tasks
+using MapReduce. They show how to implement the Frequent Itemset Mining task
+using their library. The approach is very similar to that in~\citep{LiWZZC08},
+and the same observations apply about the performances and downsides of this
+approach.
 

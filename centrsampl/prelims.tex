@@ -1,8 +1,6 @@
-\section{Preliminaries}\label{sec:centrsamplprelims}
-In this section we introduce the definitions and lemmas that we will use to
-develop and analyze our results throughout the paper.
+\section{Graphs and betweenness centrality}\label{sec:centrsamplgraphprelims}
+We now formally define the concepts we use in this chapter.
 
-\subsection{Graphs and betweenness centrality}\label{sec:centrsamplgraphprelims}
 Let $G=(V,E)$ be a graph, where $E\subseteq V\times V$, with $n=|V|$ vertices
 and $m=|E|$ edges. The graph $G$ can be directed or undirected. We assume that
 there are no self-loops from one vertex to itself and no multiple edges between
@@ -82,74 +80,23 @@ betweenness than the others, given that they somehow act as bridges between two
 sides of the network, and indeed that is the case.
 \begin{figure}[ht]
   \centering
- % \begin{subfigure}[c]{0.2\textwidth}
- \subfloat[Example graph]{
- % \centering
+  \begin{subfigure}[c]{0.2\linewidth}
+    \centering
     \includegraphics[width=1.0\textwidth,keepaspectratio]{centrsampl/figures/eps/example-betw}
-    }
- %   \caption{Example graph}
- % \end{subfigure}
- % \hfill
+    \caption{Example graph}
+  \end{subfigure}
  \hfill
- \subfloat[Shortest paths]{
- \begin{tabular}{ccl}
-   \toprule
-   From & To & Shortest Path(s) \\
-   \midrule
-   \multirow{6}{*}{$\mathrm{a}$} & $\mathrm{c}$ & $(\mathrm{a,b,g,c})$ \\
-   &  $\mathrm{d}$ & $(\mathrm{a,b,g,c,d})$ \\
-   &  $\mathrm{e}$ & $(\mathrm{a,b,f,e})$ \\
-   &  $\mathrm{f}$ & $(\mathrm{a,b,f})$ \\
-   &  $\mathrm{g}$ & $(\mathrm{a,b,g})$ \\
-   &  $\mathrm{h}$ & $(\mathrm{a,b,h})$  \\
-   \midrule
-   \multirow{3}{*}{$\mathrm{b}$} & $\mathrm{c}$ & $(\mathrm{b,g,c})$ \\
-   & $\mathrm{d}$ & $(\mathrm{b,g,c,d})$, $(\mathrm{b,f,e,d})$ \\
-   & $\mathrm{e}$ & $(\mathrm{b,f,e})$ \\
-   \midrule
-   \multirow{3}{*}{$\mathrm{c}$} & $\mathrm{e}$ & $(\mathrm{c,d,e})$ \\
-   & $\mathrm{f}$ & $(\mathrm{c,g,f})$ \\
-   & $\mathrm{h}$ & $(\mathrm{c,g,h})$ \\
-   \midrule
-   \multirow{3}{*}{$\mathrm{d}$} & $\mathrm{f}$ & $(\mathrm{d,e,f})$ \\
-   & $\mathrm{g}$ & $(\mathrm{d,c,g})$ \\
-   & $\mathrm{h}$ & $(\mathrm{d,c,g,h})$ \\
-   \midrule
-   \multirow{2}{*}{$\mathrm{e}$} & $\mathrm{g}$ & $(\mathrm{e,f,g})$ \\
-   & $\mathrm{h}$ & $(\mathrm{e,f,g,h})$, $(\mathrm{e,f,b,h})$ \\
-   \midrule
-   $\mathrm{f}$ & $\mathrm{h}$ & $(\mathrm{f,g,h})$, $(\mathrm{f,b,h})$ \\
-   \bottomrule
- \end{tabular}
- }
- \qquad
- \subfloat[Betweenness values]{
- \begin{tabular}{cl}
-   \toprule
-   Vertex & Betweenness \\
-   \midrule
-   a & 0 \\
-   b & 0.250 \\
-   c & 0.125 \\
-   d & 0.036 \\
-   e & 0.054 \\
-   f & 0.080 \\
-   g & 0.268 \\
-   h & 0 \\
-   \bottomrule
- \end{tabular}
- }
-%  \begin{subtable}[c]{0.7\textwidth}
-%  \centering
-%    \begin{tabular}{ccccccccc}
-%      \toprule
-%      Vertex & $\mathrm{a}$ & $\mathrm{b}$ &$\mathrm{c}$ &$\mathrm{d}$ &$\mathrm{e}$ &$\mathrm{f}$ &$\mathrm{g}$ &$\mathrm{h}$ \\
-%      \midrule
-%      $\betw(v)$ & 0 & 0.250 & 0.125 & 0.036 & 0.054 & 0.080 & 0.268 & 0 \\
-%      \bottomrule
-%    \end{tabular}
-%    \caption{Betweenness values}
-%  \end{subtable}
+  \begin{subtable}[c]{0.7\textwidth}
+  \centering
+    \begin{tabular}{ccccccccc}
+      \toprule
+      Vertex & $\mathrm{a}$ & $\mathrm{b}$ &$\mathrm{c}$ &$\mathrm{d}$ &$\mathrm{e}$ &$\mathrm{f}$ &$\mathrm{g}$ &$\mathrm{h}$ \\
+      \midrule
+      $\betw(v)$ & 0 & 0.250 & 0.125 & 0.036 & 0.054 & 0.080 & 0.268 & 0 \\
+      \bottomrule
+    \end{tabular}
+    \caption{Betweenness values}
+  \end{subtable}
   \caption{Example of betweenness values}
   \label{fig:centrsamplexample-betw}
 \end{figure}

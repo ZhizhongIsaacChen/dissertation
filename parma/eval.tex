@@ -5,8 +5,8 @@ We evaluate the performance of PARMA using Amazon's Elastic
 MapReduce platform. We used instances of type \emph{m1.xlarge}, which
 contain roughly 17GB of memory and 6.5 EC2 compute units.
 For data, we created artificial dataset using the synthetic data
-generator from~\cite{ARTool}. This implementation is based on the
-generator described in~\cite{AgrawalS94}, which can be parameterized to generate a wide
+generator from~\citep{ARTool}. This implementation is based on the
+generator described in~\citep{AgrawalS94}, which can be parameterized to generate a wide
 range of data. We used two distinct sets of parameters to generate the
 datasets: the first set, shown in Table~\ref{tab:param1}, for the experiments
 comparing PARMA and the distributed counting algorithm
@@ -15,7 +15,7 @@ for the experiments comparing PARMA and PFP.
 The parameters were
 chosen to mimic real-world datasets on which PARMA would be run. For a
 full description of the relevant parameters, we refer the reader to
-\cite{AgrawalS94}.  
+\citep{AgrawalS94}.  
 The reason we needed two distinct datasets is that DistCount did not scale to
 the larger dataset sizes,  as the amount of data it generates in the map phase
 grows exponentially with the length of the individual transactions in the
@@ -130,11 +130,12 @@ than that of DistCount and, more importantly, nearly constant across
 dataset sizes. The reasons for this will be discussed in detail later.
 \end{comment}
 
-\begin{figure}[tb]
+\begin{figure}[htb]
   \centering
-    \includegraphics[width=0.35\textwidth]{parma/distributed_counting}
-    \includegraphics[width=0.35\textwidth]{parma/performance}
-  \caption{A runtime comparison of PARMA with DistCount (top) and PFP (bottom).}
+    \includegraphics[width=0.49\textwidth]{parma/distributed_counting}
+    \hfill
+    \includegraphics[width=0.49\textwidth]{parma/performance}
+  \caption{A runtime comparison of PARMA with DistCount and PFP.}
 \label{fig:parmaperformance}
 \end{figure}
 
@@ -222,18 +223,18 @@ itemset mining: it takes longer to mine datasets with more frequent
 itemsets.
 \end{comment}
 
-\begin{figure}[tb]
+\begin{figure}[htb]
 \centering
-    \includegraphics[width=0.4\textwidth]{parma/breakdown1}
+    \includegraphics[width=0.75\textwidth]{parma/breakdown1}
   \caption{A comparison of runtimes of the map/reduce/shuffle phases
 of PARMA, as a function of number of transactions. Run on
 an 8 node Elastic MapReduce cluster.}
 \label{fig:parmabreakdown1}
 \end{figure}
 
-\begin{figure}[tb]
+\begin{figure}[htb]
   \centering
-    \includegraphics[width=0.4\textwidth]{parma/frequency}
+    \includegraphics[width=0.75\textwidth]{parma/frequency}
   \caption{A comparison of runtimes of the map/reduce/shuffle phases
 of PARMA, as a function of minimum frequency. Clustered by stage. Run
 on an 8 node Elastic MapReduce cluster.}
@@ -274,7 +275,7 @@ can be seen in the stage 2 shuffle phase as well, as there is more
 data to move across the network. Still, the added costs of mining with
 lower frequencies are relatively small.
 
-%\begin{figure}[tb]
+%\begin{figure}[htb]
  % \centering
  %   \includegraphics[width=0.4\textwidth]{breakdown2}
 %  \caption{A Comparison of runtimes of the map/reduce/shuffle phases
@@ -314,18 +315,22 @@ of transactions. For larger samples, the size of the cluster where
 speedup degradation begins to occur would also increase, meaning PARMA
 would continue to scale.
 
-\begin{figure}[tb]
- \centering
-    \includegraphics[width=0.4\textwidth]{parma/speedup}
-  \caption{The speedup analysis of PARMA, broken down by stages.}
-\label{fig:parmaspeedup}
-\end{figure}
-
-\begin{figure}[tb]
- \centering
-    \includegraphics[width=0.4\textwidth]{parma/scalability}
-  \caption{The scalability of PARMA as both data and cluster size are increased.}
-\label{fig:parmascalability}
+\begin{figure}[thb]
+  \centering
+  \begin{subfigure}[b]{0.49\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{parma/speedup}
+    \caption{Speedup analysis broken down by stages.}
+    \label{fig:parmaspeedup}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.49\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{parma/scalability}
+    \caption{Scalability as both data and cluster size are increased.}
+    \label{fig:parmascalability}
+  \end{subfigure}
+  \caption{Speedup and scalability.}
 \end{figure}
 
 Also, as is clearly visible in the graph, the sub-ideal overall
@@ -456,14 +461,14 @@ susceptible to outliers. Not only this is a sign of the high level of accuracy
 achieved by PARMA, but also of its being consistently accurate on
 a very large portion of the output.
 
-\begin{figure}[tb]
+\begin{figure}[htb]
  \centering
     \includegraphics[width=0.3\textwidth]{parma/absfreqerr}
   \caption{Error in frequency estimations as frequency varies.}
   \label{fig:parmaabsfreqerr}
 \end{figure}
 
-\begin{figure}[tb]
+\begin{figure}[htb]
  \centering
     \includegraphics[width=0.3\textwidth]{parma/confintwidth}
   \caption{Width of the confidence intervals as frequency varies.}

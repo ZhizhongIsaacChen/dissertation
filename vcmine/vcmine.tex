@@ -1,5 +1,7 @@
-\chapter{Efficient mining of frequent itemsets and association rules through
-sampling with tight performance guarantees}\label{ch:vcmine}
+\chapter[Mining Association Rules and Frequent Itemsets]{Mining Association
+Rules and Frequent Itemsets\protect\nomarkfootnote{This chapter is an extended
+version of a work appeared original in ACM Transaction of Knowledge Discovery in
+Data as~\citep{RiondatoU14}.}}\label{ch:vcmine}
 \chaptermark{Frequent itemsets mining through sampling}
 
 \section{Introduction}\label{sec:vcmineintro}
@@ -275,6 +277,101 @@ describe in the conclusions.
 This section introduces basic definitions and properties that will be used in later sections.
 
 \subsection{Datasets, Itemsets, and Association Rules}\label{sec:vcminepreldm}
+\todo{ Move the following in the right place.
+
+In this work we are interested in computing well defined approximations of the
+above sets.
+
+\begin{definition}\label{def:parmaeapproxfi}
+  Given two parameters $\varepsilon_1,\varepsilon_2\in(0,1)$, an
+  $(\varepsilon_1,\varepsilon_2)$-approximation of
+  $\FI(\Ds,\Itm,\theta)$ is a set $\mathcal{C}=\{(A, f_A, \mathcal{K}_A) ~:~ A\in 2^\Itm,
+  f_A\in\mathcal{K}_A\subseteq[0,1]\}$ of triplets $(A, f_A, \mathcal{K}_A)$ where
+  $f_A$ approximates $f_\Ds(A)$ and $\mathcal{K}_A$ is an interval containing
+  $f_A$ and $f_\Ds(A)$.
+  $\mathcal{C}$ is such that:
+  \begin{enumerate}
+    \item $\mathcal{C}$ contains all itemsets appearing in
+      $\FI(\Ds,\Itm,\theta)$;
+    \item $\mathcal{C}$ contains no itemset $A$ with frequency $f_\Ds(A)<\theta -
+      \varepsilon_1$;
+    \item For every triplet $(A, f_A,\mathcal{K}_A)\in\mathcal{C}$, it holds
+      \begin{enumerate}
+       \item $|f_\Ds(A)-f_A|\le\varepsilon_2$.
+       \item $f_A$ and $f_\Ds(A)$ belong to $\mathcal{K}_A$.
+       \item $|\mathcal{K}_A|\le 2\varepsilon_2$.
+     \end{enumerate}
+  \end{enumerate}
+  If $\varepsilon_1=\varepsilon_2=\varepsilon$ we refer to $\mathcal{C}$ 
+  as a $\varepsilon$-approximation of $\FI(\Ds,\Itm,\theta)$.
+\end{definition} 
+This definition extends easily to the case of top-$K$ frequent itemsets mining
+using the equivalence from~\eqref{eq:parmatopkdef}. An
+$(\varepsilon_1,\varepsilon_2)$-approximation to
+$\FI\left(\Ds,\Itm,f^{(K)}_\Ds\right)$ is an
+$(\varepsilon_1,\varepsilon_2)$-approximation to $\TOPK(\Ds,\Itm,K)$.
+
+For association rules, we have the following definition.
+\begin{definition}\label{def:parmaeapproxar}
+  Given two parameters $\varepsilon_1,\varepsilon_2\in(0,1)$ an
+  $(\varepsilon_1,\varepsilon_2)$-approximation of $\AR(\Ds,\Itm,\theta,\gamma)$
+  is a set \[\mathcal{C}=\{(W, f_W, \mathcal{K}_W, c_W, \mathcal{J}_W)~|~ 
+  \mbox{AR } W, f_W\in\mathcal{K}_W, c_W\in\mathcal{J}_W\}\]
+  of tuples $(W, f_W, \mathcal{K}_W, c_W, \mathcal{J}_W)$ where $f_W$ and $c_W$
+  approximate $f_\Ds(W)$ and $c_\Ds(W)$ respectively and belong to
+  $\mathcal{K}_W\subseteq[0,1]$ and
+  $\mathcal{J}_W\subseteq[0,1]$ respectively. $\mathcal{C}$ is such
+  that:
+  \begin{enumerate}
+    \item $\mathcal{C}$ contains all association rules appearing in
+      $\AR(\Ds,\Itm,\theta,\gamma)$;
+    \item $\mathcal{C}$ contains no association rule $W$ with frequency
+      $f_\Ds(W)<\theta-\varepsilon_1$;
+    \item For every tuple $(W, f_W,\mathcal{K}_W,
+      c_W,\mathcal{J}_W)\in\mathcal{C}$, it holds
+      $|f_\Ds(W)-f_W|\le\varepsilon_2$ and $|\mathcal{K}_W|\le 2\varepsilon_2$.
+    \item $\mathcal{C}$ contains no association rule $W$ with confidence 
+      $c_\Ds(W)<\gamma-\varepsilon_1$;
+    \item For every tuple $(W, f_W,\mathcal{K}_W,
+      c_W,\mathcal{J}_W)\in\mathcal{C}$, it holds
+      $|c_\Ds(W)-c_W|\le\varepsilon_2$ and $|\mathcal{J}_W|\le 2\varepsilon_2$.
+  \end{enumerate}
+    If $\varepsilon_1=\varepsilon_2=\varepsilon$ we refer to $\mathcal{C}$ 
+  as an $\varepsilon$-approximation of $\AR(\Ds,\Itm,\theta,\gamma)$.
+\end{definition}
+
+The following result from~\citep{RiondatoU12} is at the core of our algorithm for
+computing an $\varepsilon$-approximation to $\FI(\Ds,\Itm,\theta)$. A similar
+result also holds for $\TOPK(\Ds,\Itm,K)$~\cite[Lemma 3]{RiondatoU12}.
+\begin{lemma}\label{lem:keythmfi}
+  \cite[Lemma 1]{RiondatoU12}
+   Let $\Ds$ be a dataset with transactions built on an alphabet $\Itm$, and let
+  $d$ be the maximum integer such that $\Ds$ contains at least $d$ transactions
+  of size at least $d$. Let $0<\varepsilon,\delta,\theta<1$. Let $\Sam$ be a random
+  sample of $\Ds$ containing $|\Sam|=
+  \frac{2}{\varepsilon^2}\left(d+\log\frac{1}{\delta}\right)$ transactions
+  drawn uniformly and independently at random with replacement from those in
+  $\Ds$, then with probability at least $1-\delta$, the set
+  $\FI(\Sam,\Itm,\theta-\frac{\varepsilon}{2})$ is a
+  $(\varepsilon,\varepsilon/2)$-approximation of $\FI(\Ds,\Itm,\theta)$.
+\end{lemma}
+For computing a $\varepsilon$-approximation to $\AR(\Ds,\Itm,\theta)$, we make
+use of the following Lemma.
+\begin{lemma}\label{lem:keythmar}
+ \cite[Lemma 6]{RiondatoU12}
+ Let $\Ds$ be a dataset with transactions built on an alphabet $\Itm$, and let
+ $d$ be the maximum integer such that $\Ds$ contains at least $d$ transactions
+ of size at least $d$. Let $0<\varepsilon,\delta,\theta,\gamma<1$ 
+and let $\varepsilon_\mathrm{rel}=\frac{\varepsilon}{\max\{\theta,\gamma\}}$.
+Fix $c> 4-2\varepsilon_\mathrm{rel}$, $\eta=\frac{\varepsilon_\mathrm{rel}}{c}$,
+and $p=\frac{1-\eta}{1+\eta}\theta$. Let $\Sam$ be a random sample of $\Ds$
+containing $\frac{1}{\eta^2p}(d\log\frac{1}{p}+\log\frac{1}{\delta})$
+transactions from $\Ds$ sampled independently and uniformly at random. Then
+$\AR(\Sam,\Itm,(1-\eta)\theta,\frac{1-\eta}{1+\eta}\gamma)$ is an
+$(\varepsilon,\varepsilon/2)$ approximation to $\AR(\Ds,\Itm,\theta,\gamma)$.
+\end{lemma}
+}
+
 A
 \emph{dataset} $\Ds$ is a collection of \emph{transactions}, where each
 transaction $\tau$ is a subset of a ground set $\Itm$\footnote{We assume
@@ -980,7 +1077,8 @@ Method D~\citep{Vitter87} is used, and the estimation procedure is fast.
 \subsection{Connection with monotone monomials}\label{sec:vcminemonomials}
 There is an interesting connection between itemsets built on a ground set
 $\Itm$ and 
-the class of \emph{monotone monomials on $|\Itm|$ literals}. 
+the class of \emph{monotone monomials on $|\Itm|$ literals}\footnote{This
+connection was suggested to us by Luc De Raadt, to whom we are grateful.}. 
 A \emph{monotone} monomial is a conjunction of literals with no negations. The
 class $\textsc{monotone-monomials}_{|\Itm|}$ is the class of
 all monotone monomials on $|\Itm|$ Boolean variables, including the constant functions
@@ -1713,16 +1811,25 @@ algorithms as a set of \emph{candidate patterns} which can be reduced to the
 real exact output (i.e., with no false positives) with a single scan of the
 dataset.
 
-\begin{figure}[tp]
+\begin{figure}[htb]
   \centering
-  \subfloat[Absolute Itemset Frequency
-  Error, BMS-POS dataset, $d=81$, $\theta=0.02$, $\varepsilon=0.01$,
-  $\delta=0.1$]{\label{fig:BMS-POS-absFI}\includegraphics[width=0.75\textwidth]{vcmine/Fig2a}}
- \hfill
-  \subfloat[Relative Itemset Frequency
-  Error, artificial dataset, $v=33$, $\theta=0.01$, $\varepsilon=0.05$,
-  $\delta=0.1$]{\label{fig:artif-relFI}\includegraphics[width=0.75\textwidth]{vcmine/Fig2b}}
-  \caption{Absolute / Relative $\varepsilon$-close Approximation to $\FI(\Ds,\Itm,\theta)$} 
+  \begin{subfigure}[b]{\linewidth}
+    \centering
+    \includegraphics[width=0.75\linewidth]{vcmine/Fig2a}
+    \caption{Absolute Itemset Frequency Error, BMS-POS dataset, $d=81$,
+    $\theta=0.02$, $\varepsilon=0.01$, $\delta=0.1$.}
+    {\label{fig:BMS-POS-absFI}}
+  \end{subfigure}
+
+ \begin{subfigure}[b]{\linewidth}
+    \centering
+    \includegraphics[width=0.75\linewidth]{vcmine/Fig2b}
+    \caption{Relative Itemset Frequency Error, artificial dataset, $v=33$,
+    $\theta=0.01$, $\varepsilon=0.05$, $\delta=0.1$.}
+    \label{fig:artif-relFI}
+  \end{subfigure}
+  \caption{Absolute / Relative $\varepsilon$-close Approximation to
+  $\FI(\Ds,\Itm,\theta)$} 
   \label{fig:fiapprox}
 \end{figure}
 
@@ -1758,17 +1865,24 @@ $\TOPK(\Ds,\Itm,K)$, we observed results very similar to those obtained for
 $\FI(\Ds,\Itm,\theta)$, as it was expected, given the closed connection between
 the two problems. 
 
-\begin{figure}[tp]
+\begin{figure}[htb]
   \centering
-  \subfloat[Relative Association Rule Frequency
-  Error]{\label{fig:artif-relAR-freq}\includegraphics[width=0.75\textwidth]{vcmine/Fig3a}}
-  \hfill
-  \subfloat[Relative Association Rule Confidence 
-  Error]{\label{fig:artif-relAR-conf}\includegraphics[width=0.75\textwidth]{vcmine/Fig3b}}
+  \begin{subfigure}[b]{\linewidth}
+    \centering
+    \includegraphics[width=0.75\linewidth]{vcmine/Fig3a}
+    \caption{Relative Association Rule Frequency Error}
+    \label{fig:artif-relAR-freq}
+  \end{subfigure}
+
+  \begin{subfigure}[b]{\linewidth}
+    \centering
+    \includegraphics[width=0.75\textwidth]{vcmine/Fig3b}
+    \caption{Relative Association Rule Confidence Error}
+    \label{fig:artif-relAR-conf}  
+  \end{subfigure}
   \caption{ Relative $\varepsilon$-close approximation to
   $\AR(\Ds,\Itm,\theta,\gamma)$, artificial dataset, $v=33$, $\theta=0.01$,
-  $\gamma=0.5$, $\varepsilon=0.05$, $\delta=0.1$.}
-  \label{fig:ar}
+  $\gamma=0.5$, $\varepsilon=0.05$, $\delta=0.1$.} \label{fig:ar}
 \end{figure}
 
 The results of the experiments to evaluate our method to extract a relative
@@ -1856,15 +1970,21 @@ by~\citep{ChakaravarthyPS09} can be slightly optimized by using a stricter
 version of the Chernoff bound, but this does not change the fact that it
 depends on the maximum transaction length rather than on the VC-Dimension.
 
-\begin{figure}[tp]
+\begin{figure}[htb]
   \centering
-  \subfloat[Sample size as function of
-  $\theta$,
-  $\varepsilon=0.05$]{\label{fig:compareSamSizeTheta}\includegraphics[width=0.75\textwidth]{vcmine/Fig5a}}
-  \hfill
-  \subfloat[Sample size as function of
-  $\varepsilon$,
-  $\theta=0.05$]{\label{fig:compareSamSizeEpsilon}\includegraphics[width=0.75\textwidth]{vcmine/Fig5b}}
+  \begin{subfigure}[b]{\linewidth}
+    \centering
+    \includegraphics[width=0.75\linewidth]{vcmine/Fig5a}
+    \caption{Sample size as function of $\theta$, $\varepsilon=0.05$}
+     \label{fig:compareSamSizeTheta}
+   \end{subfigure}
+
+  \begin{subfigure}[b]{\linewidth}
+    \centering
+    \includegraphics[width=0.75\linewidth]{vcmine/Fig5b}
+    \caption{Sample size as function of $\varepsilon$, $\theta=0.05$}
+    \label{fig:compareSamSizeEpsilon}
+  \end{subfigure}
   \caption{Comparison of sample sizes for relative $\varepsilon$-close approximations to
   $\FI(\Ds,\Itm,\theta)$. $\Delta=v=50$, $\delta=0.05$.}
   \label{fig:compareSamSize}
@@ -1928,10 +2048,10 @@ VC-dimension for a given dataset, or that other measures of sample complexity
 like the triangular rank~\citep{NewmanR12}, shatter coefficients, or Rademacher
 inequalities~\citep{BoucheronBL05}, can suggest smaller samples sizes. 
 
-\paragraph{Acknowledgements.} The authors are thankful to Luc De Raedt for
-suggesting the connection between itemsets and monotone monomials. We also thank
-the anonymous reviewers for their many suggestions and comments for the
-improvement of this work.
+%\paragraph{Acknowledgements.} The authors are thankful to Luc De Raedt for
+%suggesting the connection between itemsets and monotone monomials. We also thank
+%the anonymous reviewers for their many suggestions and comments for the
+%improvement of this work.
 
 % Bibliography
 %\bibliographystyle{ACM-Reference-Format-Journals}

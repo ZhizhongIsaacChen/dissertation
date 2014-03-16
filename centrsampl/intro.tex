@@ -1,4 +1,3 @@
-\section{Introduction}\label{sec:centrsamplintro}
 Centrality indices are fundamental metrics for network analysis. They express the
 relative importance of a vertex in the network. Some of them, e.g., degree
 centrality, reflect local properties of the underlying graph, while others,
@@ -46,7 +45,7 @@ probability at least $1-\delta$. This is the first algorithm to reach such a
 high-quality approximation for the set of top-$K$ vertices. The algorithms are
 based on random sampling of shortest paths. The analysis to derive the
 sufficient sample size is novel and uses notions and results from VC-dimension
-theory. We define a range set associated with the problem at hand and prove strict
+theory. We define a range space associated with the problem at hand and prove strict
 bounds to its VC-dimension. The resulting sample size \emph{does not
 depend on the size of the graph}, but only on the maximum number of vertices
 in a shortest path, a \emph{characteristic quantity} of the graph that we call
@@ -66,9 +65,10 @@ algorithms~\citep{JacobKLPT05,BrandesP07,GeisbergerSS08}, showing that our
 methods achieve a huge speedup (3 to 4 times faster) and scale much better as
 the number of vertices in the network grows.
 
-We present related work in Sect.~\ref{sec:centrsamplprevwork}. Section~\ref{sec:centrsamplprelims}
-introduces all the basic definitions and results that we will use throughout the
-paper. A range set for the problem at hand and the bounds to its VC-dimension
+\paragraph{Outline.} We present related work in
+Sect.~\ref{sec:centrsamplprevwork}. Section~\ref{sec:centrsamplgraphprelims}
+introduces the definitions and concepts that we use throughout the
+capter. A range space for the problem at hand and the bounds to its VC-dimension
 are presented in Sect.~\ref{sec:centrsamplrangeset}. Based on these results we develop and
 analyze algorithms for betweenness estimation that we present in
 Sect.~\ref{sec:centrsamplalgo}. % 

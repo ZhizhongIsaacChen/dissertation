@@ -1,156 +1,13 @@
-\section{Definitions}
+\section{Preliminaries}
 \label{sec:parmadef}
+In this chapter we show how to extract $\varepsilon$-approximations of the
+collection of (top-$k$) Frequent Itemsets and Association Rules using MapReduce. See
+Sect.~\ref{sec:vcminepreldm} for definitions about FIs, ARs, and approximations.
+We focus here on introducing MapReduce.
 
-A \emph{dataset} $\Ds$ is a collection of \emph{transactions}, where each
-transaction $\tau$ is a subset of a ground set (alphabet) $\Itm$. There can
-be multiple identical transactions in $\Ds$. Members of $\Itm$ are called
-\emph{items} and members of $2^\Itm$ are called $\emph{itemsets}$.
-Given an itemset
-$A \in 2^{\Itm}$,  let $T_\Ds(A)$ denote the set of
-transactions in $\Ds$ that contain $A$. The \emph{support} of $A$,
-$\sigma_\Ds(A) =|T_\Ds(A)|$, is the number of transaction in $D$ that contains
-$A$, and the \emph{frequency} of $A$, $f_\Ds(A)= \frac{|T_\Ds(A)|}{|\Ds|}$, is the fraction of
-transactions in $\Ds$ that contain $A$.
-
-A task of major interest in this setting is finding the \emph{Frequent
-Itemsets with respect to a minimum frequency threshold}.
-
-\begin{definition}\label{def:parmaminethreshold}
-  Given a \emph{minimum frequency threshold} $\theta$, $0<\theta\le 1$, the 
-  \emph{Frequent Itemsets mining task with respect to $\theta$} is finding all itemsets with
-  frequency $\geq\theta$, i.e., the set
-  \[
-\FI(\Ds,\Itm,\theta)=\{(A,f_\Ds(A)) ~:~ A \in 2^\Itm \mbox{ and } f_{\Ds}(A)\ge
-\theta\}.
-\] 
-\end{definition}
-
-For the top-$K$ Frequent Itemsets definition we assume a fixed \textit{canonical ordering} of
-the itemsets in $2^\Itm$ by decreasing frequency in $\Ds$, with ties broken
-arbitrarily. We label the itemsets $A_1,A_2,\dotsc,A_m$ according
-to this ordering and denote with $f^{(K)}_\Ds$ the frequency $f_\Ds(A_K)$ of
-the $K$-th most frequent itemset $A_K$. For a given $K$, with $1 \leq K \leq m$,
-the set of top-$K$ Frequent Itemsets (with their respective frequencies) is
-defined as
-  \begin{equation}\label{eq:parmatopkdef}
-    \TOPK(\Ds,\Itm,K)= \FI(\Ds,\Itm,f^{(K)}_\Ds).
-  \end{equation}
-
-One of the main uses of frequent itemsets is in the discovery of
-\emph{association rules}.
-
-\begin{definition}\label{def:parmaar}
-  An \emph{association rule} $W$ is an expression ``$A\Rightarrow B$'' where $A$
-  and $B$ are itemsets such that $A\cap B=\emptyset$. The \emph{support}
-  $\sigma_\Ds(W)$ (resp.~frequency $f_\Ds(W)$) of the association rule
-  $W$ is the support (resp.~frequency) of the
-  itemset $A\cup B$. The \emph{confidence} $c_\Ds(W)$ of $W$ is the ratio
-  $\frac{f_\Ds(A \cup B)}{f_\Ds(A)}$ of the frequency of $A\cup B$ to the
-  frequency of $A$. 
-\end{definition}
-
-Given a minimum frequency threshold $\theta$ and a minimum confidence level
-$\gamma$, we define the set $\AR(\Ds,\Itm,\theta,\gamma)$ of triplets
-\[(W,f_\Ds(W),c_\Ds(W))\]
-s. t. $W$ is an association rule with $f_\Ds(W)\ge\theta$ and
-$c_\Ds(W)\ge\gamma$.
-
-In this work we are interested in computing well defined approximations of the
-above sets.
-
-\begin{definition}\label{def:parmaeapproxfi}
-  Given two parameters $\varepsilon_1,\varepsilon_2\in(0,1)$, an
-  $(\varepsilon_1,\varepsilon_2)$-approximation of
-  $\FI(\Ds,\Itm,\theta)$ is a set $\mathcal{C}=\{(A, f_A, \mathcal{K}_A) ~:~ A\in 2^\Itm,
-  f_A\in\mathcal{K}_A\subseteq[0,1]\}$ of triplets $(A, f_A, \mathcal{K}_A)$ where
-  $f_A$ approximates $f_\Ds(A)$ and $\mathcal{K}_A$ is an interval containing
-  $f_A$ and $f_\Ds(A)$.
-  $\mathcal{C}$ is such that:
-  \begin{enumerate}
-    \item $\mathcal{C}$ contains all itemsets appearing in
-      $\FI(\Ds,\Itm,\theta)$;
-    \item $\mathcal{C}$ contains no itemset $A$ with frequency $f_\Ds(A)<\theta -
-      \varepsilon_1$;
-    \item For every triplet $(A, f_A,\mathcal{K}_A)\in\mathcal{C}$, it holds
-      \begin{enumerate}
-       \item $|f_\Ds(A)-f_A|\le\varepsilon_2$.
-       \item $f_A$ and $f_\Ds(A)$ belong to $\mathcal{K}_A$.
-       \item $|\mathcal{K}_A|\le 2\varepsilon_2$.
-     \end{enumerate}
-  \end{enumerate}
-  If $\varepsilon_1=\varepsilon_2=\varepsilon$ we refer to $\mathcal{C}$ 
-  as a $\varepsilon$-approximation of $\FI(\Ds,\Itm,\theta)$.
-\end{definition} 
-This definition extends easily to the case of top-$K$ frequent itemsets mining
-using the equivalence from~\eqref{eq:parmatopkdef}. An
-$(\varepsilon_1,\varepsilon_2)$-approximation to
-$\FI\left(\Ds,\Itm,f^{(K)}_\Ds\right)$ is an
-$(\varepsilon_1,\varepsilon_2)$-approximation to $\TOPK(\Ds,\Itm,K)$.
-
-For association rules, we have the following definition.
-\begin{definition}\label{def:parmaeapproxar}
-  Given two parameters $\varepsilon_1,\varepsilon_2\in(0,1)$ an
-  $(\varepsilon_1,\varepsilon_2)$-approximation of $\AR(\Ds,\Itm,\theta,\gamma)$
-  is a set \[\mathcal{C}=\{(W, f_W, \mathcal{K}_W, c_W, \mathcal{J}_W)~|~ 
-  \mbox{AR } W, f_W\in\mathcal{K}_W, c_W\in\mathcal{J}_W\}\]
-  of tuples $(W, f_W, \mathcal{K}_W, c_W, \mathcal{J}_W)$ where $f_W$ and $c_W$
-  approximate $f_\Ds(W)$ and $c_\Ds(W)$ respectively and belong to
-  $\mathcal{K}_W\subseteq[0,1]$ and
-  $\mathcal{J}_W\subseteq[0,1]$ respectively. $\mathcal{C}$ is such
-  that:
-  \begin{enumerate}
-    \item $\mathcal{C}$ contains all association rules appearing in
-      $\AR(\Ds,\Itm,\theta,\gamma)$;
-    \item $\mathcal{C}$ contains no association rule $W$ with frequency
-      $f_\Ds(W)<\theta-\varepsilon_1$;
-    \item For every tuple $(W, f_W,\mathcal{K}_W,
-      c_W,\mathcal{J}_W)\in\mathcal{C}$, it holds
-      $|f_\Ds(W)-f_W|\le\varepsilon_2$ and $|\mathcal{K}_W|\le 2\varepsilon_2$.
-    \item $\mathcal{C}$ contains no association rule $W$ with confidence 
-      $c_\Ds(W)<\gamma-\varepsilon_1$;
-    \item For every tuple $(W, f_W,\mathcal{K}_W,
-      c_W,\mathcal{J}_W)\in\mathcal{C}$, it holds
-      $|c_\Ds(W)-c_W|\le\varepsilon_2$ and $|\mathcal{J}_W|\le 2\varepsilon_2$.
-  \end{enumerate}
-    If $\varepsilon_1=\varepsilon_2=\varepsilon$ we refer to $\mathcal{C}$ 
-  as an $\varepsilon$-approximation of $\AR(\Ds,\Itm,\theta,\gamma)$.
-\end{definition}
-
-The following result from~\cite{RiondatoU12} is at the core of our algorithm for
-computing an $\varepsilon$-approximation to $\FI(\Ds,\Itm,\theta)$. A similar
-result also holds for $\TOPK(\Ds,\Itm,K)$~\cite[Lemma 3]{RiondatoU12}.
-\begin{lemma}\label{lem:keythmfi}
-  \cite[Lemma 1]{RiondatoU12}
-   Let $\Ds$ be a dataset with transactions built on an alphabet $\Itm$, and let
-  $d$ be the maximum integer such that $\Ds$ contains at least $d$ transactions
-  of size at least $d$. Let $0<\varepsilon,\delta,\theta<1$. Let $\Sam$ be a random
-  sample of $\Ds$ containing $|\Sam|=
-  \frac{2}{\varepsilon^2}\left(d+\log\frac{1}{\delta}\right)$ transactions
-  drawn uniformly and independently at random with replacement from those in
-  $\Ds$, then with probability at least $1-\delta$, the set
-  $\FI(\Sam,\Itm,\theta-\frac{\varepsilon}{2})$ is a
-  $(\varepsilon,\varepsilon/2)$-approximation of $\FI(\Ds,\Itm,\theta)$.
-\end{lemma}
-For computing a $\varepsilon$-approximation to $\AR(\Ds,\Itm,\theta)$, we make
-use of the following Lemma.
-\begin{lemma}\label{lem:keythmar}
- \cite[Lemma 6]{RiondatoU12}
- Let $\Ds$ be a dataset with transactions built on an alphabet $\Itm$, and let
- $d$ be the maximum integer such that $\Ds$ contains at least $d$ transactions
- of size at least $d$. Let $0<\varepsilon,\delta,\theta,\gamma<1$ 
-and let $\varepsilon_\mathrm{rel}=\frac{\varepsilon}{\max\{\theta,\gamma\}}$.
-Fix $c> 4-2\varepsilon_\mathrm{rel}$, $\eta=\frac{\varepsilon_\mathrm{rel}}{c}$,
-and $p=\frac{1-\eta}{1+\eta}\theta$. Let $\Sam$ be a random sample of $\Ds$
-containing $\frac{1}{\eta^2p}(d\log\frac{1}{p}+\log\frac{1}{\delta})$
-transactions from $\Ds$ sampled independently and uniformly at random. Then
-$\AR(\Sam,\Itm,(1-\eta)\theta,\frac{1-\eta}{1+\eta}\gamma)$ is an
-$(\varepsilon,\varepsilon/2)$ approximation to $\AR(\Ds,\Itm,\theta,\gamma)$.
-\end{lemma}
-
-\subsection{MapReduce}\label{sec:parmamapreduce}
 MapReduce is a programming paradigm and an associated parallel
 and distributed implementation for developing and executing parallel algorithms
-to process massive datasets on clusters of commodity machines~\cite{DeanG08}.
+to process massive datasets on clusters of commodity machines~\citep{DeanG08}.
 Algorithms are specified in MapReduce using two functions, $\mathbf{map}$ and
 $\mathbf{reduce}$. The input is seen as a sequence of ordered key-value pairs
 $(k,v)$. The $\mathbf{map}$ function takes as input one such $(key,value)$ pair
@@ -178,7 +35,7 @@ $\mathbf{reduce}$ function as $\emph{reducers}$. The latter will be indexed by
 the key $k$ assigned to them, i.e., reducer $r$ processes the multiset
 $\mathcal{U}_r$. The data produced by the mappers are split by key and
 sent to the reducers in the so-called \emph{shuffle} step. Some implementations, 
-including Hadoop and the one described by Google~\cite{DeanG08}, use sorting in
+including Hadoop and the one described by Google~\citep{DeanG08}, use sorting in
 the shuffle step to perform the grouping of map outputs by key.
 The shuffle is transparent
 to the algorithm designer but, since it involves the transmission of (possibly very

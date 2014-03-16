@@ -1,5 +1,3 @@
-\section{Introduction}\label{sec:intro}
-
 The extraction of association rules is one of the fundamental primitives in
 data mining and knowledge discovery from large databases~\citep{AgrawalIS93}.
 In its most general definition, the problem can be reduced to identifying
@@ -24,7 +22,7 @@ take the survey multiple times). Using this information, the researcher wants to
 infer the associations (itemsets) that are frequent for the \emph{entire} Facebook
 population. In fact, the %one can 
  whole Facebook population and the online survey define the underlying \emph{process} that
-generated the dataset \emph{observed} by the researcher. In this work we are
+generated the dataset \emph{observed} by the researcher. We are
 interested in answering the following question: %and ask 
 how can we use the latter (the observed dataset) to identify itemsets that are
 frequent in the former (the whole population)?
@@ -149,7 +147,7 @@ possible.
 %received scant attention in the literature. 
 
 \subsection{Our contributions.}
-The contributions of this work are the following:
+The contributions we make are the following:
 \begin{itemize}
   \item We formally define the problem of mining the \emph{True Frequent
     Itemsets} w.r.t.~a minimum threshold $\theta$, and we develop and analyze an
@@ -171,7 +169,7 @@ additional information about the distribution $\prob$ is available, it can be
 incorporated in our method to obtain even higher accuracy.
 \item %mathematical tools 
 We analyse our algorithm using results from \emph{statistical learning theory} and \emph{optimization}. %to develop and analyze our algorithm. 
-We define a range set associated to a collection of itemsets and give an upper
+We define a range space associated to a collection of itemsets and give an upper
 bound to its (empirical) VC-dimension and a procedure to compute this bound,
 showing an interesting connection with the Set-Union
 Knapsack Problem (SUKP)~\citep{GoldschmidtNY94}. 
@@ -226,7 +224,7 @@ that our algorithm \emph{vastly outperforms} it.
 %
 %We use results %mathematical tools 
 %from \emph{statistical learning theory} and \emph{optimization} to develop and
-%analyze our algorithm. We define a range set associated to a collection of
+%analyze our algorithm. We define a range space associated to a collection of
 %itemsets and give an upper bound to its (empirical) VC-dimension and a procedure
 %to compute this bound, showing an interesting connection with the Set-Union
 %Knapsack Problem (SUKP)~\citep{GoldschmidtNY94}. 
@@ -270,21 +268,12 @@ that our algorithm \emph{vastly outperforms} it.
 
 \paragraph*{Outline.} %The article is organized as follows. 
 In Sect.~\ref{sec:prevwork} we review relevant previous contributions.
-Sections ~\ref{sec:prelims} and~\ref{sec:range} contain preliminaries to formally define the problem
-and key concepts that we will use throughout the work. Our proposed algorithm is
-described and analyzed in Sect.~\ref{sec:main}. We present the methodology and
-results of our experimental evaluation %of the test 
+Sections ~\ref{sec:prelims} and~\ref{sec:range} contain preliminaries to
+formally define the problem and key concepts that we will use throughout the
+work. Our proposed algorithm is described and analyzed in Sect.~\ref{sec:main}.
+We present the methodology and results of our experimental evaluation %of the test 
 in Sect.~\ref{sec:experiments}. Conclusions and future work can be found %are presented 
 in Sect.~\ref{sec:concl}. 
-\ifarxiv
-\else
-Due to space restrictions, the proofs of our lemmas
-and theorems are reported in the extended version available
-online~\citep{RiondatoV14-full}.
-\fi
-%omitted from this version of the paper, as are some
-%experimental results. We refer the interested reader to the full version
-%available online~\citep{RiondatoV13}.
 
 \iffalse
 This is an example of a statistical test, in which the probability, or $p$-value,

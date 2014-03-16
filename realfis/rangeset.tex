@@ -1,12 +1,12 @@
-\section{The range set of a collection of itemsets}\label{sec:range}
-In this section we define the concept of a range set associated to a
+\section{The range space of a collection of itemsets}\label{sec:range}
+In this section we define the concept of a range space associated to a
 collection of itemsets and show how to bound the VC-dimension and the
-empirical VC-dimension of this range set. We use these definitions and results
+empirical VC-dimension of this range space. We use these definitions and results
 to develop our algorithm in later sections.
 
 \begin{definition}\label{def:rangeset}
 Given a collection $\mathcal{C}$ of itemsets built on a ground set $\Itm$, the
-\emph{range set $\range(\mathcal{C})$ associated to $\mathcal{C}$ is a range
+\emph{range space $\range(\mathcal{C})$ associated to $\mathcal{C}$ is a range
 set on $2^\Itm$} containing the support sets of the itemsets in $\mathcal{C}$:
 \[\range(\mathcal{C})=\{T(A) ~:~ A\in\mathcal{C}\}\enspace.\]
 \end{definition}
@@ -174,8 +174,8 @@ making this approach practical. %solution practical for our applications.
 %solution and the optimal solution would result in the same upper bound to the
 %(empirical) VC dimension, while substantially speeding up the computation. % of the bound.
 
-%\paragraph{The range set of all itemsets.}
-The range set associated to $2^\Itm$
+%\paragraph{The range space of all itemsets.}
+The range space associated to $2^\Itm$
 is particularly interesting for us. It is possible  %It is easy 
 to compute bounds to $\VC(\range(2^\Itm))$ and
 $\EVC(\range(2^\Itm), \Ds)$ without having to solve a SUKP.
