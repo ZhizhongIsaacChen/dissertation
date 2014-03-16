@@ -1,10 +1,11 @@
 \section{Algorithm}
 \label{sec:parmaparmaalgo}
 In this section we describe and analyze PARMA, our algorithm for extracting
-$\varepsilon$-approximations of $\FI(\Ds,\Itm,\theta)$,
+$\varepsilon$-close approximations of $\FI(\Ds,\Itm,\theta)$,
 $\TOPK(\Ds,\Itm,\theta)$, and $\AR(\Ds,\Itm,\theta,\gamma)$ from samples of a dataset
 $\Ds$ with probability at least $1-\delta$. In this section we present the
-variant for $\FI(\Ds,\Itm,\theta)$. The variants for the cases of $\TOPK(\Ds,\Itm,\theta)$ and
+variant for the absolute case and $\FI(\Ds,\Itm,\theta)$. The variants for the
+relative cases and for $\TOPK(\Ds,\Itm,\theta)$ and
 $\AR(\Ds,\Itm,\theta,\gamma)$ can be easily derived from the one
 we present here. We outline them in Section~\ref{sec:parmaeapproxtopk}. 
 
@@ -29,14 +30,14 @@ when compared to an exact solution of the computational problem. The parameter
 $\delta$ represents the maximum acceptable probability that the previously
 defined error in the solution computed by the algorithm is greater than
 $\varepsilon$. The measure we will use to evaluate the performances of PARMA in
-our analysis is based on the concept of $\varepsilon$-approximation introduced in
-Definition~\ref{def:parmaeapproxfi}.
+our analysis is based on the concept of absolute $\varepsilon$-close
+approximation introduced in Definition~\ref{def:parmaeapproxfi}.
 
 \paragraph*{Trade-offs} We are presented with a trade-off between the parameters
 $\varepsilon$, $\delta$, $p$, and $m$. To obtain a $\varepsilon$-approximation
 with probability at least $1-\delta$, one must have a certain amount of computational resources,
 expressed by $p$ and $m$. On the other hand, given $p$ and $m$, it is possible
-to obtain $\varepsilon$-approximations with probability at least
+to obtain absolute $\varepsilon$-close approximations with probability at least
 $1-\delta$ only for values of $\varepsilon$ and $\delta$ larger than some
 limits. By fixing any three of the parameters, it is possible to find the
 best value for the fourth by solving an optimization problem. From
@@ -44,8 +45,8 @@ Lemma~\ref{lem:absapproxfi} we know that there is a trade-off between
 $\varepsilon$, $\delta$, and the size $w$ of a random sample from which it is
 possible to extract a $(\varepsilon,\varepsilon/2)$-approximation to
 $\FI(\Ds,\Itm,\theta)$ with probability at least $1-\delta$. If $w\le m$, then
-we can store the sample in a single machine and compute the
-$\varepsilon$-approximation there using Lemma~\ref{lem:absapproxfi}. For some
+we can store the sample in a single machine and compute the absolute
+$\varepsilon$-close approximation there using Lemma~\ref{lem:absapproxfi}. For some
 combinations of values for $\varepsilon$ and $\delta$, though, we may have that
 $w>m$, i.e. the sample would be too large to fit into the main memory of a single
 processor, defeating one of the goals of using random sampling, that is to store
@@ -53,8 +54,8 @@ the set of transactions to be mined in main memory in order to avoid expensive d
 accesses. To address the issue of a single sample not fitting in memory, PARMA
 works on multiple samples, say $N$ with $N\le p$, each of size $w\le m$ so that
 {\bf 1)} each sample fits in the main memory of a single processor and {\bf 2)}
-for each sample, it is possible to extract an
-$(\varepsilon,\varepsilon/2)$-approximation of $\FI(\Ds,\Itm,\theta)$ from it
+for each sample, it is possible to extract an absolute
+$(\varepsilon,\varepsilon/2)$-close approximation of $\FI(\Ds,\Itm,\theta)$ from it
 with probability at least $1-\phi$, for some $\phi>\delta$. In the first stage,
 the samples are created and mined in parallel and the so-obtained collections of
 Frequent Itemset are then aggregated in a second stage to compute the final output. This
@@ -162,8 +163,8 @@ the Reduce function outputs a pair $(A,
 (f_{\Sam_i}(A),[f_{\Sam_i}(A)-\varepsilon/2,f_{\Sam_i}(A)+\varepsilon/2])$.
 
 \paragraph*{Stage 2: Aggregation} In the second round of MapReduce, PARMA
-aggregates the result from the first stage to obtain a
-$\varepsilon$-approximation to $\FI(\Ds,\Itm,\theta)$ with probability at least
+aggregates the result from the first stage to obtain an absolute
+$\varepsilon$-close approximation to $\FI(\Ds,\Itm,\theta)$ with probability at least
 $1-\delta$. The Map phase (Map 2 in Figure~\ref{fig:parmaoverview}) is just the identity
 function, so for each pair 
 \[(A,
@@ -199,14 +200,14 @@ The output of PARMA is the union of the outputs from all reducers.
 \subsection{Analysis}
 We have the following result:
 \begin{lemma}\label{lem:multiepsapprox}
- The output of the PARMA is an $\varepsilon$-approximation of
+ The output of the PARMA is an absolute $\varepsilon$-close approximation of
  $\FI(\Ds,\Itm,\theta)$ with probability at least $1-\delta$.
 \end{lemma}
 
 \begin{proof}
   For each sample $\Sam_i$, $1\le i\le N$ we define a random variable $X_i$ that
-  takes the value $1$ if $\mathcal{C}_i=\FI(\Sam_i,\Itm,\theta')$ is a
-  $(\varepsilon,\varepsilon/2)$-approximation of $\FI(\Ds,\Itm,\theta)$, $X_i=0$
+  takes the value $1$ if $\mathcal{C}_i=\FI(\Sam_i,\Itm,\theta')$ is an absolute
+  $(\varepsilon,\varepsilon/2)$-close approximation of $\FI(\Ds,\Itm,\theta)$, $X_i=0$
   otherwise. Given our choices of $w$ and $\theta'$, we can apply
   Lemma~\ref{lem:absapproxfi} and have that $\Pr(X_i=1)\ge 1-\phi$. Let
   $Y=\sum_{r=1}^N X_r$ and let $Z$ be a random variable with binomial
@@ -218,8 +219,8 @@ We have the following result:
   bound~\cite[Chap.~4]{MitzenmacherU05}.
   We then have, for our choice of $\phi$ and $N$ and for $Q=R$
   (defined in Eq.~\eqref{eq:parmaRdef}), that with probability at least $1-\delta$,
-  at least $R$ of the collections $\mathcal{C}_i$ are
-  $(\varepsilon,\varepsilon/2)$-approximations of $\FI(\Ds,\Itm,\theta)$. Denote
+  at least $R$ of the collections $\mathcal{C}_i$ are absolute
+  $(\varepsilon,\varepsilon/2)$-close approximations of $\FI(\Ds,\Itm,\theta)$. Denote
   this event as $\mathcal{G}$. For the rest of the proof we will assume that
   $\mathcal{G}$ indeed occurs.
 
@@ -229,9 +230,9 @@ We have the following result:
   means that Property 1 from Def.~\ref{def:parmaeapproxfi} holds. 
 
   Consider now any itemset $B$ such that $f_\Ds(B)<\theta-\varepsilon$. By
-  definition of $(\varepsilon,\varepsilon/2)$-approximation we have that $B$ can
-  only appear in the collections $\mathcal{C}_i$ that are not
-  $(\varepsilon,\varepsilon/2)$-approximations. Given
+  definition of absolute $(\varepsilon,\varepsilon/2)$-close approximation we have that $B$ can
+  only appear in the collections $\mathcal{C}_i$ that are not absolute
+  $(\varepsilon,\varepsilon/2)$-close approximations. Given
   that $\mathcal{G}$ occurs, then there are at most  $N-R$ such collections. But
   from Constraint~\eqref{eq:parmaconstr3} and the definition of $R$
   in~\eqref{eq:parmaRdef}, we have that $N-R< R$, and therefore $B$ will not be
@@ -271,7 +272,7 @@ We have the following result:
 
 \subsection{Top-K Frequent Itemsets and Association Rules}\label{sec:parmaeapproxtopk}
 The above algorithm can be easily adapted to computing, with probability at
-least $1-\delta$, $\varepsilon$-approximations to $\TOPK(\Ds,\Itm,K)$ and to
+least $1-\delta$, absolute and relative $\varepsilon$-close approximations to $\TOPK(\Ds,\Itm,K)$ and to
 $\AR(\Ds,\Itm,\theta,\gamma)$. The main difference is in the formula to compute
 the sample size $w$ (Lemma~\ref{lem:absapproxfi}), and in the process
 to extract the local collections from the samples. The case of top-$K$ is

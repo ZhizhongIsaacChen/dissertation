@@ -30,9 +30,9 @@ Because PARMA is an approximate algorithm, the choice of accuracy
 parameters $\varepsilon$ and $\delta$ are important, as is $\theta$,
 the minimum frequency at which itemsets were mined. In all of our
 experiments, $\varepsilon = 0.05$ and $\delta = 0.01$. This means that
-the collection of itemsets mined by PARMA will be a 0.05-approximation with
-probability 0.99. In practice, we show later that the results are
-much more accurate than what this. For all experiments other than the
+the collection of itemsets mined by PARMA will be an absolute 0.05-close
+approximation with probability 0.99. In practice, we show later that the results
+are much more accurate than what this. For all experiments other than the
 minimum frequency performance comparison in Figure \ref{fig:parmafrequency} and for
 the accuracy comparison in Figures~\ref{fig:parmaabsfreqerr}
 and~\ref{fig:parmaconfintwidth}, $\theta$ was kept constant at 0.1.
@@ -46,7 +46,7 @@ the two stages. This demonstrates which parts of the algorithm have runtimes tha
 as the data size grows and which parts are relatively data independent. The second aspect
 is speedup, to show the scalability of our algorithm. In these experiments, data and
 cluster size are varied to determine how PARMA scales. Finally, because the output of
-PARMA is an $\varepsilon$-approximation of the real set of frequent itemsets, we provide
+PARMA is an absolute $\varepsilon$-close approximation of the real set of frequent itemsets, we provide
 an accuracy analysis to verify that our results are indeed within the desired quality
 bounds.
 \end{comment}
@@ -390,8 +390,8 @@ practice, especially in relation to what can be analytically proved.
 We compared the results obtained by PARMA with the exact collection of
 itemsets from the entire dataset, for different values of the parameters
 $\varepsilon$, $\delta$, and $\theta$, and for different datasets. A first important
-result is that in all the runs, the collection computed by PARMA was indeed a
-$\varepsilon$-approximation to the real one, i.e., all the properties from
+result is that in all the runs, the collection computed by PARMA was indeed an
+absolute $\varepsilon$-close approximation to the real one, i.e., all the properties from
 Definition~\ref{def:parmaeapproxfi} were satisfied. This fact suggests that the confidence in
 the result obtained by PARMA is actually greater than the level $1-\delta$
 suggested by the analysis. This can be explained by considering that we had to

@@ -1,10 +1,86 @@
-\section{Preliminaries}
-\label{sec:parmadef}
-In this chapter we show how to extract $\varepsilon$-approximations of the
+\section{Preliminaries} \label{sec:parmadef}
+In this chapter we show how to extract $\varepsilon$-close approximations of the
 collection of (top-$k$) Frequent Itemsets and Association Rules using MapReduce. See
-Sect.~\ref{sec:vcminepreldm} for definitions about FIs, ARs, and approximations.
-We focus here on introducing MapReduce.
+Sect.~\ref{sec:vcminepreldm} for definitions about FIs, ARs. We slightly
+generalize the definitns of $\varepsilon$-close
+approximation of $\FI(\Ds,\Itm,\theta)$ (Def.~\ref{def:vcmineapproxfi}) and of
+$\AR(\Ds,\Itm,\theta,\gamma)$ (Def.~\ref{def:vcmineapproxfi}) as follows.
 
+\begin{definition}\label{def:parmaeapproxfi}
+  Given two parameters $\varepsilon_1,\varepsilon_2\in(0,1)$, an \emph{absolute}
+  (resp.~\emph{relative}) \emph{
+  $(\varepsilon_1,\varepsilon_2)$-close approximation} of
+  $\FI(\Ds,\Itm,\theta)$ is a set $\mathcal{C}=\{(A, f_A, \mathcal{K}_A) ~:~ A\in 2^\Itm,
+  f_A\in\mathcal{K}_A\subseteq[0,1]\}$ of triplets $(A, f_A, \mathcal{K}_A)$ where
+  $f_A$ approximates $f_\Ds(A)$ and $\mathcal{K}_A$ is an interval containing
+  $f_A$ and $f_\Ds(A)$.
+  $\mathcal{C}$ is such that:
+  \begin{enumerate}
+    \item $\mathcal{C}$ contains all itemsets appearing in
+      $\FI(\Ds,\Itm,\theta)$;
+    \item $\mathcal{C}$ contains no itemset $A$ with frequency $f_\Ds(A)<\theta -
+      \varepsilon_1$ (resp.~ $f_\Ds(A)\le\theta(1-\varepsilon_1$);
+    \item For every triplet $(A, f_A,\mathcal{K}_A)\in\mathcal{C}$, it holds
+      \begin{enumerate}
+       \item $|f_\Ds(A)-f_A|\le\varepsilon_2$ (resp.~
+	 $|f_\Ds(A)-f_A|\le\varepsilon_2f_\Ds(A)$).
+       \item $f_A$ and $f_\Ds(A)$ belong to $\mathcal{K}_A$.
+       \item $|\mathcal{K}_A|\le 2\varepsilon_2$ (resp.~$|\mathcal{K}_A|\le
+	 2\varepsilon_2f_\Ds(A)$).
+     \end{enumerate}
+  \end{enumerate}
+  If $\varepsilon_1=\varepsilon_2=\varepsilon$ we refer to $\mathcal{C}$ 
+  as an absolute (resp.~relative) $\varepsilon$-close approximation of
+  $\FI(\Ds,\Itm,\theta)$.
+\end{definition} 
+
+Through~\eqref{eq:topkfiequiv} we have that an absolute (resp.~relative)
+$(\varepsilon_1,\varepsilon_2)$-close approximation to
+$\FI\left(\Ds,\Itm,f^{(K)}_\Ds\right)$ is an
+$(\varepsilon_1,\varepsilon_2)$-approximation to $\TOPK(\Ds,\Itm,K)$.
+
+For association rules, we generalize Def.~\ref{def:vcmineapproxar} as follows.
+\begin{definition}\label{def:parmaeapproxar}
+  Given two parameters $\varepsilon_1,\varepsilon_2\in(0,1)$ an
+  \emph{absolute} (resp.~\emph{relative})
+  \emph{$(\varepsilon_1,\varepsilon_2)$-close approximation} of $\AR(\Ds,\Itm,\theta,\gamma)$
+  is a set \[\mathcal{C}=\{(W, f_W, \mathcal{K}_W, c_W, \mathcal{J}_W)~|~ 
+  \mbox{AR } W, f_W\in\mathcal{K}_W, c_W\in\mathcal{J}_W\}\]
+  of tuples $(W, f_W, \mathcal{K}_W, c_W, \mathcal{J}_W)$ where $f_W$ and $c_W$
+  approximate $f_\Ds(W)$ and $c_\Ds(W)$ respectively and belong to
+  $\mathcal{K}_W\subseteq[0,1]$ and
+  $\mathcal{J}_W\subseteq[0,1]$ respectively. $\mathcal{C}$ is such
+  that:
+  \begin{enumerate}
+    \item $\mathcal{C}$ contains all association rules appearing in
+      $\AR(\Ds,\Itm,\theta,\gamma)$;
+    \item $\mathcal{C}$ contains no association rule $W$ with frequency
+      $f_\Ds(W)<\theta-\varepsilon_1$ (resp.~$f_\Ds(W)<\theta(1-\varepsilon_1)$);
+    \item For every tuple $(W, f_W,\mathcal{K}_W,
+      c_W,\mathcal{J}_W)\in\mathcal{C}$, it holds
+      $|f_\Ds(W)-f_W|\le\varepsilon_2$ and $|\mathcal{K}_W|\le 2\varepsilon_2$
+      (resp.~$|f_\Ds(W)-f_W|\le\varepsilon_2f_Ds(W)$ and $|\mathcal{K}_W|\le
+      2\varepsilon_2f_\Ds(W)$).
+    \item $\mathcal{C}$ contains no association rule $W$ with confidence 
+      $c_\Ds(W)<\gamma-\varepsilon_1$ (resp.~$c_\Ds(W)<\gamma(1-\varepsilon_1)$);
+    \item For every tuple $(W, f_W,\mathcal{K}_W,
+      c_W,\mathcal{J}_W)\in\mathcal{C}$, it holds
+      $|c_\Ds(W)-c_W|\le\varepsilon_2$ and $|\mathcal{J}_W|\le 2\varepsilon_2$
+      (resp.~$|c_\Ds(W)-c_W|\le\varepsilon_2c_Ds(W)$ and $|\mathcal{J}_W|\le
+      2\varepsilon_2c_\Ds(W)$).
+  \end{enumerate}
+    If $\varepsilon_1=\varepsilon_2=\varepsilon$ we refer to $\mathcal{C}$ 
+  as an absolute (resp.~relative) $\varepsilon$-close approximation of
+  $\AR(\Ds,\Itm,\theta,\gamma)$.
+\end{definition}
+
+It is easy to see that it is possible to modify Lemmas~\ref{lem:absapproxfi}, \ref{lem:relapproxfi},
+\ref{lem:absapproxtopk}, \ref{lem:relapproxtopk}, \ref{lem:absapproxar}, and
+\ref{lem:relapproxar} to return absolute or relative
+$(\varepsilon,\varepsilon/2)$-close approximations of the relevant collections
+of FIs or ARs.
+
+\subsection{MapReduce}
 MapReduce is a programming paradigm and an associated parallel
 and distributed implementation for developing and executing parallel algorithms
 to process massive datasets on clusters of commodity machines~\citep{DeanG08}.
