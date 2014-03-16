@@ -1,55 +1,17 @@
-The discovery of (top-K) Frequent Itemsets and Association Rules (FIM)
-is a fundamental primitive in data mining and databases applications. The
-computational problem is defined in the general setting of a transactional dataset
--- a collection of transactions where each transaction is a set of items.
-With datasets increasing both in size and complexity, the computation
-for FIM faces scalability challenges in both space and time. Datasets have
-now reached the tens of terabytes scale and it is no longer reasonable to assume
-that such massive amounts of data can be easily processed by a single machine
-in a sequential fashion. 
-
-A typical exact algorithm scans the entire dataset,
-possibly multiple times, and stores intermediate counts of a large number of
-possible frequent itemsets candidates~\citep{AgrawalS94,HanPY00}. The cost of
-these algorithms can be split in two independent components:
-the \emph{scanning} cost and the \emph{mining} cost. The scanning cost includes
-all operations that directly handle the transactions in the dataset, and scales
-with the \emph{size} of the dataset, i.e., the number of such transactions. Examples
-include the scanning of the dataset to build the FP-Tree in
-FP-Growth~\citep{HanPY00} or to compute the actual frequencies of candidate
-frequent itemsets in APriori~\citep{AgrawalIS93}.  The mining cost refers to the
-operations in derived data structures and does not require access to the
-dataset. Examples include the operations performed on the FP-Tree once it has
-been generated, and the creation of candidate itemsets of length $i+1$ at the
-end of phase $i$ in APriori.  This cost scales with the \emph{complexity} of the
-dataset, i.e., the number of items, the number and distribution of frequent
-itemsets, and the underlying process that generated the transactions. It also
-depends on parameters given to the algorithm, such as the desired frequency
-threshold.
-
-In this paper we are concerned with the scalability of FIM with respect to
-the size of the dataset, or the number of transactions. 
-In many practical settings for FIM, the process generating the data changes very
-slowly or not at all, especially when compared to the data generation rate,
-therefore the number and frequency distribution of the frequent itemsets grows
-much slower than the size of the dataset. For example, the number of items
-available on the catalog of an e-commerce website grows much slower than the
-number of purchases by customers, each of which corresponds to a transaction.
-Therefore the scanning component grows faster than the mining one, and soon
-becomes dominant. 
-
-We introduce a randomized parallel algorithm for approximate frequent itemset
-mining, PARMA, that makes the scanning step of FIM embarassingly parallel, thus
-exhibiting near-linear speedup with the number of machines. PARMA combines
-random sampling and parallelization techniques in a novel fashion.  It mines, in
-parallel, a set of small random samples and then filters and aggregates the
-collections of frequent itemsets or association rules obtained from each sample.
-Our work is orthogonal to other approaches, like PFP~\citep{LiWZZC08}, which
-focuses on parallelizing the mining phase in order to decrease the corresponding
-component of the cost. Due to the use of random sampling, the output of PARMA is
-an approximation of
-the collection of FIs or ARs in the dataset, but leveraging on previous
-work~\citep{RiondatoU12}, PARMA offers tight probabilistic guarantees on the
+We now extend the results presented in Chapter~\ref{ch:vcmine} and introduce
+PARMA, a randomized parallel algorithm for approximate frequent itemset mining,
+that makes the problem of Frequent Itemsets and Association Rules mining (FIM)
+embarassingly parallel, thus exhibiting near-linear speedup with the number of
+machines. PARMA combines random sampling and parallelization techniques in a
+novel fashion.  It mines, in parallel, a set of small random samples and then
+filters and aggregates the collections of frequent itemsets or association rules
+obtained from each sample.  Our work is orthogonal to other approaches, like
+PFP~\citep{LiWZZC08}, which focuses on parallelizing the mining phase in order
+to decrease the corresponding component of the cost. Due to the use of random
+sampling, the output of PARMA is an approximation of
+the collection of FIs or ARs in the dataset, but leveraging on the results
+presented in
+Chapter~\ref{ch:vcmine}, PARMA offers tight probabilistic guarantees on the
 quality of the approximated collections returned in output. In particular it
 guarantees that the output is an $\varepsilon$-approximation of the real
 collection with probability at least $1-\delta$, where $\varepsilon$ and
@@ -67,7 +29,7 @@ random sampling and parallelization for the task of Association Rules Mining.
 A number of previous works explored either parallel
 algorithms~\citep{BuehrerPTKS07,CongHHP05,EHZaiane06,FangEtAl08,LiuLZT07,OzkuralUA11,JinYA05,Zaki99}
 or random
-sampling~\citep{Toivonen96,ZakiPLO97,Parthasarathy02,PietracaprinaRUV10,LiG04,RiondatoU12}
+sampling (see Sect.~\ref{sec:vcmineprevwork})
 for the FIM task, but the two approaches have been seen somewhat orthogonal
 until today. In PARMA, the disadvantages of either approach are evened out by
 the advantages of the other. In the spirit of \emph{moving computation to the
@@ -80,7 +42,7 @@ obtained from it, as PARMA would only have to mine more samples of the same size
 in parallel to get higher quality approximations.
 
 Although PARMA is not the first algorithm to use MapReduce to solve the
-Association Rule Mining task, it differs from and enhances previous
+FIM task, it differs from and enhances previous
 works~\citep{CryansRC10,GhotingKPK11,Hammoud11,LiWZZC08,LiZ11,YangLF10,ZhouZCLF10}
 in two crucial aspects. First, it significantly reduces the data that is
 replicated and transmitted in the \emph{shuffle} phase of MapReduce.  Second,

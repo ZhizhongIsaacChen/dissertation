@@ -2,7 +2,50 @@
 Rules and Frequent Itemsets\protect\nomarkfootnote{This chapter is an extended
 version of a work that originally appeared in ACM Transaction of Knowledge Discovery in
 Data as~\citep{RiondatoU14}.}}\label{ch:vcmine}
-\chaptermark{Frequent itemsets mining through sampling}
+
+\todo{ Integrate the following
+
+The discovery of (top-K) Frequent Itemsets and Association Rules (FIM)
+is a fundamental primitive in data mining and databases applications. The
+computational problem is defined in the general setting of a transactional dataset
+-- a collection of transactions where each transaction is a set of items.
+With datasets increasing both in size and complexity, the computation
+for FIM faces scalability challenges in both space and time. Datasets have
+now reached the tens of terabytes scale and it is no longer reasonable to assume
+that such massive amounts of data can be easily processed by a single machine
+in a sequential fashion. 
+
+A typical exact algorithm scans the entire dataset,
+possibly multiple times, and stores intermediate counts of a large number of
+possible frequent itemsets candidates~\citep{AgrawalS94,HanPY00}. The cost of
+these algorithms can be split in two independent components:
+the \emph{scanning} cost and the \emph{mining} cost. The scanning cost includes
+all operations that directly handle the transactions in the dataset, and scales
+with the \emph{size} of the dataset, i.e., the number of such transactions. Examples
+include the scanning of the dataset to build the FP-Tree in
+FP-Growth~\citep{HanPY00} or to compute the actual frequencies of candidate
+frequent itemsets in APriori~\citep{AgrawalIS93}.  The mining cost refers to the
+operations in derived data structures and does not require access to the
+dataset. Examples include the operations performed on the FP-Tree once it has
+been generated, and the creation of candidate itemsets of length $i+1$ at the
+end of phase $i$ in APriori.  This cost scales with the \emph{complexity} of the
+dataset, i.e., the number of items, the number and distribution of frequent
+itemsets, and the underlying process that generated the transactions. It also
+depends on parameters given to the algorithm, such as the desired frequency
+threshold.
+
+In this paper we are concerned with the scalability of FIM with respect to
+the size of the dataset, or the number of transactions. 
+In many practical settings for FIM, the process generating the data changes very
+slowly or not at all, especially when compared to the data generation rate,
+therefore the number and frequency distribution of the frequent itemsets grows
+much slower than the size of the dataset. For example, the number of items
+available on the catalog of an e-commerce website grows much slower than the
+number of purchases by customers, each of which corresponds to a transaction.
+Therefore the scanning component grows faster than the mining one, and soon
+becomes dominant. 
+}
+
 
 Discovery of frequent itemsets and association rules is a fundamental
 computational primitive with application in data mining (market basket
