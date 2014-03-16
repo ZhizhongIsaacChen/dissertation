@@ -3,12 +3,32 @@ In this dissertation we explore the use of random sampling to develop fast and
 efficient algorithms for data analytics problems. The use of sampling is not new
 in this area but previously presented algorithms were severely limited by their
 use of classic probability tools like the Chernoff bound, the Hoeffding bound,
-and the union bound~\citep{MitzenmacherU05} when deriving the sample size
-necessary to obtain approximation of (probabilistically) guaranteed quality.
-Instead, we show that it is possible to obtain much smaller sample size, and
+and the union bound~\citep{MitzenmacherU05} to derive the sample size
+necessary to obtain approximations of (probabilistically) guaranteed quality.
+Instead, we show that it is possible to obtain much smaller sample sizes, and
 therefore much more efficient algorithms, by using concepts and results from
 \emph{statistical learning theory}~\citep{Vapnik99,Vapnik98}, in particular
 those involving the \emph{Vapnik-Chervonenkis (VC) dimension} of the problem.
+
+The VC-Dimension was first introduced in a seminal article~\citep{VapnikC71} on
+the convergence of probability distributions, but it was only with the work
+of~\citet{HausslerW86} and~\citet{BlumerEHW89} that it was applied to the field
+of learning. \citet{BoucheronBL05} present a good survey of the field with many
+recent advances. Since then, VC-dimension has encountered enormous success and
+application in the fields of computational
+geometry~\citep{Chazelle00,Matousek02} and machine
+learning~\citep{AnthonyB99,DevroyeGL96}. Other applications include database
+management and graph algorithms.  In the former, it was used in the context of
+constraint databases to compute good approximations of aggregate
+operators~\citep{BenediktL02}.  VC-dimension-related results were also recently
+applied in the field of database privacy by~\citet{BlumLR08} to show a bound on
+the number of queries needed for an attacker to learn a private concept in a
+database. \citet{Gross11} showed that content with unbounded VC-dimension can
+not be watermarked for privacy purposes. In the graph algorithms literature,
+VC-Dimension has been used to develop algorithms to efficiently detect network
+failures~\citep{Kleinberg03,KleinbergSS08}, balanced
+separators~\citep{FeigeM06}, events in a sensor networks~\citep{GandhiSW10}, and
+compute approximations of the shortest paths~\citep{AbrahamDFGW11}.
 
 We outline here only the definitions and results that we use throughout the
 dissertation. We refer the reader to the works of~\citet[Sect.~14.4]{AlonS08},
@@ -20,13 +40,14 @@ and~\citet{Vapnik99,Vapnik98} for more details on the VC-dimension theory.
 A {\em range space} is a pair $(D,\range)$ where $D$ is a (finite or infinite)
 domain and $\range$ is a (finite or infinite) family of subsets of $D$. The
 members of $D$ are called {\em points} and those of $R$ are called {\em ranges}.
-The Vapnik-Chernovenkis (VC) Dimension of $(D,\range)$  is a measure of the
-complexity or expressiveness of $\range$~\citep{VapnikC71}. If we define a
-probability distribution $\nu$ over $D$, then a finite bound on the
-VC-dimension of $(D,\range)$ implies a bound on the number of random samples
-from $\nu$ required to approximate the probability $\nu(R)=\sum_{r\in R}\nu(r)$
-of each range $R$ simultaneously using the empirical average of $\nu(R)$ as
-estimator. 
+The Vapnik-Chernovenkis (VC) Dimension of $(D,\range)$ is a measure of the
+\emph{complexity} or \emph{expressiveness} of $\range$~\citep{VapnikC71}.
+Knowning (an upper bound) to the VC-dimension of a range space can be very
+useful: if we define a probability distribution $\nu$ over $D$, then a finite
+upper bound to the VC-dimension of $(D,\range)$ implies a bound to the number of
+random samples from $\nu$ required to approximate the probability
+$\nu(R)=\sum_{r\in R}\nu(r)$ of each range $R$ simultaneously using the
+\emph{empirical average} of $\nu(R)$ as estimator. 
 
 Given $A\subset D$, The {\em projection} of $\range$ on $A$ is defined as
 $P_\range(A)=\{R\cap A ~:~ R\in\range\}$. If $P_\range(A)=2^A$, then $A$ is said
@@ -41,10 +62,9 @@ to be {\em shattered by $\range$}.
   $\VC\left((D,\range)\right)=\EVC(\range,D)$.
 \end{definition}
 
-If the VC-dimension of a range space $(D,\range)$ is $d$ then $2^d\leq |\range|$
-since all subsets of some $B\subseteq D$ of size $d$ can be expressed as the
-intersection of $B$ with a member of $R$. At the same time, for any $D$ and any
-$\range$, $\VC(D,\range)\le \log_2|\range|$.
+For any range space, we have that its VC-dimension cannot be greater than
+$d=\lfloor\log_2|\range|\rfloor$ since for any $t>d$, one would need $2^t$
+ranges to shatter a set of size $t$. 
 
 A range space $(D,\range)$ with an infinite set of points $D$ and
 an infinite family of ranges $\range$ can have a \emph{finite} VC-dimension. A simple
@@ -59,7 +79,7 @@ to higher dimensions.
   space $(\mathbb{R}^d, \range)$, where $\range$ is the set of all half-spaces
   in $\mathbb{R}^d$ equals $d+1$.
 \end{lemma}
-Another example of range space and VC-dimension is shown in Fig.~\ref{fig:rectangles}.
+Another example of range space and its VC-dimension is shown in Fig.~\ref{fig:rectangles}.
 
 \begin{figure}[ht]
   \centering
@@ -76,11 +96,12 @@ Another example of range space and VC-dimension is shown in Fig.~\ref{fig:rectan
   \label{fig:rectangles}
 \end{figure}
 
-A classic example of a space with infinite VC-dimension is the space of sine
+A classic example of a range space with infinite VC-dimension is the space of sine
 functions. Let $D=\mathbb{R}^2$ and, for any $\omega\in\mathbb{R}$, let
 $A_{\omega}$ be the subset of $\mathbb{R}^2$ that lies \emph{above} the
 curve $\sin(\omega t)$, for $t\in \mathbb{R}$. It is possible to
-shatter any set of points by choosing an appropriate $\omega$ for each subset.
+shatter any set $S$ of points by choosing an appropriate $\omega_A$ for each
+subset $A\subseteq S$.
 
 Let $\nu$ be a probability distribution on the points of $D$, and let
 $X_1^k=(X_1,\dotsc,X_k)$ be a bag of elements from $D$. For any subset
@@ -88,12 +109,12 @@ $A\subseteq D$, we define the function
 \[
 \nu_{X_1^k}(A)=\frac{1}{k}\sum_{j=1}^k\mathds{1}_A(X_j),\]
 where $\mathds{1}_A$ is the indicator function for the set $A$. When $X_1^k$ is
-a collection of independent samples from $\nu$, then $\nu_{X_1^k}(A)$ is known as the
+a collection of \emph{independent samples from $\nu$}, then $\nu_{X_1^k}(A)$ is known as the
 \emph{empirical average} of $\nu(A)=\sum_{a\in A}\nu(a)$ on $X_1^k$ and is an
 \emph{unbiased estimator} for $\nu(A)$ (i.e.,
 $\expectation[\nu_{X_1^k}(A)]=\nu(A)$). One of the main applications of
 (empirical) VC-dimension is in giving bounds to the number of samples from $\nu$
-needed to \emph{simultaneously} approximate the probabilities $\nu(A$) for all
+needed to \emph{simultaneously} approximate the probabilities $\nu(A$) of all
 $A\in\range$ using their empirical averages, in the following sense.
 
 \begin{definition}\label{def:eapprox}
@@ -106,42 +127,40 @@ $A\in\range$ using their empirical averages, in the following sense.
 \end{definition}
 
 If $D$ is \emph{finite} and $\nu$ is the \emph{uniform} distribution on $D$, then
-$\nu(A)=|A|\|D|$, and~\eqref{eq:defeapprox} is equivalent to
+$\nu(A)=|A|/|D|$, and~\eqref{eq:defeapprox} is equivalent to
 \[
 \left|\frac{|A|}{|D|}-\frac{|A\cap S|}{|S|}\right|\le\varepsilon, \forall
 A\in\range.
 \]
 Indeed this will be often but not always the case in later chapters, and we will
-simplify the presentation saying that $S$ is an $\varepsilon$-approximation to
-$(D,\range)$, dropping $\nu$.
+simplify the notation by dropping $\nu$ and saying that $S$ is an
+$\varepsilon$-approximation to $(D,\range)$.
 
-A great result of~\citet{VapnikC71} showed that it is possible
-to compute a $\varepsilon$-approximation with much fewer samples, provided an
-upper bound to the VC-dimension of $(D,\range)$ or to its empirical VC-dimension
-on a subset of $D$ is known. The original result was improved multiple times.
-Here we present the most recent improvement.
+A great result by~\citet{VapnikC71} showed that it is possible
+to compute a $\varepsilon$-approximation with a limited number samples from
+$\nu$, provided an upper bound to the VC-dimension of $(D,\range)$ or to its
+empirical VC-dimension on a subset of $D$ is known. The original result was
+improved multiple times.  Here we present the most recent improvement.
 
-\begin{theorem}[Thm.~2.12~\citep{HarPS11}%, see also~\citep{LiLS01}
-]\label{thm:eapprox}
-  %\emph{(\citep[Thm.~2.12]{HarPS11}, see also~\citep{LiLS01})}
-  Let $(D,\range)$ be a range space with $\VC(\range)\le d$, and let $\nu$ be a distribution on $D$. Given
-  $\varepsilon,\delta\in(0,1)$, let
+\begin{theorem}[Thm.~2.12~\citep{HarPS11}, see also~\citep{LiLS01}]\label{thm:eapprox}
+  Let $(D,\range)$ be a range space with $\VC(\range)\le d$, and let $\nu$ be a
+  distribution on $D$. Given $\varepsilon,\delta\in(0,1)$, let
   %and a positive integer $\ell$, let
   \begin{equation}\label{eq:vceapprox}
   %  \varepsilon = \sqrt{\frac{c}{\ell}\left(d + \log\frac{1}{\delta}\right)}
-  \ell = \frac{c}{\varepsilon^2}\left(d + \log{frac}{1}{\delta}\right)
+  \ell = \frac{c}{\varepsilon^2}\left(d + \log\frac{1}{\delta}\right)
   \end{equation}
-  where $c$ is an universal constant. Then, a bag of $\ell$
-  elements of $D$ sampled independently according to $\nu$ is an
-  $\varepsilon$-approximation to $(\range,\nu)$ with probability at least
-  $1-\delta$.
+  where $c$ is an universal constant. Then, a bag of $\ell$ elements of $D$
+  sampled independently according to $\nu$ is an $\varepsilon$-approximation to
+  $(\range,\nu)$ with probability at least $1-\delta$.
 \end{theorem}
 The constant $c$ is approximately $0.5$ and it is
 \emph{universal}, i.e., it does not depend on any parameter~\citep{LofflerP09}.  
-It is also interesting to note that an $\varepsilon$-approximation of size
+It is also interesting to note that, if $|D|$ is finite, then an
+$\varepsilon$-approximation of size
 $O(\frac{d}{\varepsilon^2}\log{\frac{d}{\varepsilon}})$ can be built
 \emph{deterministically} in time
-$O(d^{3d}(\frac{1}{\varepsilon^2}\log{\frac{d}{\varepsilon}})^d|X|)$~\citep{Chazelle00}.
+$O(d^{3d}(\frac{1}{\varepsilon^2}\log{\frac{d}{\varepsilon}})^d|D|)$~\citep{Chazelle00}.
 
 Throughout this dissertation we assume the sample to be drawn \emph{with}
 replacement if the sample size is smaller than the size $|D|$ of the domain,
@@ -176,16 +195,19 @@ which is smaller than $\delta/|\range|$ for
 \[
 |S|\ge\frac{1}{2\varepsilon^2}\left(\ln|\range|+\ln 2 +\ln\frac{1}{\delta}\right).
 \]
-
-Note that the above example does not work if $\range$ is infinite. Moreover,
+Comparing this quantity with~\eqref{eq:eapprox} clearly shows the multiple
+advantages of VC-dimension. Firstly, the sample size suggested
+by~\eqref{eq:eapprox} is smaller than the above as soon as the (upper bound to
+the) VC-dimension of $(D,\range)$ is smaller than $\ln(2\range)$ (note that the
+above example cannot be used when $\range$ has infinite size). Secondly,
 Thm.~\ref{thm:eapprox} holds for \emph{any} distribution $\nu$ and no assumption
-are made on it or any of its moments (e.g., on its variance).
-
+are made on it or any of its moments (e.g., on its variance). 
 It is important to mention that if $\VC\left((D,\range)\right)$ and/or the upper
 bound $d$ do not depend on $|D|$ or on $|\range|$ neither does the sample size
 presented in Thm.~\ref{thm:eapprox} (nor the ones in Thm.~\ref{thm:eapproxempir}
 and Thm.~\ref{thm:releapprox} which we show next). We use this property in the
-following chapters to develop efficient algorithms that use sampling.
+following chapters to develop efficient sampling-based randomize algorithms for
+important problems in data mining.
 
 It is possible to build an $\varepsilon$-approximation even when only an upper
 bound to the empirical VC-Dimension is available.
@@ -202,7 +224,7 @@ bound to the empirical VC-Dimension is available.
    with probability at least $1-\delta$.
  \end{theorem}
 
-It is possible to define and compute stronger approximations with \emph{relative}
+One can define and compute stronger approximations with \emph{relative}
 guarantees (rather than additive) as follows.
 \begin{definition}\label{def:releapprox}
   Let $(D,\range)$ be a range space  and $\nu$ be a probability distribution on
@@ -239,7 +261,7 @@ and Thm.~\ref{thm:releapprox} are tight~\citep[Thm.~5]{LiLS01}.
 %
 %If $|D|=n$ and $\VC\left((D,\range)\right)=d$, then $|R|\le g(d,n)$ (Sauer's
 %Lemma~\citep[Sect.~14.4]{AlonS08}), hence for every finite $A\subseteq D$,
-%$P_\Range(A)\le g(d, |A|)$.
+%$P_\range(A)\le g(d, |A|)$.
 
 %The growth function is used in the following results ~\citep[Sect.~14.4]{AlonS08}.
 %\begin{lemma}[Sauer's Lemma]\label{lem:sauer}
@@ -257,22 +279,22 @@ combinations of set operations. We present it here because it is a general
 result on VC-dimension.
 
 \begin{lemma}\label{lem:genboolcomp}
-   Let $(X,R)$ be a range space of VC-dimension $d\ge 2$ and let $(X,R_h)$ be the
-  range space on $X$ in which $R_h$ includes all possible combinations of 
-    union and intersections of $h$ members of $R$. Then $\VC(X,R_h)\le
-  3dh\log(dh)$.
+   Let $(D,\range)$ be a range space of VC-dimension $d\ge 2$ and let $(D,\range_h)$ be the
+  range space on $D$ in which $\range_h$ includes all possible combinations of 
+    union and intersections of $h$ members of $\range$. Then
+    $\VC\left((D,\range_h)\right)\le 3dh\log(dh)$.
 \end{lemma}
 
 \begin{proof}
   Let $A$ be an arbitrarily subset of cardinality $n$ of $D$.
-  From~\citep[Coroll.~14.4.2]{AlonS08}, we have that $|P_R(A)|\le n^d$. There are 
+  From~\citep[Coroll.~14.4.2]{AlonS08}, we have that $|P_\range(A)|\le n^d$. There are 
   \[
-  \binom{|P_R(A)|}{h}\le  n^{dh} \]
-  possible choices of $h$ members of $P_R(A)$, and there are no more
+  \binom{|P_\range(A)|}{h}\le  n^{dh} \]
+  possible choices of $h$ members of $P_\range(A)$, and there are no more
   than $ h! 2^{h-1} C_{h-1}\leq h^{2h}$
   Boolean combinations using unions and intersections of the $h$ sets, where
   $C_{h-1}$ is the $(h-1)^{\mathrm{th}}$ Catalan number
-  ($C_i=\frac{1}{i+1}\binom{2i}{i}$). If $2^n> h^{2h}n^{dh} \geq |P_{R_h}(A)|$
+  ($C_i=\frac{1}{i+1}\binom{2i}{i}$). If $2^n> h^{2h}n^{dh} \geq |P_{\range_h}(A)|$
   then $A$ cannot be shattered. This inequality holds for $n\ge 3dh\log(dh)$. To
   see this, consider the fact that clearly $2^n\ge h^{2h}n^{dh}$ for
   sufficiently large $n$, so it suffices to show that $n=3dh\log(dh)$ is
@@ -283,27 +305,4 @@ result on VC-dimension.
   Since $dh\log(dh)\ge 2h\log(h)$, we have $3dh\log(dh)> 2h\log(3dh\log(dh))$,
   which proves the result.
 \end{proof}
-
-\subsection{Use in computer science}\label{sec:vcliterature}
-\todo{Review / extend.}
-The VC-Dimension was first introduced in a seminal
-article~\citep{VapnikC71} on the convergence of probability distributions, but it
-was only with the work of~\citet{HausslerW86} and~\citet{BlumerEHW89} that it
-was applied to the field of learning. \citet{BoucheronBL05} present a good survey
-of the field with many recent advances. Since then, VC-dimension has encountered
-enormous success and application in the fields of computational
-geometry~\citep{Chazelle00,Matousek02} and machine
-learning~\citep{AnthonyB99,DevroyeGL96}. Other applications include
-database management and graph algorithms. 
-In the former, it was used in the context of constraint databases to compute
-good approximations of aggregate operators~\citep{BenediktL02}.
-VC-dimension-related results were also recently applied in the field of database
-privacy by~\citet{BlumLR08} to show a bound on the number of queries needed for
-an attacker to learn a private concept in a database. \citet{Gross11} showed
-that content with unbounded VC-dimension can not be watermarked for privacy
-purposes. In the graph algorithms literature, VC-Dimension has been used to
-develop algorithms to efficiently detect network
-failures~\citep{Kleinberg03,KleinbergSS08}, balanced separators~\citep{FeigeM06},
-events in a sensor networks~\citep{GandhiSW10}, and compute the shortest
-paths~\citep{AbrahamDFGW11}.
 
