@@ -432,20 +432,20 @@ will use this space together with Theorem~\ref{thm:eapprox} to compute the bound
 sample sizes sufficient to compute approximate solutions for the various tasks
 of market basket analysis. 
 
-\begin{definition}
+\begin{definition}\label{def:vcrangespace}
   Let $\Ds$ be a dataset of transactions that are subsets of a ground set
-  $\Itm$.  We define $S=(X,R)$ to be a range space associated with $\Ds$ such
+  $\Itm$.  We define $S=(D,\range)$ to be a range space associated with $\Ds$ such
   that:
   \begin{enumerate}
-    \item $X=\Ds$ is the set of transactions in the dataset.
-    \item $R=\{T_\Ds(A) ~|~ A\subseteq \Itm, A\neq\emptyset\}$ is a family of
+    \item $D=\Ds$ is the set of transactions in the dataset.
+    \item $\range=\{T_\Ds(A) ~|~ A\subseteq \Itm, A\neq\emptyset\}$ is a family of
       sets of transactions such that for each non-empty itemset
       $A\subseteq\Itm$, the set $T_\Ds(A)=\{\tau\in\Ds ~|~ A\subseteq\tau\}$ of
       all transactions containing $A$ is an element of $R$.
   \end{enumerate}
 \end{definition}
 
-It is easy to see that in practice the collection $R$ of ranges contains all and only
+It is easy to see that in practice the collection $\range$ of ranges contains all and only
 the sets $T_\Ds(A)$ where $A$ is a \emph{closed itemset}, i.e., a set such that
 for each non-empty $B\subseteq A$ we have $T_\Ds(B)=T_\Ds(A)$ and for any
 $C\supset A$, $T_\Ds(C)\subsetneq T_\Ds(A)$. Closed itemsets are used to
@@ -456,7 +456,7 @@ transactions that can be shattered by the support sets of the itemsets, as
 expressed by the following theorem and the following corollary.
 
 \begin{theorem}
-  Let $\Ds$ be a dataset and let $S=(X,R)$ be the associated range
+  Let $\Ds$ be a dataset and let $S=(\Ds,\range)$ be the associated range
   space. Let $v\in\mathbb{N}$. Then $\VC(S)\ge v$ if and only if there exists a
   set $\mathcal{A}\subseteq\Ds$ of $v$ transactions from $\Ds$ such that for
   each subset $\mathcal{B}\subseteq\mathcal{A}$, there exists an itemset
@@ -473,13 +473,13 @@ expressed by the following theorem and the following corollary.
 \begin{proof} ``$\Leftarrow$''.
   From the definition of $I_\mathcal{B}$, we have that
   $T_\Ds(I_\mathcal{B})\cap\mathcal{A}=\mathcal{B}$. By definition of
-  $P_R(\mathcal{A})$ this means that $\mathcal{B}\in P_R(\mathcal{A})$, for any
-  subset $\mathcal{B}$ of $\mathcal{A}$. Then $P_R(\mathcal{A})=2^\mathcal{A}$,
+  $P_\range(\mathcal{A})$ this means that $\mathcal{B}\in P_\range(\mathcal{A})$, for any
+  subset $\mathcal{B}$ of $\mathcal{A}$. Then $P_\range(\mathcal{A})=2^\mathcal{A}$,
   which implies $\VC(S)\ge v$.
 
   ``$\Rightarrow$''. Let $\VC(S)\ge v$. Then by the definition of VC-Dimension there
   is a set $\mathcal{A}\subseteq\Ds$ of $v$ transactions from $\mathcal{D}$ such
-  that $P_R(A)=2^{\mathcal{A}}$. By definition of $P_R(\mathcal{A})$, this means
+  that $P_\range(A)=2^{\mathcal{A}}$. By definition of $P_\range(\mathcal{A})$, this means
   that for each subset $\mathcal{B}\subseteq\mathcal{A}$ there exists an itemset
   $I_\mathcal{B}$ such that $T_\Ds(I_\mathcal{B})\cap\mathcal{A}=\mathcal{B}$.
   We want to show that no transaction $\rho\in\mathcal{A}\setminus\mathcal{B}$
@@ -611,15 +611,15 @@ The d-index is an upper bound to the VC-dimension of a dataset.
   The transaction
   $\tau$ is a member of $2^{\ell-1}$ subsets of $\mathcal{K}$. We denote these subsets of $\mathcal{K}$ containing $\tau$ as
   $\mathcal{A}_i$, $1\le i\le 2^{\ell-1}$, labeling them in an
-  arbitrary order. Since $\mathcal{K}$ is shattered (i.e., $P_R(\mathcal{K})=2^\mathcal{K}$), we have
+  arbitrary order. Since $\mathcal{K}$ is shattered (i.e., $P_\range(\mathcal{K})=2^\mathcal{K}$), we have
   \[ 
-  \mathcal{A}_i\in P_R(\mathcal{K}), 1\le i\le 2^{\ell -1}.
+  \mathcal{A}_i\in P_\range(\mathcal{K}), 1\le i\le 2^{\ell -1}.
   \]
-  From the above and the definition of $P_R(\mathcal{K})$, it follows that for
+  From the above and the definition of $P_\range(\mathcal{K})$, it follows that for
   each set of transactions $\mathcal{A}_i$ there must be a
   non-empty itemset $B_i$ such that 
   \begin{equation}\label{eq:vcminevcdimupperb}
-  T_\Ds\left(B_i\right)\cap \mathcal{K}= \mathcal{A}_i \in P_R(\mathcal{K}).
+  T_\Ds\left(B_i\right)\cap \mathcal{K}= \mathcal{A}_i \in P_\range(\mathcal{K}).
   \end{equation}
   Since the $\mathcal{A}_i$ are all different from each other, this
   means that the $T_\Ds(B_i)$ are all different from each other, which
@@ -688,7 +688,7 @@ $d$, as formalized by the following Theorem.
   Since for all $\mathcal{A}\subseteq\mathcal{K}, T_\Ds(Y_\mathcal{A})\in R$ by
   construction, the above implies that
   \[
-  \mathcal{A}\in P_R(\mathcal{K}), \forall \mathcal{A}\subseteq\mathcal{K}
+  \mathcal{A}\in P_\range(\mathcal{K}), \forall \mathcal{A}\subseteq\mathcal{K}
   \]
   This means that $\mathcal{K}$ is shattered by $R$, hence $\VC(S)\ge d$. From
   this and Thm.~\ref{lem:vcdimupperb}, we can conclude that $\VC(S)=d$.
@@ -931,25 +931,25 @@ scan of the dataset, in a block-by-block fashion if the dataset is
 stored on disk. In some settings this may still be an expensive operation. We
 now present two ways to reduce the cost of this operation.
 
-\paragraph{Empirical VC-dimension} The \emph{empirical
-VC-dimension} of a range space $S=(X,R)$ on a subset $Y\subseteq X$ of the set
-of points is the VC-dimension of the range space $(Y,R')$, where $R'=\{Y\cap f
-~:~ f\in R\}$~\cite[Sect.~3]{BoucheronBL05}. If $Y$ is a random sample from $X$
-of size $\ell$, and the empirical VC-dimension of $S$ on $Y$ is bounded above by
-$v'$, then with probability at least $1-\delta$, $Y$ is an
-$\varepsilon$-approximation for $X$ for 
-\begin{equation}\label{eq:vcmineempvcdimeps}
-\varepsilon=2\sqrt{\frac{2v'\log(\ell+1)}{\ell}}+\sqrt{\frac{2\log\frac{2}{\delta}}{\ell}}\enspace.
-\end{equation}
-This means that it is possible to create a random sample $\Sam$ of the dataset
+\paragraph{Empirical VC-dimension} 
+%The \emph{empirical
+%VC-dimension} of a range space $S=(D,\Range)$ on a subset $Y\subseteq D$ of the set
+%of points is the VC-dimension of the range space $(Y,R')$, where $R'=\{Y\cap f
+%~:~ f\in R\}$~\cite[Sect.~3]{BoucheronBL05}. If $Y$ is a random sample from $X$
+%of size $\ell$, and the empirical VC-dimension of $S$ on $Y$ is bounded above by
+%$v'$, then with probability at least $1-\delta$, $Y$ is an
+%$\varepsilon$-approximation for $X$ for 
+%\begin{equation}\label{eq:vcmineempvcdimeps}
+%\varepsilon=2\sqrt{\frac{2v'\log(\ell+1)}{\ell}}+\sqrt{\frac{2\log\frac{2}{\delta}}{\ell}}\enspace.
+%\end{equation}
+It is possible to create a random sample $\Sam$ of the dataset
 $\Ds$ of the desired size $|\Sam|$, compute the d-index or the d-bound \emph{on
 the sample}, which is less expensive than computing it on the
 whole dataset and, for the d-bound, can be done while creating $\Sam$, and
-finally, after fixing $\delta$, use~\eqref{eq:vcmineempvcdimeps} to compute the
+finally, after fixing $\delta$, use Thm.~\ref{thm:eapproxempir} to compute the
 $\varepsilon$ for which $\Sam$ is an $\varepsilon$-approximation. Thus, 
 we have a faster method for estimating the VC-dimension that, 
-as we
-will show in the Sect.~\ref{sec:vcmineapprox}, can be used to extract an absolute
+as we will show in the Sect.~\ref{sec:vcmineapprox}, can be used to extract an absolute
 $\varepsilon$-close approximation to the collection of (top-K) FI's and AR's.
 
 \paragraph{Estimating the d-index from the transaction length distribution} When
@@ -1924,17 +1924,18 @@ We used theoretical tools from statistical learning theory to develop a very
 practical solution to an important problem in computer science. The practicality
 of our method is demonstrated in the extensive experimental evaluation which
 confirming our theoretical analysis and suggests that in practice it is possible
-to achieve even better results than what the theory guarantees. Moreover, we
-used this method as the basic building block of an algorithm for the
-MapReduce~\citep{DeanS04} distributed/parallel framework of computation.
-PARMA~\citep{RiondatoDFU12}, our MapReduce algorithm, computes an absolute
-$\varepsilon$-approximation of the collection of FI's or AR's by mining a number
-of small random samples of the dataset in parallel and then aggregating and
-filtering the collections of patterns that are frequent in the samples. It
-allows to achieve very high-quality approximations of the collection of interest
-with very high confidence while exploiting and adapting to the available
-computational resources and achieving a high level of parallelism, highlighted 
-by the quasi-linear speedup we measured while testing PARMA.
+to achieve even better results than what the theory guarantees. 
+%Moreover, we
+%used this method as the basic building block of an algorithm for the
+%MapReduce~\citep{DeanS04} distributed/parallel framework of computation.
+%PARMA~\citep{RiondatoDFU12}, our MapReduce algorithm, computes an absolute
+%$\varepsilon$-approximation of the collection of FI's or AR's by mining a number
+%of small random samples of the dataset in parallel and then aggregating and
+%filtering the collections of patterns that are frequent in the samples. It
+%allows to achieve very high-quality approximations of the collection of interest
+%with very high confidence while exploiting and adapting to the available
+%computational resources and achieving a high level of parallelism, highlighted 
+%by the quasi-linear speedup we measured while testing PARMA.
 
 Samples of size as computed by our methods can be used to mine approximations
 of other collection of itemsets, provided that one correctly define the
@@ -1958,912 +1959,4 @@ inequalities~\citep{BoucheronBL05}, can suggest smaller samples sizes.
 %suggesting the connection between itemsets and monotone monomials. We also thank
 %the anonymous reviewers for their many suggestions and comments for the
 %improvement of this work.
-
-% Bibliography
-%\bibliographystyle{ACM-Reference-Format-Journals}
-%\bibliography{fimine,vcmine,various,riondapubs,statsigfis}
-\iffalse
-\begin{thebibliography}{00}
-
-%%% ====================================================================
-%%% NOTE TO THE USER: you can override these defaults by providing
-%%% customized versions of any of these macros before the \bibliography
-%%% command.  Each of them MUST provide its own final punctuation,
-%%% except for \shownote{}, \showDOI{}, and \showURL{}.  The latter two
-%%% do not use final punctuation, in order to avoid confusing it with
-%%% the Web address.
-%%%
-%%% To suppress output of a particular field, define its macro to expand
-%%% to an empty string, or better, \unskip, like this:
-%%%
-%%% \newcommand{\showDOI}[1]{\unskip}   % LaTeX syntax
-%%%
-%%% \def \showDOI #1{\unskip}           % plain TeX syntax
-%%%
-%%% ====================================================================
-
-\ifx \showCODEN    \undefined \def \showCODEN     #1{\unskip}     \fi
-\ifx \showDOI      \undefined \def \showDOI       #1{{\tt DOI:}\penalty0{#1}\ }
-  \fi
-\ifx \showISBNx    \undefined \def \showISBNx     #1{\unskip}     \fi
-\ifx \showISBNxiii \undefined \def \showISBNxiii  #1{\unskip}     \fi
-\ifx \showISSN     \undefined \def \showISSN      #1{\unskip}     \fi
-\ifx \showLCCN     \undefined \def \showLCCN      #1{\unskip}     \fi
-\ifx \shownote     \undefined \def \shownote      #1{#1}          \fi
-\ifx \showarticletitle \undefined \def \showarticletitle #1{#1}   \fi
-\ifx \showURL      \undefined \def \showURL       #1{#1}          \fi
-
-\bibitem[\protect\citeauthoryear{Abraham, Delling, Fiat, Goldberg, and
-  Werneck}{Abraham et~al\mbox{.}}{2011}]%
-        {AbrahamDFGW11}
-{Ittai Abraham}, {Daniel Delling}, {Amos Fiat}, {Andrew~V. Goldberg}, {and}
-  {Renato~F. Werneck}. 2011.
-\newblock \showarticletitle{{VC}-Dimension and Shortest Path Algorithms}. In
-  {\em Automata, Languages and Programming} {\em (Lecture Notes in Computer
-  Science)}, Vol. 6755. Springer, Berlin / Heidelberg, 690--699.
-\newblock
-\showDOI{%
-\url{http://dx.doi.org/10.1007/978-3-642-22006-7_58}}
-
-
-\bibitem[\protect\citeauthoryear{Agrawal, Imieli\'{n}ski, and Swami}{Agrawal
-  et~al\mbox{.}}{1993}]%
-        {AgrawalIS93}
-{Rakesh Agrawal}, {Tomasz Imieli\'{n}ski}, {and} {Arun Swami}. 1993.
-\newblock \showarticletitle{Mining association rules between sets of items in
-  large databases}.
-\newblock {\em SIGMOD Rec.\/}  {22} (June 1993), 207--216.
-\newblock
-Issue 2.
-%\showISSN{0163-5808}
-\showDOI{%
-\url{http://dx.doi.org/10.1145/170036.170072}}
-
-
-\bibitem[\protect\citeauthoryear{Agrawal and Srikant}{Agrawal and
-  Srikant}{1994}]%
-        {AgrawalS94}
-{Rakesh Agrawal} {and} {Ramakrishnan Srikant}. 1994.
-\newblock \showarticletitle{Fast Algorithms for Mining Association Rules in
-  Large Databases}. In {\em Proceedings of the 20th International Conference on
-  Very Large Data Bases} {\em (VLDB '94)}. Morgan Kaufmann Publishers Inc., San
-  Francisco, CA, USA, 487--499.
-%\newblock
-%\showISBNx{1-55860-153-8}
-%\showURL{%
-%\url{http://portal.acm.org/citation.cfm?id=645920.672836}}
-
-
-\bibitem[\protect\citeauthoryear{Alon and Spencer}{Alon and Spencer}{2008}]%
-        {AlonS08}
-{Noga Alon} {and} {Joel~H. Spencer}. 2008.
-\newblock {\em The Probabilistic Method\/} (third ed.).
-\newblock John Wiley {\&} Sons, Hoboken, NJ, USA.
-%\newblock
-
-
-\bibitem[\protect\citeauthoryear{Anthony and Bartlett}{Anthony and
-  Bartlett}{1999}]%
-        {AnthonyB99}
-{Martin Anthony} {and} {Peter~L. Bartlett}. 1999.
-\newblock {\em Neural Network Learning -- Theoretical Foundations}.
-\newblock Cambridge University Press, New York, NY, USA.
-%\newblock
-%\showISBNx{978-0-521-57353-5}
-
-
-\bibitem[\protect\citeauthoryear{Benedikt and Libkin}{Benedikt and
-  Libkin}{2002}]%
-        {BenediktL02}
-{Michael Benedikt} {and} {Leonid Libkin}. 2002.
-\newblock \showarticletitle{Aggregate Operators in Constraint Query Languages}.
-\newblock {\it J. Comput. System Sci.} {64}, 3 (2002), 628--654.
-\newblock
-%\showISSN{0022-0000}
-\showDOI{%
-\url{http://dx.doi.org/DOI: 10.1006/jcss.2001.1810}}
-
-
-\bibitem[\protect\citeauthoryear{Blum, Ligett, and Roth}{Blum
-  et~al\mbox{.}}{2008}]%
-        {BlumLR08}
-{Avrim Blum}, {Katrina Ligett}, {and} {Aaron Roth}. 2008.
-\newblock \showarticletitle{A learning theory approach to non-interactive
-  database privacy}. In {\em Proceedings of the 40th annual ACM symposium on
-  Theory of computing} {\em (STOC '08)}. ACM, New York, NY, USA, 609--618.
-\newblock
-%\showISBNx{978-1-60558-047-0}
-\showDOI{%
-\url{http://dx.doi.org/10.1145/1374376.1374464}}
-
-
-\bibitem[\protect\citeauthoryear{Blumer, Ehrenfeucht, Haussler, and
-  Warmuth}{Blumer et~al\mbox{.}}{1989}]%
-        {BlumerEHW89}
-{Anselm Blumer}, {Andrzej Ehrenfeucht}, {David Haussler}, {and} {Manfred~K.
-  Warmuth}. 1989.
-\newblock \showarticletitle{Learnability and the {V}apnik-{C}hervonenkis
-  Dimension}.
-\newblock {\it J. ACM}  {36} (October 1989), 929--965.
-\newblock
-Issue 4.
-%\showISSN{0004-5411}
-\showDOI{%
-\url{http://dx.doi.org/10.1145/76359.76371}}
-
-
-\bibitem[\protect\citeauthoryear{Boucheron, Bousquet, and Lugosi}{Boucheron
-  et~al\mbox{.}}{2005}]%
-        {BoucheronBL05}
-{St\'{e}phane Boucheron}, {Olivier Bousquet}, {and} {G\'{a}bor Lugosi}. 2005.
-\newblock \showarticletitle{Theory of classification : A survey of some recent
-  advances}.
-\newblock {\em {ESAIM}: Probability and Statistics\/}  {9} (2005), 323--375.
-%\newblock
-%\showURL{%
-%\url{http://cat.inist.fr/?aModele=afficheN\&\#38};
-%\url{cpsidt=17367966}}
-
-
-\bibitem[\protect\citeauthoryear{Br\"{o}nnimann, Chen, Dash, Haas, and
-  Scheuermann}{Br\"{o}nnimann et~al\mbox{.}}{2003}]%
-        {BronnimanCDHS03}
-{Herv\'{e} Br\"{o}nnimann}, {Bin Chen}, {Manoranjan Dash}, {Peter Haas}, {and}
-  {Peter Scheuermann}. 2003.
-\newblock \showarticletitle{Efficient data reduction with EASE}. In {\em
-  Proceedings of the ninth ACM SIGKDD international conference on Knowledge
-  discovery and data mining} {\em (KDD '03)}. ACM, New York, NY, USA, 59--68.
-\newblock
-%\showISBNx{1-58113-737-0}
-\showDOI{%
-\url{http://dx.doi.org/10.1145/956750.956761}}
-
-
-\bibitem[\protect\citeauthoryear{Calders, Rigotti, and Boulicaut}{Calders
-  et~al\mbox{.}}{2006}]%
-        {CaldersRB06}
-{Toon Calders}, {Christophe Rigotti}, {and} {Jean-Fran{\c c}ois Boulicaut}.
-  2006.
-\newblock \showarticletitle{A Survey on Condensed Representations for Frequent
-  Sets}. In {\em Constraint-Based Mining and Inductive Databases} {\em (Lecture
-  Notes in Computer Science)}, Vol. 3848. Springer, Berlin / Heidelberg,
-  64--80.
-\newblock
-\showDOI{%
-\url{http://dx.doi.org/10.1007/11615576_4}}
-
-
-\bibitem[\protect\citeauthoryear{Ceglar and Roddick}{Ceglar and
-  Roddick}{2006}]%
-        {CeglarR06}
-{Aaron Ceglar} {and} {John~F. Roddick}. 2006.
-\newblock \showarticletitle{Association mining}.
-\newblock {\em ACM Comput. Surv.\/}  {38}, Article 5 (July 2006), 5 pages.
-\newblock
-Issue 2.
-%\showISSN{0360-0300}
-\showDOI{%
-\url{http://dx.doi.org/10.1145/1132956.1132958}}
-
-
-\bibitem[\protect\citeauthoryear{Chakaravarthy, Pandit, and
-  Sabharwal}{Chakaravarthy et~al\mbox{.}}{2009}]%
-        {ChakaravarthyPS09}
-{Venkatesan~T. Chakaravarthy}, {Vinayaka Pandit}, {and} {Yogish Sabharwal}.
-  2009.
-\newblock \showarticletitle{Analysis of sampling techniques for association
-  rule mining}. In {\em Proceedings of the 12th International Conference on
-  Database Theory} {\em (ICDT '09)}. ACM, New York, NY, USA, 276--283.
-%\newblock
-%\showISBNx{978-1-60558-423-2}
-\showDOI{%
-\url{http://dx.doi.org/10.1145/1514894.1514927}}
-
-
-\bibitem[\protect\citeauthoryear{Chandra and Bhaskar}{Chandra and
-  Bhaskar}{2011}]%
-        {ChandraB11}
-{B. Chandra} {and} {Shalini Bhaskar}. 2011.
-\newblock \showarticletitle{A new approach for generating efficient sample from
-  market basket data}.
-\newblock {\em Expert Systems with Applications\/} {38}, 3 (2011), 1321--1325.
-%\newblock
-%\showISSN{0957-4174}
-\showDOI{%
-\url{http://dx.doi.org/DOI: 10.1016/j.eswa.2010.07.008}}
-
-
-\bibitem[\protect\citeauthoryear{Chazelle}{Chazelle}{2000}]%
-        {Chazelle00}
-{Bernard Chazelle}. 2000.
-\newblock {\em The discrepancy method: randomness and complexity}.
-\newblock Cambridge University Press, New York, NY, USA.
-%\newblock
-%\showISBNx{0-521-00357-1}
-
-
-\bibitem[\protect\citeauthoryear{Chen, Haas, and Scheuermann}{Chen
-  et~al\mbox{.}}{2002}]%
-        {ChenHS02}
-{Bin Chen}, {Peter Haas}, {and} {Peter Scheuermann}. 2002.
-\newblock \showarticletitle{A new two-phase sampling based algorithm for
-  discovering association rules}. In {\em Proceedings of the eighth ACM SIGKDD
-  international conference on Knowledge discovery and data mining} {\em (KDD
-  '02)}. ACM, New York, NY, USA, 462--468.
-%\newblock
-%\showISBNx{1-58113-567-X}
-\showDOI{%
-\url{http://dx.doi.org/10.1145/775047.775114}}
-
-
-\bibitem[\protect\citeauthoryear{Chen, Horng, and Huang}{Chen
-  et~al\mbox{.}}{2011}]%
-        {ChenHH11}
-{Chyouhwa Chen}, {Shi-Jinn Horng}, {and} {Chin-Pin Huang}. 2011.
-\newblock \showarticletitle{Locality sensitive hashing for sampling-based
-  algorithms in association rule mining}.
-\newblock {\em Expert Systems with Applications\/} {38}, 10 (2011), 12388--12397.
-%\newblock
-%\showISSN{0957-4174}
-\showDOI{%
-\url{http://dx.doi.org/10.1016/j.eswa.2011.04.018}}
-
-
-\bibitem[\protect\citeauthoryear{Cheung and Fu}{Cheung and Fu}{2004}]%
-        {CheungF04}
-{Yin-Ling Cheung} {and} {Ada Wai-Chee Fu}. 2004.
-\newblock \showarticletitle{Mining Frequent Itemsets without Support Threshold:
-  With and without Item Constraints}.
-\newblock {\em IEEE Trans. on Knowl. and Data Eng.\/}  {16} (September 2004),
-  1052--1069.
-\newblock
-Issue 9.
-%\showISSN{1041-4347}
-\showDOI{%
-\url{http://dx.doi.org/10.1109/TKDE.2004.44}}
-%
-
-\bibitem[\protect\citeauthoryear{Chuang, Chen, and Yang}{Chuang
-  et~al\mbox{.}}{2005}]%
-        {ChuangCY05}
-{Kun-Ta Chuang}, {Ming-Syan Chen}, {and} {Wen-Chieh Yang}. 2005.
-\newblock \showarticletitle{Progressive Sampling for Association Rules Based on
-  Sampling Error Estimation}.
-\newblock In {\em Advances in Knowledge Discovery and Data Mining}, {Tu~Ho},
-  {David Cheung}, {and} {Huan Liu} (Eds.). Lecture Notes in Computer Science,
-  Vol. 3518. Springer, Berlin / Heidelberg, 37--44.
-\newblock
-\showDOI{%
-\url{http://dx.doi.org/10.1007/11430919_59}}
-
-
-\bibitem[\protect\citeauthoryear{Chuang, Huang, and Chen}{Chuang
-  et~al\mbox{.}}{2008}]%
-        {ChuangHC08}
-{Kun-Ta Chuang}, {Jiun-Long Huang}, {and} {Ming-Syan Chen}. 2008.
-\newblock \showarticletitle{Power-law relationship and self-similarity in the
-  itemset support distribution: analysis and applications}.
-\newblock {\em The VLDB Journal\/} {17}, 5 (Aug. 2008), 1121--1141.
-\newblock
-%\showISSN{1066-8888}
-\showDOI{%
-\url{http://dx.doi.org/10.1007/s00778-007-0054-1}}
-
-
-\bibitem[\protect\citeauthoryear{Dean and Ghemawat}{Dean and Ghemawat}{2004}]%
-        {DeanS04}
-{Jeffrey Dean} {and} {Sanjay Ghemawat}. 2004.
-\newblock \showarticletitle{MapReduce: Simplified Data Processing on Large
-  Clusters}. In {\em 6th Symposium on Operating System Design and Implementation
-               (OSDI 2004)}. USENIX Association, 137--150.
-\newblock
-
-
-\bibitem[\protect\citeauthoryear{Devroye, Gy{\"o}rfi, and Lugosi}{Devroye
-  et~al\mbox{.}}{1996}]%
-        {DevroyeGL96}
-{Luc Devroye}, {L{\'a}szl{\'o} Gy{\"o}rfi}, {and} {G\'{a}bor Lugosi}. 1996.
-\newblock {\em A Probabilistic Theory of Pattern Recognition}.
-\newblock Springer, Berlin / Heidelberg.
-%\newblock
-%\showISBNx{9780387946184}
-%\showLCCN{95044633}
-%\showURL{%
-%\url{http://books.google.com/books?id=uDgXoRkyWqQC}}
-
-
-\bibitem[\protect\citeauthoryear{Feige and Mahdian}{Feige and Mahdian}{2006}]%
-        {FeigeM06}
-{Uriel Feige} {and} {Mohammad Mahdian}. 2006.
-\newblock \showarticletitle{Finding small balanced separators}. In {\em
-  Proceedings of the thirty-eighth annual ACM symposium on Theory of computing}
-  {\em (STOC '06)}. ACM, New York, NY, USA, 375--384.
-%\newblock
-%\showISBNx{1-59593-134-1}
-\showDOI{%
-\url{http://dx.doi.org/10.1145/1132516.1132573}}
-
-\bibitem[\protect\citeauthoryear{Ford and Fulkerson}{Ford and Fulkerson}{1962}]%
-  	{FordF62}
-{Lester R. Ford} {and} {Delbert R. Fulkerson}. 1962.
-\newblock {\em Flows in Networks}.
-\newblock Princeton University Press, Princeton, NJ, USA.
-%\newblock
-
-\bibitem[\protect\citeauthoryear{Fu, Kwong, and Tang}{Fu et~al\mbox{.}}{2000}]%
-        {FuKT00}
-{Ada Wai-Chee Fu}, {Renfrew W.-w. Kwong}, {and} {Jian Tang}. 2000.
-\newblock \showarticletitle{Mining N-most Interesting Itemsets}. In {\em
-  Proceedings of the 12th International Symposium on Foundations of Intelligent
-  Systems} {\em (ISMIS '00)}. Springer, Berlin / Heidelberg, 59--67.
-%\newblock
-%\showISBNx{3-540-41094-5}
-%\showURL{%
-%\url{http://portal.acm.org/citation.cfm?id=646359.690099}}
-
-
-\bibitem[\protect\citeauthoryear{Gandhi, Suri, and Welzl}{Gandhi
-  et~al\mbox{.}}{2010}]%
-        {GandhiSW10}
-{Sorabh Gandhi}, {Subhash Suri}, {and} {Emo Welzl}. 2010.
-\newblock \showarticletitle{Catching elephants with mice: Sparse sampling for
-  monitoring sensor networks}.
-\newblock {\em ACM Trans. Sen. Netw.\/} {6}, 1, Article 1 (Jan. 2010), 27
-  pages.
-\newblock
-%\showISSN{1550-4859}
-\showDOI{%
-\url{http://dx.doi.org/10.1145/1653760.1653761}}
-
-
-\bibitem[\protect\citeauthoryear{Gross-Amblard}{Gross-Amblard}{2011}]%
-        {Gross11}
-{David Gross-Amblard}. 2011.
-\newblock \showarticletitle{Query-preserving watermarking of relational
-  databases and XML documents}.
-\newblock {\em ACM Trans. Database Syst.\/}  {36}, Article 3 (March 2011), 24
-  pages.
-\newblock
-Issue 1.
-%\showISSN{0362-5915}
-\showDOI{%
-\url{http://dx.doi.org/10.1145/1929934.1929937}}
-
-
-\bibitem[\protect\citeauthoryear{Han, Cheng, Xin, and Yan}{Han
-  et~al\mbox{.}}{2007}]%
-        {HanCXY07}
-{Jiawei Han}, {Hong Cheng}, {Dong Xin}, {and} {Xifeng Yan}. 2007.
-\newblock \showarticletitle{Frequent pattern mining: current status and future
-  directions}.
-\newblock {\em Data Mining and Knowledge Discovery\/}  {15} (2007), 55--86.
-\newblock
-Issue 1.
-%\showISSN{1384-5810}
-\showDOI{%
-\url{http://dx.doi.org/10.1007/s10618-006-0059-1}}
-
-
-\bibitem[\protect\citeauthoryear{Har-Peled and Sharir}{Har-Peled and
-  Sharir}{2011}]%
-        {HarPS11}
-{Sariel Har-Peled} {and} {Micha Sharir}. 2011.
-\newblock \showarticletitle{Relative $(p,\varepsilon)$-Approximations in
-  Geometry}.
-\newblock {\em Discrete \& Computational Geometry\/} {45}, 3 (2011), 462--496.
-%\newblock
-%\showISSN{0179-5376}
-\showDOI{%
-\url{http://dx.doi.org/10.1007/s00454-010-9248-1}}
-
-\bibitem[\protect\citeauthoryear{Hastie, Tibshirani, and Friedman}{Hastie
-  et~al\mbox{.}}{2009}]%
-  {HastieTF09}
-  {Trevor Hastie}, {Robert Tibshirani}, {and} {Jerome Friedman}. 2009.
-  \newblock {\em The Elements of Statistical Learning: Data Mining, Inference,
-  and Prediction}.
-  \newblock Springer-Verlag, New York, NY, USA.
-
-\bibitem[\protect\citeauthoryear{Haussler and Welzl}{Haussler and
-  Welzl}{1986}]%
-        {HausslerW86}
-{D Haussler} {and} {E Welzl}. 1986.
-\newblock \showarticletitle{Epsilon-nets and simplex range queries}. In {\em
-  Proceedings of the second annual symposium on Computational geometry} {\em
-  (SCG '86)}. ACM, New York, NY, USA, 61--71.
-%\newblock
-%\showISBNx{0-89791-194-6}
-\showDOI{%
-\url{http://dx.doi.org/10.1145/10515.10522}}
-
-\bibitem[\protect\citeauthoryear{He and Shapiro}{He and Shapiro}{2012}]%
-  {HeS12}
-  {R He} {and} {J Shapiro}. 2012.
-  \newblock \showarticletitle{Bayesian mixture models for frequent itemsets
-  discovery}. 
-  \newblock {\em CoRR\/} abs/1209.6001 (2012), 1--33.
-
-%\bibitem[\protect\citeauthoryear{Hirsch}{Hirsch}{2005}]%
-%        {Hirsch05}
-%{Jorge~E. Hirsch}. 2005.
-%%newblock \showarticletitle{An index to quantify an individual's scientific
-%  research output}.
-%\newblock {\em Proceedings of the National Academy of Sciences of the United
-%  States of America\/} {102}, 46 (2005), 16569--16572.
-%\newblock
-
-\bibitem[\protect\citeauthoryear{Hopcroft and Karp}{Hopcroft and Karp}{1973}]%
-  	{HopcroftK73}
-{John E. Hopcroft} {and} {Richard M. Karp}. 1973.
-\newblock \showarticletitle{An $n^{5/2}$ algorithm for maximum matchings in
-bipartite graphs}.
-\newblock  {\em SIAM Journal on Computing\/}  {2} (1973),
-  225--231.
-\newblock
-Issue 4.
-
-\bibitem[\protect\citeauthoryear{Hu and Yu}{Hu and Yu}{2006}]%
-        {HuY06}
-{Xuegang Hu} {and} {Haitao Yu}. 2006.
-\newblock \showarticletitle{The Research of Sampling for Mining Frequent
-  Itemsets}.
-\newblock In {\em Rough Sets and Knowledge Technology}, {Guo-Ying Wang}, {James
-  Peters}, {Andrzej Skowron}, {and} {Yiyu Yao} (Eds.). Lecture Notes in
-  Computer Science, Vol. 4062. Springer, Berlin / Heidelberg, 496--501.
-\newblock
-\showDOI{%
-\url{http://dx.doi.org/10.1007/11795131_72}}
-
-
-\bibitem[\protect\citeauthoryear{Hwang and Kim}{Hwang and Kim}{2006}]%
-        {HwangK06}
-{Wontae Hwang} {and} {Dongseung Kim}. 2006.
-\newblock \showarticletitle{Improved Association Rule Mining by Modified
-  Trimming}. In {\em Proceedings of the 6th IEEE International Conference on
-  Computer and Information Technology} {\em (CIT '06)}. IEEE Computer Society,
-  24.
-\newblock
-\showDOI{%
-\url{http://dx.doi.org/10.1109/CIT.2006.101}}
-
-
-\bibitem[\protect\citeauthoryear{Jia and Lu}{Jia and Lu}{2005}]%
-        {JiaL05}
-{Caiyan Jia} {and} {Ruqian Lu}. 2005.
-\newblock \showarticletitle{Sampling Ensembles for Frequent Patterns}.
-\newblock In {\em Fuzzy Systems and Knowledge Discovery}, {Lipo Wang} {and}
-  {Yaochu Jin} (Eds.). Lecture Notes in Computer Science, Vol. 3613. Springer,
-  Berlin / Heidelberg, 1197--1206.
-\newblock
-\showDOI{%
-\url{http://dx.doi.org/10.1007/11539506_150}}
-
-
-\bibitem[\protect\citeauthoryear{Jia and Gao}{Jia and Gao}{2005}]%
-        {JiaG05}
-{Cai-Yan Jia} {and} {Xie-Ping Gao}. 2005.
-\newblock \showarticletitle{Multi-Scaling Sampling: An Adaptive Sampling Method
-  for Discovering Approximate Association Rules}.
-\newblock {\em Journal of Computer Science and Technology\/}  {20} (2005),
-  309--318.
-\newblock
-Issue 3.
-%\showISSN{1000-9000}
-\showDOI{%
-\url{http://dx.doi.org/10.1007/s11390-005-0309-5}}
-
-
-\bibitem[\protect\citeauthoryear{John and Langley}{John and Langley}{1996}]%
-        {JohnL96}
-{George~H. John} {and} {Pat Langley}. 1996.
-\newblock \showarticletitle{Static Versus Dynamic Sampling for Data Mining}. In
-  {\em Proceedings of the Second International Conference on Knowledge
-  Discovery and Data Mining} {\em (KDD '96)}. The AAAI Press, Menlo Park, CA,
-  USA, 367--370.
-%\newblock
-
-
-\bibitem[\protect\citeauthoryear{Kleinberg, Sandler, and Slivkins}{Kleinberg
-  et~al\mbox{.}}{2008}]%
-        {KleinbergSS08}
-{J. Kleinberg}, {M. Sandler}, {and} {A. Slivkins}. 2008.
-\newblock \showarticletitle{Network Failure Detection and Graph Connectivity}.
-\newblock {\it SIAM J. Comput.} {38}, 4 (2008), 1330--1346.
-\newblock
-\showDOI{%
-\url{http://dx.doi.org/10.1137/070697793}}
-
-
-\bibitem[\protect\citeauthoryear{Kleinberg}{Kleinberg}{2003}]%
-        {Kleinberg03}
-{Jon~M. Kleinberg}. 2003.
-\newblock \showarticletitle{Detecting a Network Failure}.
-\newblock {\em Internet Mathematics\/} {1}, 1 (2003), 37--55.
-%\newblock
-
-\bibitem[\protect\citeauthoryear{Lehmann and Casella}{Lehmann and
-  Casella}{1998}]%
-  {LehmannC98}
-  {Erich~L. Lehmann} {and} {George Casella}. 1998.
-  \newblock {\em Theory of Point Estimation}.
-  \newblock Springer-Verlag, New York, NY, USA.
-
-\bibitem[\protect\citeauthoryear{Li and Gopalan}{Li and Gopalan}{2005}]%
-        {LiG04}
-{Yanrong Li} {and} {Raj Gopalan}. 2005.
-\newblock \showarticletitle{Effective Sampling for Mining Association Rules}.
-\newblock In {\em AI 2004: Advances in Artificial Intelligence}, {Geoffrey
-  Webb} {and} {Xinghuo Yu} (Eds.). Lecture Notes in Computer Science, Vol.
-  3339. Springer, Berlin / Heidelberg, 73--75.
-%\newblock
-\showDOI{%
-\url{http://dx.doi.org/10.1007/978-3-540-30549-1_35}}
-
-
-\bibitem[\protect\citeauthoryear{Li, Long, and Srinivasan}{Li
-  et~al\mbox{.}}{2001}]%
-        {LiLS01}
-{Yi Li}, {Philip~M. Long}, {and} {Aravind Srinivasan}. 2001.
-\newblock \showarticletitle{Improved Bounds on the Sample Complexity of
-  Learning}.
-\newblock {\it J. Comput. System Sci.} {62}, 3 (2001), 516--527.
-\newblock
-%\showISSN{0022-0000}
-\showDOI{%
-\url{http://dx.doi.org/10.1006/jcss.2000.1741}}
-
-
-\bibitem[\protect\citeauthoryear{Linial, Mansour, and Rivest}{Linial
-  et~al\mbox{.}}{1991}]%
-        {LinialMR91}
-{Nathan Linial}, {Yishay Mansour}, {and} {Ronald~L. Rivest}. 1991.
-\newblock \showarticletitle{Results on learnability and the
-  {V}apnik-{C}hervonenkis dimension}.
-\newblock {\em Information and Computation\/} {90}, 1 (1991), 33--49.
-\newblock
-%\showISSN{0890-5401}
-\showDOI{%
-\url{http://dx.doi.org/10.1016/0890-5401(91)90058-A}}
-%
-
-\bibitem[\protect\citeauthoryear{L\"{o}ffler and Phillips}{L\"{o}ffler and
-  Phillips}{2009}]%
-        {LofflerP09}
-{Maarten L\"{o}ffler} {and} {Jeff~M. Phillips}. 2009.
-\newblock \showarticletitle{Shape Fitting on Point Sets with Probability
-  Distributions}.
-\newblock In {\em Algorithms - ESA 2009}, {Amos Fiat} {and} {Peter Sanders}
-  (Eds.). Lecture Notes in Computer Science, Vol. 5757. Springer, Berlin /
-  Heidelberg, 313--324.
-\newblock
-\showDOI{%
-\url{http://dx.doi.org/10.1007/978-3-642-04128-0_29}}
-
-
-\bibitem[\protect\citeauthoryear{McDonald, Shalizi, and Schervish}{McDonald et
-  al\mbox{.}}{2011}]%
-  {McDonaldSS11}
-  {Daniel~J. McDonald}, {Cosma Rohilla Shalizi}, {and} {Mark Schervish}. 2011.
-  \newblock \showarticletitle{Estimated VC Dimension for Risk Bounds}.
-  \newblock {\em arXiv preprint}, arXiv:1111.3404 (2011).
-
-\bibitem[\protect\citeauthoryear{Mahafzah, Al-Badarneh, and Zakaria}{Mahafzah
-  et~al\mbox{.}}{2009}]%
-        {MahafzahABAZ09}
-{Basel~A. Mahafzah}, {Amer~F. Al-Badarneh}, {and} {Mohammed~Z. Zakaria}. 2009.
-\newblock \showarticletitle{A new sampling technique for association rule
-  mining}.
-\newblock {\em Journal of Information Science\/} {35}, 3 (2009), 358--376.
-\newblock
-\showDOI{%
-\url{http://dx.doi.org/10.1177/0165551508100382}}
-
-
-\bibitem[\protect\citeauthoryear{Mampaey, Tatti, and Vreeken}{Mampaey
-  et~al\mbox{.}}{2011}]%
-        {MampaeyTV11}
-{Michael Mampaey}, {Nikolaj Tatti}, {and} {Jilles Vreeken}. 2011.
-\newblock \showarticletitle{Tell me what I need to know: succinctly summarizing
-  data with itemsets}. In {\em Proceedings of the 17th ACM SIGKDD international
-  conference on Knowledge discovery and data mining} {\em (KDD '11)}. ACM, New
-  York, NY, USA, 573--581.
-\newblock
-%\showISBNx{978-1-4503-0813-7}
-\showDOI{%
-\url{http://dx.doi.org/10.1145/2020408.2020499}}
-
-
-\bibitem[\protect\citeauthoryear{Mannila, Toivonen, and Verkamo}{Mannila
-  et~al\mbox{.}}{1994}]%
-        {MannilaTV94}
-{Heikki Mannila}, {Hannu Toivonen}, {and} {Inkeri Verkamo}. 1994.
-\newblock \showarticletitle{Efficient Algorithms for Discovering Association
-  Rules}. In {\em KDD Workshop}. The AAAI Press, Menlo Park, CA, USA, 181--192.
-%\newblock
-
-
-\bibitem[\protect\citeauthoryear{Matou\v{s}ek}{Matou\v{s}ek}{2002}]%
-        {Matousek02}
-{Ji\v{r}\'{i} Matou\v{s}ek}. 2002.
-\newblock {\em Lectures on Discrete Geometry}.
-\newblock Springer-Verlag, Secaucus, NJ, USA.
-%\newblock
-%\showISBNx{0387953744}
-
-
-\bibitem[\protect\citeauthoryear{Mitzenmacher and Upfal}{Mitzenmacher and
-  Upfal}{2005}]%
-        {MitzenmacherU05}
-{Michael Mitzenmacher} {and} {Eli Upfal}. 2005.
-\newblock {\em Probability and Computing: Randomized Algorithms and
-  Probabilistic Analysis}.
-\newblock Cambridge University Press.
-%\newblock
-
-
-\bibitem[\protect\citeauthoryear{Natschl\"{a}ger and Schmitt}{Natschl\"{a}ger
-  and Schmitt}{1996}]%
-        {NatschlagerS96}
-{Thomas Natschl\"{a}ger} {and} {Michael Schmitt}. 1996.
-\newblock \showarticletitle{Exact {VC}-dimension of Boolean monomials}.
-\newblock {\it Inform. Process. Lett.} {59}, 1 (1996), 19--20.
-\newblock
-%\showISSN{0020-0190}
-\showDOI{%
-\url{http://dx.doi.org/10.1016/0020-0190(96)00084-1}}
-
-
-\bibitem[\protect\citeauthoryear{Newman and Rabinovich}{Newman and
-  Rabinovich}{2012}]%
-        {NewmanR12}
-{Ilan Newman} {and} {Yuri Rabinovich}. 2012.
-\newblock \showarticletitle{On Multiplicative {$\lambda$}-Approximations and
-  Some Geometric Applications}. In {\em Proceedings of the Twenty-Third Annual
-  ACM-SIAM Symposium on Discrete Algorithms} {\em (SODA '12)}. SIAM, 51--67.
-\newblock
-%\showURL{%
-%\url{http://dl.acm.org/citation.cfm?id=2095116.2095121}}
-
-
-\bibitem[\protect\citeauthoryear{Parthasarathy}{Parthasarathy}{2002}]%
-        {Parthasarathy02}
-{Srinivasan Parthasarathy}. 2002.
-\newblock \showarticletitle{Efficient progressive sampling for association
-  rules}. In {\em Proceedings of the 2002 IEEE International Conference on Data
-  Mining} {\em (ICDM '02)}. IEEE Computer Society, 354--361.
-\newblock
-\showDOI{%
-\url{http://dx.doi.org/10.1109/ICDM.2002.1183923}}
-
-
-\bibitem[\protect\citeauthoryear{Pietracaprina, Riondato, Upfal, and
-  Vandin}{Pietracaprina et~al\mbox{.}}{2010}]%
-        {PietracaprinaRUV10}
-{Andrea Pietracaprina}, {Matteo Riondato}, {Eli Upfal}, {and} {Fabio Vandin}.
-  2010.
-\newblock \showarticletitle{Mining top-{\it K} frequent itemsets through
-  progressive sampling}.
-\newblock {\em Data Mining and Knowledge Discovery\/} {21}, 2 (2010), 310--326.
-\newblock
-
-
-\bibitem[\protect\citeauthoryear{Pietracaprina and Vandin}{Pietracaprina and
-  Vandin}{2007}]%
-        {PietracaprinaV07}
-{Andrea Pietracaprina} {and} {Fabio Vandin}. 2007.
-\newblock \showarticletitle{Efficient Incremental Mining of Top-{K} Frequent
-  Closed Itemsets}.
-\newblock In {\em Discovery Science}, {Vincent Corruble}, {Masayuki Takeda},
-  {and} {Einoshin Suzuki} (Eds.). Lecture Notes in Computer Science, Vol. 4755.
-  Springer, Berlin / Heidelberg, 275--280.
-\newblock
-\showDOI{%
-\url{http://dx.doi.org/10.1007/978-3-540-75488-6_29}}
-
-
-\bibitem[\protect\citeauthoryear{Riondato, Akdere, \c{C}etintemel, Zdonik, and
-  Upfal}{Riondato et~al\mbox{.}}{2011}]%
-        {RiondatoACZU11}
-{Matteo Riondato}, {Mert Akdere}, {U\u{g}ur \c{C}etintemel}, {Stanley~B.
-  Zdonik}, {and} {Eli Upfal}. 2011.
-\newblock \showarticletitle{The {VC}-Dimension of {SQL} Queries and Selectivity
-  Estimation through Sampling}. In {\em Machine Learning and Knowledge
-  Discovery in Databases - European Conference, ECML PKDD 2011, Athens, Greece,
-  September 5-9, 2011. Proceedings, Part II} {\em (Lecture Notes in Computer
-  Science)}, {Dimitrios Gunopulos}, {Thomas Hofmann}, {Donato Malerba}, {and}
-  {Michalis Vazirgiannis} (Eds.), Vol. 6912. Springer, Berlin / Heidelberg,
-  661--676.
-%\newblock
-%\showISBNx{978-3-642-23782-9}
-
-
-\bibitem[\protect\citeauthoryear{Riondato, DeBrabant, Fonseca, and
-  Upfal}{Riondato et~al\mbox{.}}{2012}]%
-        {RiondatoDFU12}
-{Matteo Riondato}, {Justin~A. DeBrabant}, {Rodrigo Fonseca}, {and} {Eli Upfal}.
-  2012.
-\newblock \showarticletitle{{PARMA}: A Parallel Randomized Algorithm for
-  Association Rules Mining in {MapReduce}}. In {\em CIKM '12: Proceedings of
-  the 21st ACM international conference on Information and knowledge
-  management}, {Xue-wen Chen}, {Guy Lebanon}, {Haixun Wang}, {and} {Mohammed~J.
-  Zaki} (Eds.). ACM, New York, NY, USA, 85--94.
-%\newblock
-%\showISBNx{978-1-4503-1156-4}
-
-
-\bibitem[\protect\citeauthoryear{Riondato and Upfal}{Riondato and
-  Upfal}{2012}]%
-        {RiondatoU12}
-{Matteo Riondato} {and} {Eli Upfal}. 2012.
-\newblock \showarticletitle{Efficient Discovery of Association Rules and
-  Frequent Itemsets through Sampling with Tight Performance Guarantees}. In
-  {\em Machine Learning and Knowledge Discovery in Databases - European
-  Conference, ECML PKDD 2012, Bristol, UK, September 24-28, 2012. Proceedings,
-  Part I} {\em (Lecture Notes in Computer Science)}, {Peter~A. Flach}, {Tijl
-  De~Bie}, {and} {Nello Cristianini} (Eds.), Vol. 7523. Springer, Berlin /
-  Heidelberg, 25--41.
-%\newblock
-%\showISBNx{978-3-642-33459-7}
-
-
-\bibitem[\protect\citeauthoryear{Scheffer and Wrobel}{Scheffer and
-  Wrobel}{2002}]%
-        {SchefferW02}
-{Tobias Scheffer} {and} {Stefan Wrobel}. 2002.
-\newblock \showarticletitle{Finding the most interesting patterns in a database
-  quickly by using sequential sampling}.
-\newblock {\em J. Mach. Learn. Res.\/}  {3} (December 2002), 833--862.
-%\newblock
-%\showISSN{1532-4435}
-%\showURL{%
-%\url{http://portal.acm.org/citation.cfm?id=944919.944956}}
-
-\bibitem[\protect\citeauthoryear{Shao, Cherkassky and Li}{Shao et
-  al\mbox{.}}{2000}]%
-  {ShaoCL00}
-  {Xuhui Shao}, {Vladimir Cherkassky}, {and} {William Li}. 1994.
-  \newblock \showarticletitle{Measuring the VC-dimension using optimized
-  experimental design}.
-  \newblock {\em Neural Computation\/} {12}, 8 (2000), 1969--1986.
- 
-\bibitem[\protect\citeauthoryear{Tan, Kumar, and Srivastava}{Tan et
-  al\mbox{.}}{2004}]%
-  {TanKS04}
-  {Pang-Ning Tan}, {Vipin Kumar}, {and} {Jaideep Srivastava}. 2004.
-  \newblock \showarticletitle{Selecting the right objective measure for
-  association analysis}.
-  \newblock {\em Information Systems\/} {29}, (2004), 293--313.
-
-\bibitem[\protect\citeauthoryear{Toivonen}{Toivonen}{1996}]%
-        {Toivonen96}
-{Hannu Toivonen}. 1996.
-\newblock \showarticletitle{Sampling Large Databases for Association Rules}. In
-  {\em Proceedings of the 22th International Conference on Very Large Data
-  Bases} {\em (VLDB '96)}. Morgan Kaufmann Publishers Inc., San Francisco, CA,
-  USA, 134--145.
-%\newblock
-%\showISBNx{1-55860-382-4}
-%\showURL{%
-%\url{http://dl.acm.org/citation.cfm?id=645922.673325}}
-
-
-\bibitem[\protect\citeauthoryear{Vapnik}{Vapnik}{1999}]%
-        {Vapnik99}
-{Vladimir~N. Vapnik}. 1999.
-\newblock {\em The Nature of Statistical Learning Theory}.
-\newblock Springer-Verlag, New York, NY, USA.
-%\newblock
-%\showISBNx{9780387987804}
-%\showLCCN{99039803}
-
-
-\bibitem[\protect\citeauthoryear{Vapnik and Chervonenkis}{Vapnik and
-  Chervonenkis}{1971}]%
-        {VapnikC71}
-{Vladimir~N. Vapnik} {and} {Alexey~J. Chervonenkis}. 1971.
-\newblock \showarticletitle{On the Uniform Convergence of Relative Frequencies
-  of Events to Their Probabilities}.
-\newblock {\em Theory of Probability and its Applications\/} {16}, 2 (1971),
-  264--280.
-\newblock
-\showDOI{%
-\url{http://dx.doi.org/10.1137/1116025}}
-
-\bibitem[\protect\citeauthoryear{Vapnik and Levin and Le Cun}{Vapnik et
-  al\mbox{.}}{1994}]%
-  	{VapnikLLC94}
-    {Vladimir~N. Vapnik}, {Esther Levin}, {and} {Yann Le Cun}. 1994.
-    \newblock \showarticletitle{Measuring the VC-dimension of a learning
-    machine}.
-    \newblock {\em Neural Computation\/} {6}, 5 (1994), 851--876.
-
-\bibitem[\protect\citeauthoryear{Vasudevan and Vojonovi\'{c}}{Vasudevan and
-  Vojonovi\'{c}}{2009}]%
-        {VasudevanV09}
-{Dinkar Vasudevan} {and} {Milan Vojonovi\'{c}}. 2009.
-\newblock {\em Ranking through Random Sampling}.
-\newblock MSR-TR-2009-8~8. Microsoft Research.
-%\newblock
-
-
-\bibitem[\protect\citeauthoryear{Vitter}{Vitter}{1987}]%
-        {Vitter87}
-{Jeffrey~Scott Vitter}. 1987.
-\newblock \showarticletitle{An efficient algorithm for sequential random
-  sampling}.
-\newblock {\em ACM Trans. Math. Softw.\/} {13}, 1 (March 1987), 58--67.
-\newblock
-%\showISSN{0098-3500}
-\showDOI{%
-\url{http://dx.doi.org/10.1145/23002.23003}}
-
-
-\bibitem[\protect\citeauthoryear{Wang, Han, Lu, and Tzvetkov}{Wang
-  et~al\mbox{.}}{2005b}]%
-        {WangHLT05}
-{Jianyong Wang}, {Jiawei Han}, {Ying Lu}, {and} {Petre Tzvetkov}. 2005b.
-\newblock \showarticletitle{{TFP}: An Efficient Algorithm for Mining Top-K
-  Frequent Closed Itemsets}.
-\newblock {\em IEEE Trans. on Knowl. and Data Eng.\/}  {17} (May 2005),
-  652--664.
-\newblock
-Issue 5.
-%\showISSN{1041-4347}
-\showDOI{%
-\url{http://dx.doi.org/10.1109/TKDE.2005.81}}
-
-
-\bibitem[\protect\citeauthoryear{Wang, Dash, and Chia}{Wang
-  et~al\mbox{.}}{2005a}]%
-        {WangDC05}
-{Surong Wang}, {Manoranjan Dash}, {and} {Liang-Tien Chia}. 2005a.
-\newblock \showarticletitle{Efficient Sampling: Application to Image Data}. In
-  {\em Proceedings of the 9th Pacific-Asia Conference on Advances in Knowledge
-  Discovery and Data Mining, PAKDD 2005} {\em (Lecture Notes in Computer
-  Science)}, {Tu~Bao Ho}, {David Wai-Lok Cheung}, {and} {Huan Liu} (Eds.), Vol.
-  3518. Springer, Berlin/ Heidelberg, 452--463.
-%\newblock
-
-
-\bibitem[\protect\citeauthoryear{Zaki, Parthasarathy, Li, and Ogihara}{Zaki
-  et~al\mbox{.}}{1997}]%
-        {ZakiPLO97}
-{Mohammed J. Zaki}, {S Parthasarathy}, {Wei Li}, {and} {Mitsunori Ogihara}. 1997.
-\newblock \showarticletitle{Evaluation of sampling for data mining of
-  association rules}. In {\em Proceedings of the Seventh International Workshop
-  on Research Issues in Data Engineering} {\em (RIDE '97)}. IEEE Computer
-  Society, 42 --50.
-\newblock
-\showDOI{%
-\url{http://dx.doi.org/10.1109/RIDE.1997.583696}}
-
-
-\bibitem[\protect\citeauthoryear{Zhang, Zhang, and Webb}{Zhang
-  et~al\mbox{.}}{2003}]%
-        {ZhangZW03}
-{Chengqi Zhang}, {Shichao Zhang}, {and} {Geoffrey~I. Webb}. 2003.
-\newblock \showarticletitle{Identifying Approximate Itemsets of Interest in
-  Large Databases}.
-\newblock {\em Applied Intelligence\/}  {18} (2003), 91--104.
-\newblock
-Issue 1.
-%\showISSN{0924-669X}
-\showDOI{%
-\url{http://dx.doi.org/10.1023/A:1020995206763}}
-
-
-\bibitem[\protect\citeauthoryear{Zhao, Zhang, and Zhang}{Zhao
-  et~al\mbox{.}}{2006}]%
-        {ZhaoZZ06}
-{Yanchang Zhao}, {Chengqi Zhang}, {and} {Shichao Zhang}. 2006.
-\newblock \showarticletitle{Efficient Frequent Itemsets Mining by Sampling}. In
-  {\em Proceeding of the 2006 conference on Advances in Intelligent IT: Active
-  Media Technology 2006}. IOS Press, Amsterdam, The Netherlands, 112--117.
-%\newblock
-%\showISBNx{1-58603-615-7}
-%\showURL{%
-%\url{http://portal.acm.org/citation.cfm?id=1566561.1566582}}
-
-\end{thebibliography}
-\fi
 

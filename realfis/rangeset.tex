@@ -6,10 +6,15 @@ to develop our algorithm in later sections.
 
 \begin{definition}\label{def:rangeset}
 Given a collection $\mathcal{C}$ of itemsets built on a ground set $\Itm$, the
-\emph{range space $\range(\mathcal{C})$ associated to $\mathcal{C}$ is a range
-set on $2^\Itm$} containing the support sets of the itemsets in $\mathcal{C}$:
+\emph{range space $(2^\Itm,\range(\mathcal{C}))$ associated to $\mathcal{C}$} is a range
+space on $2^\Itm$ such that $\range(\mathcal{C})$ contains the support sets of
+the itemsets in $\mathcal{C}$:
 \[\range(\mathcal{C})=\{T(A) ~:~ A\in\mathcal{C}\}\enspace.\]
 \end{definition}
+This is a generalization of the range space from Def.~\ref{def:vcrangespace}.
+Given a dataset $\Ds$, Thm.~\ref{thm:} gives a bound to
+$\EVC(\Ds,\range(\mathcal{C}))$,  the \emph{empirical} VC-dimension of
+$\range(\mathcal{C})$ on $\Ds$ in the following sense.
 
 %The following Lemma presents an upper bound to the empirical VC-dimension of
 %$\range(\mathcal{C})$ on a dataset $\Ds$.
@@ -31,42 +36,41 @@ set on $2^\Itm$} containing the support sets of the itemsets in $\mathcal{C}$:
   Then $\EVC(\range(\mathcal{C}),\Ds)\le d$.
 \end{theorem}
 
-\ifarxiv
-\begin{proof}
-  The antichain requirement guarantees that the set of transactions considered in
-  the computation of $d$ could indeed theoretically be shattered. Assume that a
-  subset $\mathcal{F}$ of $\Ds$ contains two transactions $\tau'$ and $\tau''$
-  such that $\tau'\subseteq\tau''$. Any itemset from $\mathcal{C}$
-  appearing in $\tau'$ would also appear in $\tau''$, so there would not be any
-  itemset $A\in\mathcal{C}$ such that $\tau''\in T(A)\cap F$ but
-  $\tau'\not\in T(A)\cap \mathcal{F}$, which would imply that $\mathcal{F}$ can
-  not be shattered. Hence sets that are not antichains should not be
-  considered. This has the net effect of potentially resulting in a lower $d$,
-  i.e., in a stricter upper bound to $\EVC(\range(\mathcal{C}),\Ds)$.
-
-  Let now $\ell>d$ and consider a set $\mathcal{L}$ of $\ell$ transactions from
-  $\Ds$ that is an antichain. Assume that $\mathcal{L}$ is shattered by
-  $\range(\mathcal{C})$. Let $\tau$ be a transaction in $\mathcal{L}$.
-  The transactions $\tau$ belongs to $2^{\ell-1}$ subsets of $L$. Let
-  $\mathcal{K}\subseteq \mathcal{L}$ be one of these subsets. Since
-  $\mathcal{L}$ is shattered, there exists an itemset $A\in\mathcal{C}$ such
-  that $T(A)\cap \mathcal{L}=\mathcal{K}$. From this and the fact
-  that $t\in \mathcal{K}$, we have that $\tau\in T(A)$ or equivalently that
-  $A\subseteq\tau$. Given that all the subsets $\mathcal{K}\subseteq\mathcal{L}$
-  containing $\tau$ are different, then also all the $T(A)$'s such that
-  $T(A)\cap \mathcal{L}=\mathcal{K}$ should be
-  different, which in turn implies that all the itemsets
-  $A$ should be different and that they should all appear in $\tau$. There are
-  $2^{\ell-1}$ subsets $\mathcal{K}$ of $\mathcal{L}$ containing $\tau$,
-  therefore $\tau$ must contain at least $2^{\ell-1}$ itemsets from
-  $\mathcal{C}$, and this holds for all $\ell$ transactions in $\mathcal{L}$. This is a
-  contradiction because $\ell>d$ and $d$ is the
-  maximum integer for which there are at least $d$ transactions containing at
-  least $2^{d-1}$ itemsets from $\mathcal{C}$. Hence $\mathcal{L}$ cannot be shattered and
-  the thesis follows.
-  \qed
-\end{proof}
-\fi
+%\ifarxiv
+%\begin{proof}
+%  The antichain requirement guarantees that the set of transactions considered in
+%  the computation of $d$ could indeed theoretically be shattered. Assume that a
+%  subset $\mathcal{F}$ of $\Ds$ contains two transactions $\tau'$ and $\tau''$
+%  such that $\tau'\subseteq\tau''$. Any itemset from $\mathcal{C}$
+%  appearing in $\tau'$ would also appear in $\tau''$, so there would not be any
+%  itemset $A\in\mathcal{C}$ such that $\tau''\in T(A)\cap F$ but
+%  $\tau'\not\in T(A)\cap \mathcal{F}$, which would imply that $\mathcal{F}$ can
+%  not be shattered. Hence sets that are not antichains should not be
+%  considered. This has the net effect of potentially resulting in a lower $d$,
+%  i.e., in a stricter upper bound to $\EVC(\range(\mathcal{C}),\Ds)$.
+%
+%  Let now $\ell>d$ and consider a set $\mathcal{L}$ of $\ell$ transactions from
+%  $\Ds$ that is an antichain. Assume that $\mathcal{L}$ is shattered by
+%  $\range(\mathcal{C})$. Let $\tau$ be a transaction in $\mathcal{L}$.
+%  The transactions $\tau$ belongs to $2^{\ell-1}$ subsets of $L$. Let
+%  $\mathcal{K}\subseteq \mathcal{L}$ be one of these subsets. Since
+%  $\mathcal{L}$ is shattered, there exists an itemset $A\in\mathcal{C}$ such
+%  that $T(A)\cap \mathcal{L}=\mathcal{K}$. From this and the fact
+%  that $t\in \mathcal{K}$, we have that $\tau\in T(A)$ or equivalently that
+%  $A\subseteq\tau$. Given that all the subsets $\mathcal{K}\subseteq\mathcal{L}$
+%  containing $\tau$ are different, then also all the $T(A)$'s such that
+%  $T(A)\cap \mathcal{L}=\mathcal{K}$ should be
+%  different, which in turn implies that all the itemsets
+%  $A$ should be different and that they should all appear in $\tau$. There are
+%  $2^{\ell-1}$ subsets $\mathcal{K}$ of $\mathcal{L}$ containing $\tau$,
+%  therefore $\tau$ must contain at least $2^{\ell-1}$ itemsets from
+%  $\mathcal{C}$, and this holds for all $\ell$ transactions in $\mathcal{L}$. This is a
+%  contradiction because $\ell>d$ and $d$ is the
+%  maximum integer for which there are at least $d$ transactions containing at
+%  least $2^{d-1}$ itemsets from $\mathcal{C}$. Hence $\mathcal{L}$ cannot be shattered and
+%  the thesis follows.
+%\end{proof}
+%\fi
 
 \subsection{Computing the VC-Dimension.}
 The na\"ive computation of $d$  according to the definition in Thm.~\ref{lem:evcdimupbound}

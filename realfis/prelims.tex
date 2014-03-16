@@ -30,17 +30,17 @@ probability that a transaction sampled from $\prob$ contains $A$:
 %$A$.
 
 Analogously, given a (observed) dataset $\Ds$, let $T_\Ds(A)$ denote
-the set of transactions in $\Ds$ containing $A$. The \emph{frequency} of $A$
-in $\Ds$ is the fraction of transactions in $\Ds$ that contain $A$: $f_\Ds(A)=
-|T_\Ds(A)|/|\Ds|$. It is easy to see that $f_\Ds(A)$ is the
-\emph{empirical average} (and an \emph{unbiased estimator}) for $\tfreq(A)$:
-${\mathbf E}[f_\Ds(A)]=\tfreq(A)$.
+the set of transactions in $\Ds$ containing $A$. As we saw in previous chapters,
+the \emph{frequency} of $A$ in $\Ds$ is the fraction of transactions in $\Ds$
+that contain $A$: $f_\Ds(A)= |T_\Ds(A)|/|\Ds|$. It is easy to see that
+$f_\Ds(A)$ is the \emph{empirical average} (and an \emph{unbiased estimator})
+for $\tfreq(A)$: ${\mathbf E}[f_\Ds(A)]=\tfreq(A)$.
 
-Traditionally, the interest has been on extracting the set
-of \emph{Frequent Itemsets} (FIs) from $\Ds$ with respect to a minimum frequency
-threshold $\theta\in(0,1]$~\citep{AgrawalIS93}, that is, the set 
-\[
-\FI(\Ds,\Itm,\theta)=\{A\subseteq\Itm ~:~ f_\Ds(A)\ge\theta\}\enspace.\]
+%Traditionally, the interest has been on extracting the set
+%of \emph{Frequent Itemsets} (FIs) from $\Ds$ with respect to a minimum frequency
+%threshold $\theta\in(0,1]$~\citep{AgrawalIS93}, that is, the set 
+%\[
+%\FI(\Ds,\Itm,\theta)=\{A\subseteq\Itm ~:~ f_\Ds(A)\ge\theta\}\enspace.\]
 
 In most applications the final goal of data mining is to gain a better
 understanding of the \emph{process generating the data}, i.e., of the
