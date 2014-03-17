@@ -3,22 +3,24 @@ Rules and Frequent Itemsets\protect\nomarkfootnote{This chapter is an extended
 version of a work that originally appeared in ACM Transaction of Knowledge Discovery in
 Data as~\citep{RiondatoU14}.}}\label{ch:vcmine}
 
-\todo{ Integrate the following
+In this chapter we start presenting our contributions to the problem of
+extracting interesting collections of patterns from very large transactional
+dataset.
 
-The discovery of (top-K) Frequent Itemsets and Association Rules (FIM)
-is a fundamental primitive in data mining and databases applications. The
-computational problem is defined in the general setting of a transactional dataset
--- a collection of transactions where each transaction is a set of items.
-With datasets increasing both in size and complexity, the computation
-for FIM faces scalability challenges in both space and time. Datasets have
-now reached the tens of terabytes scale and it is no longer reasonable to assume
-that such massive amounts of data can be easily processed by a single machine
-in a sequential fashion. 
-
-A typical exact algorithm scans the entire dataset,
-possibly multiple times, and stores intermediate counts of a large number of
-possible frequent itemsets candidates~\citep{AgrawalS94,HanPY00}. The cost of
-these algorithms can be split in two independent components:
+The discovery of Frequent Itemsets and Association Rules is a fundamental
+computational primitive with application in data mining (market basket
+analysis), databases (histogram construction), networking (heavy hitters) and
+more~\cite[Sect.~5]{HanCXY07}. 
+The computational problem is defined in the general setting of a transactional
+dataset -- a collection of transactions where each transaction is a set of
+items.  With datasets increasing both in size and complexity, the computation
+for FIM faces scalability challenges in both space and time. Depending on the
+particular application, one is interested in finding all itemsets with frequency
+greater or equal to a user defined threshold (FIs), identifying the $K$ most
+frequent itemsets (top-$K$), or computing all association rules (ARs) with user
+defined minimum  support and
+confidence level (see Sect.~\ref{sec:vcminealternative} and~\ref{sec:vcmineclosed} for additional criteria). 
+The cost of algorithms for extracting the FIs and the ARs can be split in two independent components:
 the \emph{scanning} cost and the \emph{mining} cost. The scanning cost includes
 all operations that directly handle the transactions in the dataset, and scales
 with the \emph{size} of the dataset, i.e., the number of such transactions. Examples
@@ -34,32 +36,24 @@ itemsets, and the underlying process that generated the transactions. It also
 depends on parameters given to the algorithm, such as the desired frequency
 threshold.
 
-In this paper we are concerned with the scalability of FIM with respect to
-the size of the dataset, or the number of transactions. 
-In many practical settings for FIM, the process generating the data changes very
-slowly or not at all, especially when compared to the data generation rate,
-therefore the number and frequency distribution of the frequent itemsets grows
-much slower than the size of the dataset. For example, the number of items
-available on the catalog of an e-commerce website grows much slower than the
-number of purchases by customers, each of which corresponds to a transaction.
-Therefore the scanning component grows faster than the mining one, and soon
-becomes dominant. 
-}
+A typical exact algorithm scans the entire dataset,
+possibly multiple times, and stores intermediate counts of a large number of
+possible frequent itemsets candidates~\citep{AgrawalS94,HanPY00}. For large
+datasets that do not fit in main memory, this can be prohibitively expensive. We
+are interested in reducing the scanning cost of algorithms by using random
+sampling to compute high quality approximations of the collections of FIs and
+ARs, which are usually sufficient for most practical applications. It is
+reasonable to focus on the scanning cost as in many practical settings
+the process generating the data changes very slowly or not at all, especially
+when compared to the data generation rate, therefore the number and frequency
+distribution of the frequent itemsets grows much slower than the size of the
+dataset. For example, the number of items available on the catalog of an
+e-commerce website grows much slower than the number of purchases by customers,
+each of which corresponds to a transaction.  Therefore the scanning component
+grows faster than the mining one, and soon becomes dominant. 
 
-
-Discovery of frequent itemsets and association rules is a fundamental
-computational primitive with application in data mining (market basket
-analysis), databases (histogram construction), networking (heavy hitters) and
-more~\cite[Sect.~5]{HanCXY07}. Depending on the particular application, one is
-interested in finding all itemsets with frequency greater or equal to a user
-defined threshold (FIs), identifying the $K$ most frequent itemsets (top-$K$),
-or computing all association rules (ARs) with user defined minimum  support and
-confidence level (see Sect.~\ref{sec:vcminealternative} and~\ref{sec:vcmineclosed} for additional criteria). Exact solutions to these problems require scanning the entire
-dataset, possibly multiple times. For large datasets that do not fit in main
-memory, this can be prohibitively expensive. Furthermore, such extensive
-computation is often unnecessary, since high quality approximations are
-sufficient for most practical applications.  Indeed, a number of recent
-works (see Sect.~\ref{sec:vcmineprevwork} for more details)
+Indeed, a number of recent works (see
+Sect.~\ref{sec:vcmineprevwork} for more details)
 %~\citep{MannilaTV94,Toivonen96,ZakiPLO97,JiaL05,LiG04,ZhangZW03,ZhaoZZ06,BronnimanCDHS03,ChandraB11,ChenHS02,ChenHH11,ChuangCY05,HuY06,HwangK06,JiaG05,JohnL96,MahafzahABAZ09,Parthasarathy02,WangDC05,ChuangHC08,ChakaravarthyPS09,PietracaprinaV07,WangHLT05,PietracaprinaRUV10,SchefferW02,VasudevanV09}
 explored the application of sampling for approximate solutions to these
 problems. However, the efficiency and practicality of the sampling approach

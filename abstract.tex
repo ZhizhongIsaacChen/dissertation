@@ -1,33 +1,36 @@
 \abstract{  
-\todo{Write abstract.}
+Analyzing huge datasets becomes prohibitively slow when the dataset does not
+fit in main memory. Approximations of the results of guaranteed high quality
+are sufficient for most applications and can be obtained very fast by analyzing
+a small random part of the data that fits in memory. We study the use of the
+Vapnik-Chervonenkis dimension theory to analyze the trade-off between the sample
+size and the quality of the approximation for fundamental problems in knowledge
+discovery (frequent itemsets), graph analysis (betweenness centrality), and
+database management (query selectivity). 
+\\
+We show that the sample size to compute an high-quality approximation of
+the collection of frequent itemsets depends only on the VC-dimension of the
+problem, which is (tightly) bounded from above by an easy-to-compute characteristic
+quantity of the dataset. This bound leads to a fast algorithm for mining
+frequent itemsets that we also adapt to the MapReduce framework for
+parallel/distributed computation. We exploit similar ideas to avoid the
+inclusion of false positives in mining results.
+\\
+The betweenness centrality index of a vertex in a network measures the
+relative importance of that vertex by counting the fraction of shortest paths
+going through that vertex. We show that it is possible to compute an
+high-quality approximation of the betweenness of all the vertices by sampling
+shortest paths at random. The sample size depends on the VC-dimension of the
+problem, which is upper bounded by the logarithm of the maximum number of
+vertices in a shortest path. The tight bound collapses to a constant when there
+is a unique shortest path between any two vertices.
+\\
+The selectivity of a database query is the ratio between the size of its output
+and the product of the sizes of its input tables. Database Management Systems
+estimate the selectivity of queries for scheduling and optimization purposes. We
+show that it is possible to bound the VC-dimension of queries in terms of their
+SQL expressions, and to use this bound to compute a sample of the database that
+allow much a more accurate estimation of the selectivity than possible using
+histograms. 
 }
-  %Thanks to technology advancements, data are nowadays being collected for
-  %almost all human activities and many natural phenomena, to the point that the
-  %challenge in many disciplines is the \emph{analysis} of data rather than the
-  %collection of it. 
-
-%  The huge volume, high variety of origins and formats, and
-%  ever-increasing velocity requested when reporting results, make the
-%  task of analyzing the data a complex computational problem known as \emph{Big
-%  Data Analytics}. Traditional techniques developed in statistics are often
-%  insufficient, lacking scalability (\emph{volume}), speed (\emph{velocity}), or
-%  applicability (\emph{variety}). The thesis of this work is that it is possible
-%  to address these issues by using modern techniques from \emph{statistical learning
-%  theory} to develop and analyze of efficient randomized algorithms for
-%  extracting collections of interesting patterns from large transactional
-%  datasets and huge graphs. Problems of interest include frequent itemsets and
-%  association rules mining, frequent subgraphs extraction, and database queries
-%  selectivity estimation. The two main lines of research involve exploiting the
-%  trade-off between \emph{speed} and \emph{accuracy} by developing algorithms
-%  that only analyze small random samples of the original data, and assessing the
-%  \emph{statistical significance} of the extracted patterns by creating
-%  statistical tests that can be applied in a multiple hypothesis testing
-%  setting. The analysis of the algorithms uses tools from statistical learning
-%  theory like \emph{VC-dimension}, \emph{shatter coefficients}, and
-%  \emph{Rademacher averages}. A byproduct of this thesis is the evidence that
-%  these tools, often considered only of theoretical interest, can be of great
-%  use in practice. For each proposed algorithm, an extensive empirical
-%  evaluation assess its performances on real and artificial benchmark datasets,
-%  showing that their output is often of quality higher than what the theoretical
-%  analysis could guarantee.
 

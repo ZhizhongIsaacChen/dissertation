@@ -11,17 +11,17 @@ shortest paths that $v$ is internal to:
 \[
 \range_G = \{\mathcal{T}_v ~:~ v\in V\}\enspace.
 \]
-We denote this range space as $R_G$.
+We denote this range space as $\range_G$.
 
 \begin{lemma}\label{lem:vcdimuppbound}
   %Given a graph $G=(V,E)$ with vertex-diameter $\Delta_G$, the range space
   %$\range_G$ associated to the shortest paths in $G$ has VC-dimension
-  $\VC(R_G)\le\lfloor\log_2(\VD(G)-2)\rfloor+1$.
+  $\VC\left((\mathbb{S}_G,\range_G)\right)\le\lfloor\log_2(\VD(G)-2)\rfloor+1$.
 \end{lemma}
 
 \begin{proof}
 Let $\ell>\lfloor\log_2(\VD(G)-2)\rfloor+1$ and assume for the sake of contradiction
-that $\VC(R_G)=\ell$. From the definition of the VC-dimension there is a set
+that $\VC\left((\mathbb{S}_G,\range_G)\right)=\ell$. From the definition of the VC-dimension there is a set
 $Q\subseteq\mathbb{S}_G$ of size $\ell$ that is shattered by $\range_G$. Let $p$ be
 an element of $Q$. There are  $2^{\ell-1}$ non-empty subsets of
 $Q$ containing the path $p$. Let us label these non-empty subsets of $Q$ containing $p$ as
@@ -39,13 +39,13 @@ can belong to at most $\VD(G)-2$ ranges from $\range_G$. Given that
 $2^{\ell-1}>\VD(G)-2$, we reached a contradiction and there cannot be $2^{\ell-1}$
 distinct ranges containing $p$, hence not all the sets $S_i$ can be expressed as
 $Q\cap R_i$ for some $R_i\in\range_G$. Then $Q$ cannot be shattered and
-$\VC(R_G)\le\lfloor\log_2(\VD(G)-2)\rfloor+1$.%\qed
+$\VC\left((\mathbb{S}_G,\range_G\right))\le\lfloor\log_2(\VD(G)-2)\rfloor+1$.%\qed
 \end{proof}
 
 \paragraph{Unique shortest paths}\label{sec:centrsamplrangeunique}
 In the restricted case when the graph is undirected and
 every pair of distinct vertices has either none or a unique shortest path
-between them, the VC-dimension of $R_G$ reduces %collapses 
+between them, the VC-dimension of $(\mathbb{S}_G,\range_G)$ reduces %collapses 
 to a \emph{constant}. This is a somewhat surprising result with interesting
 consequences. From a theoretical point of view, it suggests that there should be
 other characteristic quantities of the graph different from the vertex diameter
@@ -63,7 +63,7 @@ case of directed graphs.
 
 \begin{lemma}\label{lem:vcdimuppboundunique}
   Let $G=(V,E)$ be an undirected graph with $|\mathcal{S}_{uv}|\le1$ for all
-  pairs $(u,v)\in V\times V$. Then $\VC(R_G)\le 3$.
+  pairs $(u,v)\in V\times V$. Then $\VC\left((\mathbb{S}_G,\range_G)\right)\le 3$.
 \end{lemma}
 
 \begin{proof}
@@ -76,7 +76,7 @@ case of directed graphs.
   between $u$ and $v$, which is a contradiction of the hypothesis. Let us denote
   this fact as $\mathsf{F}$.
 
-  Assume now that $\VC(R_G)>3$, then there must be a set
+  Assume now that $\VC\left((\mathbb{S}_G,\range_G)\right)>3$, then there must be a set
   $Q=\{p_1,p_2,p_3,p_4\}$ of four shortest paths that can be shattered by
   $\range_G$. Then there is a vertex $w$ such that $\mathcal{T}_w\cap Q=Q$, i.e.,
   all paths in $Q$ go through $w$. Let $x$ be the farthest predecessor of $w$
@@ -119,14 +119,14 @@ case of directed graphs.
   $y$. This implies that $Q$ can not be shattered.
 
   We showed that in all possible cases we reached a contradiction and $Q$,
-  which has size $4$, can not be shattered by $\range_G$. Hence $\VC(R_G)\le
-  3$.
+  which has size $4$, can not be shattered by $\range_G$. Hence
+  $\VC\left((\mathbb{S}_G,\range_G)\right)\le 3$.
 \end{proof}
 
 \subsection{Tightness}\label{sec:centrsampltightness}
 The bound presented in Lemma~\ref{lem:vcdimuppbound} is strict in the sense that
 for each $d\ge 1$ we can build a graph $G_d$ with vertex-diameter
-$\VD(G_d)=2^d+1$ and such that the range space $R_{G_d}$ associated to the set of
+$\VD(G_d)=2^d+1$ and such that the range space $(\mathbb{S}_{G_d},\range_{G_d})$ associated to the set of
 shortest paths of $G_d$ has VC-dimension exactly
 $d=\lfloor\log_2(\VD(G_d)-2)\rfloor+1$. 
 %For the sake of clarity, we will discuss
@@ -151,9 +151,10 @@ vertices, the two with degree 1 are special and are called the \emph{end
 vertices} of $G_d$ and denoted as $v_\ell$ and $v_\mathrm{r}$, where the
 labels can be arbitrarily assigned. We now build a set $Q$ of $d$
 shortest paths from $v_\ell$ to $v_\mathrm{r}$ and show that it is
-shattered by $\range_{G_d}$, therefore proving that $\VC(R_{G_d})\ge d$.
+shattered by $\range_{G_d}$, therefore proving that
+$\VC\left((\mathbb{S}_{G_d},R_{G_d})\right)\ge d$.
 This fact, together with Lemma~\ref{lem:vcdimuppbound}, allows us to conclude
-that $\VC(R_{G_d})=d$. 
+that $\VC\left(\mathbb{S}_{G_d},R_{G_d})\right)=d$. 
 
 \begin{figure}[htbp]
   \centering
@@ -168,40 +169,15 @@ that $\VC(R_{G_d})=d$.
     \includegraphics[width=0.3\textwidth,keepaspectratio]{centrsampl/figures/eps/tight-mapexample}
     }
   \hfill
-  \subcaptionbox{Graph $G$ with $\VC(\range_G)=
+  \subcaptionbox{Graph $G$ with $\VC\left((\mathbb{S}_G,\range_G)\right)=
   3$.\label{fig:centrsampluniquetight}}{
     \includegraphics[width=0.3\textwidth,keepaspectratio]{centrsampl/figures/eps/uniqueshortestpathtight}
     }
   \caption{Graphs for which the bound is tight.}
 \end{figure}
 
-%\begin{figure}[htbp]
-%  \centering
-%  \begin{subfigure}[b]{0.3\textwidth}
-%    \centering
-%    \includegraphics[width=\textwidth,keepaspectratio]{centrsampl/figures/eps/tight-mapexample}
-%    \caption{An example of the $\mathsf{r}$ map for $G_3$. The set next to
-%    each top and bottom vertex $u$ is the set $s$ such that $\mathsf{r}(s)=u$.}
-%    \label{fig:centrsamplmapexample}
-%  \end{subfigure}
-%  \hfill
-%  \begin{subfigure}[b]{0.3\textwidth}
-%    \centering
-%    \includegraphics[width=\textwidth,keepaspectratio]{centrsampl/figures/eps/tight}
-%    \caption{Examples of concertina graphs $G_d$ for $d=1,2,3,4$.}
-%    \label{fig:centrsampltightgraphs}
-%  \end{subfigure}
-%  \hfill
-%  \begin{subfigure}[b]{0.3\textwidth}
-%    \centering
-%    \includegraphics[width=\textwidth,keepaspectratio]{centrsampl/figures/eps/uniqueshortestpathtight}
-%    \caption{Graph $G$ with $\VC(\range_G)= 3$.}
-%    \label{fig:centrsampluniquetight}
-%  \end{subfigure}
-%\end{figure}
-
 \begin{lemma}\label{lem:vcdimlowbound}
-  $\VC(R_{G_d})=d$.
+  $\VC\left((\mathbb{S}_{G_d}R_{G_d})\right)=d$.
 \end{lemma}
 \begin{proof}
   As we said, the $d$ paths in $Q$  go from $v_\ell$ to $v_\mathrm{r}$.
@@ -246,10 +222,11 @@ that $\VC(R_{G_d})=d$.
   internal to any path, we have $\emptyset=Q\cap\mathcal{T}_{v_\ell}$. Then all
   subsets of $Q$ can be expressed as the intersection between $Q$ and a range
   from $\range_{G_d}$, which means that $Q$ can be shattered and therefore
-  $\VC(\range_{G_d})\ge d$.
+  $\VC\left((\mathbb{S}_G,\range_{G_d})\right)\ge d$.
 
-  From Lemma~\ref{lem:vcdimuppbound} we know that $\VC(R_{G_d})\le d$, so
-  it must be $\VC(R_{G_d})=d$.
+  From Lemma~\ref{lem:vcdimuppbound} we know that
+  $\VC\left((\mathbb{S}_G,\range_{G_d})\right)\le d$, so
+  it must be $\VC\left((\mathbb{S}_G,\range_{G_d})\right)=d$.
 \end{proof}
 
 The upper bound presented in Lemma~\ref{lem:vcdimuppboundunique}  for the case
@@ -257,7 +234,7 @@ of unique shortest paths is also strict in the same sense.
 
 \begin{lemma}\label{lem:vcdimlowboundunique}
   There is a graph $G=(V,E)$ with $|\mathcal{S}_{uv}|\le1$ for all
-  pairs $(u,v)\in V\times V$ such that the range space $R_G$ associated to the
+  pairs $(u,v)\in V\times V$ such that the range space $(\mathbb{S}_G,\range_G)$ associated to the
   shortest paths in $G$ has VC-Dimension exactly $3$.
 \end{lemma}
 
@@ -266,14 +243,15 @@ of unique shortest paths is also strict in the same sense.
   Consider the graph $G$ in Fig.~\ref{fig:centrsampluniquetight}.
   Let $p_1=(a,b,c,e,i,j)$, $p_2=(m,f,e,i,k,l)$, $p_3=(d,c,e,f,g,h)$ be three
   paths. We now show that $Q=\{p_1,p_2,p_3\}$ can be shattered by $\range_G$, which
-  implies $\VC(R_G)\ge 3$. We have $\emptyset=Q\cap\mathcal{T}_a$,
+  implies $\VC\left((\mathbb{S}_G,\range_G)\right)\ge 3$. We have $\emptyset=Q\cap\mathcal{T}_a$,
   $\{p_1\}=Q\cap\mathcal{T}_b$, $\{p_2\}=Q\cap\mathcal{T}_k$,
   $\{p_3\}=Q\cap\mathcal{T}_g$, $\{p_1,p_2\}=Q\cap\mathcal{T}_i$,
   $\{p_1,p_3\}=Q\cap\mathcal{T}_c$, $\{p_2,p_3\}=Q\cap\mathcal{T}_f$,
   $\{p_1,p_2,p_3\}=Q\cap\mathcal{T}_e$,  
   Hence all subsets of $Q$ can be expressed as the intersection between $Q$ and
   some range in $\range_G$ which means that $Q$ can be shattered and
-  $\VC(R_G)\ge 3$. Lemma~\ref{lem:vcdimuppboundunique} gives us an upper
-  bound $\VC(R_G)\le3$, so we can conclude that $\VC(R_G)=3$.
+  $\VC\left((\mathbb{S}_G,\range_G)\right)\ge 3$. Lemma~\ref{lem:vcdimuppboundunique} gives us an upper
+  bound $\VC\left((\mathbb{S}_G,\range_G)\right)\le3$, so we can conclude that
+  $\VC\left((\mathbb{S}_G,\range_G)\right)=3$.
 \end{proof}
 
