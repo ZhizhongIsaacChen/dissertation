@@ -1,2 +1,68 @@
 \chapter{Conclusions}\label{ch:conclusions}
-\todo{Write conclusions.}
+
+The major goal of the work that led to this dissertation was to verify whether
+VC-dimension could be used to develop practical sample size bounds for important
+data analytics problems. Before this work, VC-dimension was considered of mostly
+theoretical significance. We showed that it is possible to compute tight upper
+bounds to the VC-dimension of relevant problems from different areas of data
+analytics: knowledge discovery, graph analysis, and database management. 
+
+The upper bounds are characteristic quantities of the dataset or of the
+problem at hands. Not only they can be easy to compute, but they are usually
+small in practice. This means that the sample size needed to obtain high quality
+approximations of the results for the problem at hand may not need to depend on
+the size of the dataset or on the number of patterns or ``questions'' that one
+is interested to answer using the data. The sample sizes obtained using our
+bounds are small and can fit into main memory, partially solving the issue of
+analyzing very large datasets. Indeed, the practicality of our results is
+exemplified by the fact that one of our algorithm was adapted and implemented to
+be used at Yahoo.
+
+\todo{Limitations:
+\begin{itemize}
+  \item dependency on $\varepsilon$.
+  \item independent sampling
+  \item sampling procedure
+  \item lack of structure in Big Data
+\end{itemize}}
+
+\section*{Future work} VC-dimension is just one of the many concepts from the
+field of statistical learning theory. Other tools and results
+include data-dependent sample complexity bounds, pseudodimension, Rademacher
+averages, Bayesian uniform bounds, just to name a
+few~\citep{BoucheronBL05,AnthonyB99,DevroyeGL96}. We showed that VC-dimension
+can be have a practical impact to speed up algorithms for data analytics, but it
+would be interesting to pursuit the use of these other concepts for the creation
+of new algorithm or to further reduce the number of samples needed to
+approximate. 
+
+In this work we focused on ``one-shot'' sampling, i.e., the algorithms create a
+single sample with size sufficient to obtain an approximation of desired
+quality. \emph{Data-dependent bounds and Rademacher averages} can be
+useful to develop \emph{progressive sampling} algorithms that start from a small
+sample size and check a stopping condition to understand whether they sampled
+enough to obtain a good approximation. The challenge in creating such algorithms
+is in the development and analysis of a stopping condition that can detect when
+to stop as soon as possible.  
+
+A bound on the VC-dimension allows to estimate the expectation of 0-1 functions
+using their empirical averages. \emph{Pseudodimension} instead works for \emph{real-valued}
+functions. Since many datasets are real valued or can be seen as collection of
+real valued functions (e.g., audio and video files and sensor signals),
+investigating the use of pseudodimension to create sampling-based randomized
+algorithms for data analytics problems on real data is an interesting research
+direction.
+
+One issue that we only partially tackle in Chapter~\ref{ch:realfis} is that of
+\emph{statistical validation of the results}. This is a fundamental problem
+\itodo{complete}
+
+
+In general, research in the field of data analytics seems to have paid only
+limited attention to recent developments in statistics and probability theory. We
+believe that there may be room for improvements and significant contributions in
+exploring the literature of these and other fields and adapt results and notions
+that may have been considered only of theoretical interest to develop efficient
+algorithm for practical problems involving the analysis of the ever-growing and
+ever-changing amount of data available today.
+
