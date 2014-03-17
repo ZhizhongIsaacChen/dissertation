@@ -26,7 +26,7 @@ be used at Yahoo.
   \item lack of structure in Big Data
 \end{itemize}}
 
-\section*{Future work} VC-dimension is just one of the many concepts from the
+\section*{Future work} VC-dimension is one of many concepts from the broad
 field of statistical learning theory. Other tools and results
 include data-dependent sample complexity bounds, pseudodimension, Rademacher
 averages, Bayesian uniform bounds, just to name a
@@ -46,17 +46,26 @@ is in the development and analysis of a stopping condition that can detect when
 to stop as soon as possible.  
 
 A bound on the VC-dimension allows to estimate the expectation of 0-1 functions
-using their empirical averages. \emph{Pseudodimension} instead works for \emph{real-valued}
-functions. Since many datasets are real valued or can be seen as collection of
-real valued functions (e.g., audio and video files and sensor signals),
-investigating the use of pseudodimension to create sampling-based randomized
-algorithms for data analytics problems on real data is an interesting research
-direction.
+using their empirical averages. \emph{Pseudodimension} instead works for
+\emph{real-valued} functions. Since many datasets are real valued or can be seen
+as collection of real valued functions (e.g., audio and video files and sensor
+signals), investigating the use of pseudodimension to create sampling-based
+randomized algorithms for data analytics problems on real data is an interesting
+research direction.
 
 One issue that we only partially tackle in Chapter~\ref{ch:realfis} is that of
-\emph{statistical validation of the results}. This is a fundamental problem
-\itodo{complete}
-
+\emph{statistical validation of the results}. We already explained in
+Chapter~\ref{ch:intro} why only recently it started to receive attention in data
+analytics\itodo{DO THIS!}. Although it is of primary importance to go beyond
+simple multi-hypothesis testing corrections like the Union bound (a.k.a.~the
+Bonferroni inequality) and we achieved it in Chapter~\ref{ch:realfis} for the
+problem of frequent itemsets, there are other options to control false
+positives. One example is controlling the False Discovery
+Rate~\citep{BenjiaminiH95} instead of the probability of having a false positive
+(which is what we do in Chapter~\ref{ch:realfis} and is known as controlling the
+Family-Wide Error Rate). There is huge room for improvement and the use of
+VC-dimension to develop statistical tests to avoid the inclusion of false
+positives in the results is only one possible directions. 
 
 In general, research in the field of data analytics seems to have paid only
 limited attention to recent developments in statistics and probability theory. We
