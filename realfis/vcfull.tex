@@ -19,7 +19,7 @@ how to compute $\varepsilon$.
 Let $\delta_1$ and $\delta_2$ be such that $(1-\delta_1)(1-\delta_2)\ge
 1-\delta$. Let $(2^\Itm,\range(2^\Itm)$ be the range space of all itemsets.
 We use Corol.~\ref{thm:vcdimubfirst} (resp.~Thm.~\ref{thm:empvcdimubfirst}) to
-compute an upper bound $d'$ to $\VC\left((2^\Itm,\range(2^\Itm)))$ (resp.~ $d''$ to
+compute an upper bound $d'$ to $\VC\left((2^\Itm,\range(2^\Itm))\right)$ (resp.~ $d''$ to
 $\EVC(\Ds,\range(2^\Itm)$). Then we can use $d'$ in Thm.~\ref{thm:eapprox} (resp.~$d''$ in
 Thm~\ref{thm:eapproxempir}) to compute an $\varepsilon_1'$ (resp.~an
 $\varepsilon_1''$) such that $\Ds$ is, with probability at
@@ -58,7 +58,7 @@ f_\Ds(A)<\theta+\varepsilon_1\}$, and $\mathcal{F}=\mathcal{G}\cup\mathcal{W}$.
       $\max_{\mathcal{A}\in\mathcal{Y}}\EVC(\Ds,\range(\mathcal{A}))\ge\EVC(\Ds,\range(\mathcal{B}))$,
       and
     \item
-      $\max_{\mathcal{A}\in\mathcal{Y}}\VC\left((2^\Itm,\range(\mathcal{A})))\ge\VC\left((2^\Itm,\range(\mathcal{B}))\right)$.
+      $\max_{\mathcal{A}\in\mathcal{Y}}\VC\left((2^\Itm,\range(\mathcal{A}))\right)\ge\VC\left((2^\Itm,\range(\mathcal{B}))\right)$.
   \end{enumerate}
 \end{lemma}
 \ifarxiv
@@ -119,7 +119,7 @@ $\FI(\Ds,\Itm,\hat\theta)$ contains no false positives:
 
   Since $\mathsf{E}_1$ occurs, then Lemma~\ref{lem:antichains}
   holds, and the bounds we compute by solving the modified SUKP problems are
-  indeed bounds to $\VC\left((2^\Itm,\range(\mathcal{B})))$ and
+  indeed bounds to $\VC\left((2^\Itm,\range(\mathcal{B}))\right)$ and
   $\EVC(\range(\mathcal{B},\Ds))$. %Then the computation of $\varepsilon_2$ is valid. 
   Since $\mathsf{E}_2$ also occurs, then for any $A\in\mathcal{B}$ we
   have $|\tfreq(A)-f_\Ds(A)|\le\varepsilon_2$, but given that $\tfreq(A)<\theta$
