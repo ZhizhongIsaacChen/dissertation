@@ -13,7 +13,7 @@ the itemsets in $\mathcal{C}$:
 \end{definition}
 This is a generalization of the range space from Def.~\ref{def:vcrangespace}.
 Given a dataset $\Ds$, Thm.~\ref{thm:} gives a bound to
-$\EVC(\Ds,\range(\mathcal{C}))$,  the \emph{empirical} VC-dimension of
+$\EVC(\Ds,\range(\mathcal{C}))$, the \emph{empirical} VC-dimension of
 $\range(\mathcal{C})$ on $\Ds$ in the following sense.
 
 %The following Lemma presents an upper bound to the empirical VC-dimension of
@@ -33,7 +33,7 @@ $\range(\mathcal{C})$ on $\Ds$ in the following sense.
   %  \item Each $\tau_i$, $1\le i\le d$ contains at least $2^{d-1}$ itemsets from
   %    $\mathcal{C}$.
   %\end{enumerate*}
-  Then $\EVC(\range(\mathcal{C}),\Ds)\le d$.
+  Then $\EVC(\Ds,\range(\mathcal{C}))\le d$.
 \end{theorem}
 
 %\ifarxiv
@@ -80,7 +80,7 @@ transaction, and make sure to consider only itemsets constituting antichains. Gi
 number of transactions in typical dataset and the fact that the number of
 itemsets in a transaction is exponential in its length, this method would be
 computationally too expensive. An upper bound to $d$ (and therefore to
-$\EVC(\range(\mathcal{C}),\Ds)$) can be computed by solving a
+$\EVC(\Ds,\range(\mathcal{C}))$) can be computed by solving a
 \emph{Set-Union Knapsack Problem} (SUKP)~\citep{GoldschmidtNY94} associated to
 $\mathcal{C}$.
 %where the elements to be put in the knapsack are organized into sets, which have a profit associated to them. The objective is to maximize 
@@ -113,7 +113,7 @@ It is easy to see %It should be evident
 that the optimal profit of this SUKP is the maximum number
 of itemsets from $\mathcal{C}$ that a transaction of length $\ell$ can contain.  %could fit into a transaction of length %$\ell$.
 In order to show how to use this fact to compute an upper bound to
-$\EVC(\range(\mathcal{C}),\Ds)$, we need to define some additional terminology. Let
+$\EVC(\Ds,\range(\mathcal{C}))$, we need to define some additional terminology. Let
 $\ell_1,\dotsc,\ell_w$ be the sequence of the
 \emph{transaction lengths} of $\Ds$, i.e., for each value $\ell$
 for which there is at least a transaction in $\Ds$ of length $\ell$, there is
@@ -131,7 +131,7 @@ the empirical VC-dimension of $\mathcal{C}$ on $\Ds$.
 
 \begin{lemma}\label{lem:sukpevc}
   Let $j$ be the minimum integer for which $b_i\le L_i$. Then
-  $\EVC(\mathcal{C},\Ds)\le b_j$. %We call $b_j$ the \emph{empirical b-index of
+  $\EVC(\Ds,\mathcal{C})\le b_j$. %We call $b_j$ the \emph{empirical b-index of
   %$\mathcal{C}$ on $\Ds$} and denote it as $\eb(\mathcal{C},\Ds)$
 \end{lemma}
 \ifarxiv
@@ -141,7 +141,7 @@ the empirical VC-dimension of $\mathcal{C}$ on $\Ds$.
   which it happens, because the sequence $b_1,b_2,\dotsc,b_w$ is sorted in
   decreasing order, given that the sequence $q_1,q_2,\dotsc,q_w$ is. Then $b_j$
   satisfies the conditions of Lemma~\ref{lem:evcdimupbound}. Hence
-  $\EVC(\mathcal{C},\Ds)\le b_j$.
+  $\EVC(\Ds,\mathcal{C})\le b_j$.
   \qed
 \end{proof}
 \fi
@@ -153,12 +153,12 @@ the empirical VC-dimension of $\mathcal{C}$ on $\Ds$.
   them).
   %$|\Itm|-1$.
   Let $b=\lfloor\log_2 q\rfloor + 1$. Then
-  $\VC(\range(\mathcal{C}))\le b$. %We call $b*$ the \emph{b-index of
+  $\VC(2^\Itm,\range(\mathcal{C}))\le b$. %We call $b*$ the \emph{b-index of
   %$\mathcal{C}$} and denote it as $\b(\mathcal{C})$.
 \end{corollary}
 
-Solving the SUKP optimally is NP-hard in the general case, although there are known restrictions for
-which it can be solved in polynomial time using dynamic
+Solving the SUKP optimally is NP-hard in the general case, although there are
+known restrictions for which it can be solved in polynomial time using dynamic
 programming~\citep{GoldschmidtNY94}. 
 %It is not clear whether our case falls into
 %one of these restrictions but we found that 
@@ -167,10 +167,10 @@ solution} to the SUKP: any upper bound solution for which we can prove that
 there is no power of two between that solution and the optimal solution would
 result in the \emph{same upper bound} to the (empirical) VC dimension, while
 substantially speeding up the computation. This property can be specified in
-currently available optimization problem solvers (e.g.~CPLEX), which can then can compute the
-bound to the (empirical) VC-dimension very fast even for very large instances
-with thousands of items and hundred of thousands of itemsets in $\mathcal{C}$,
-making this approach practical. %solution practical for our applications.
+currently available optimization problem solvers (e.g., CPLEX), which can then
+can compute the bound to the (empirical) VC-dimension very fast even for very
+large instances with thousands of items and hundred of thousands of itemsets in
+$\mathcal{C}$, making this approach practical. %solution practical for our applications.
 
 %Moreover, it is actually
 %not necessary to compute the optimal solution to the SUKP: any upper bound
@@ -179,73 +179,10 @@ making this approach practical. %solution practical for our applications.
 %(empirical) VC dimension, while substantially speeding up the computation. % of the bound.
 
 %\paragraph{The range space of all itemsets.}
-The range space associated to $2^\Itm$
-is particularly interesting for us. It is possible  %It is easy 
-to compute bounds to $\VC(\range(2^\Itm))$ and
-$\EVC(\range(2^\Itm), \Ds)$ without having to solve a SUKP.
-%\citet{RiondatoU12} gave an upper bound to the empirical VC-dimension of
-%$\range(2^\Itm)$ on $\Ds$. 
-%Before presenting the bound, we need to introduce a
-%characteristic quantity of the set of transactions $\Ds$ called the \emph{d-index} and
-%denoted as $\mathsf{d}(\Ds)$.
-
-%\begin{definition}\label{def:dindex}
-\begin{theorem}[\citep{RiondatoU12}]\label{thm:empvcdimubfirst}
-  Let $\Ds$ be a dataset built on a
-  ground set $\Itm$. The
-  \emph{d-index} $\mathsf{d}(\Ds)$ of $\Ds$ is the maximum integer $d$ such that
-  $\Ds$ contains at least $d$ transactions of length at least $d$ %such that 
-  %no one of them is a subset of another, that is, they form an antichain
-  that form an antichain. %
-  %for any two of these transactions $\tau',\tau''$ we have neither $\tau'\subseteq
-  %\tau''$ nor $\tau''\subseteq \tau'$.
-  We have $\EVC(\range(2^\Itm),\Ds)\le \mathsf{d}(\Ds)$.
-%\end{definition}
-\end{theorem}
-
-%\citet{RiondatoU12} presents an efficient algorithm to compute an upper bound to
-%the d-index of a dataset with a single linear scan of the dataset $\Ds$.
-
-%\begin{theorem}\label{thm:empvcdimubfirst}
-%  \emph{(\citep[Thm.~3]{RiondatoU12})} Let $\Ds$ be a dataset  with
-%  transactions built on a ground set $\Itm$. Then $\EVC(\range(2^\Itm),\Ds)\le
-%  \mathsf{d}(\Ds)$.
-%\end{theorem}
-
-%It easy to extend this theorem to prove an upper bound to the VC-dimension of
-%$\range(2^\Itm)$.
-\begin{corollary}\label{thm:vcdimubfirst}
-  %Let $\Ds$ be a dataset with transactions built on a ground set $\Itm$. Then
-  $\VC(\range(2^\Itm))\le |\Itm|-1$.
-\end{corollary}
-%\begin{proof}
-%  Let $k=|\Itm|$. Assume w.l.o.g.~that $\Itm=\{1,\dotsc,k\}$. Let
-%  $\tau_i=\Itm\setminus\{i\}$, $1\le i\le k$. We have $|\tau_i|=k-1$, for $1\le
-%  i\le k$. Notice that for $i\neq j$, neither $\tau_i\subseteq\tau_j$ nor
-%  $\tau_j\subseteq\tau_i$. Consider a dataset $\Ds$ made of the set of
-%  transactions $\{\tau_1,\dotsc,\tau_k\}$ and any number of additional
-%  transactions. It is easy to see that $\mathsf{d}(\Ds)=k-1$, and that
-%  it is impossible to build a dataset with a larger d-index using the items of
-%  $\Itm$, because there is no way to use the items of $\Itm$ to build $\ell>k-1$
-%  transactions of length at least $\ell$ and such that for any two of these
-%  transactions $\tau',\tau''$ we have neither $\tau'\subseteq \tau''$ nor
-%  $\tau''\subseteq \tau'$. This concludes the proof. \qed
-%\end{proof}
-
-\citet{RiondatoU12} presented an efficient algorithm to compute an upper bound to
-the d-index of a dataset with a single linear scan of the dataset $\Ds$.
-The upper bound presented in Thm.~\ref{thm:empvcdimubfirst} is tight:
-%, in the sense that
- there are datasets for which
-$\EVC(\range(2^\Itm),\Ds)=\mathsf{d}(\Ds)$~\citep{RiondatoU12}.
-This implies that the upper bound presented in Corol.~\ref{thm:vcdimubfirst} is
-also tight.
-
-%The upper bound to the empirical VC-Dimension of $\range(2^\Itm)$ on $\Ds$ is used
-%by~\citet{RiondatoU12} to compute the size of a sample $\Sam$ needed to extract
-%a superset of the collection of $\FI(\Ds,\Itm,\theta)$ from $\Sam$, where the
-%quality of the approximation is controlled by user-defined parameters
-%$\varepsilon$ and $\delta$. In this work we will use the two upper bounds
-%presented above to compute a superset of the negative border of the collection
-%of RFI's with respect to a minimum real frequency threshold $\theta$.
+The range space associated to $2^\Itm$ (seen as a collection of itemsets) is
+particularly interesting for us. It is possible  %It is easy 
+to compute bounds to $\VC(2^\Itm,\range(2^\Itm))$ and
+$\EVC(\Ds,\range(2^\Itm))$ without having to solve a SUKP. Indeed, these are
+both consequences of Thm.~\ref{thm:}. We can bound $\EVC(\Ds,\range(2^\Itm))$
+using the d-index of $\Ds$, while we have $\VC(2^\Itm,\range(2^\Itm))=|\Itm|-1$.
 
