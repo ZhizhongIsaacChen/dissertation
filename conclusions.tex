@@ -15,26 +15,44 @@ the size of the dataset or on the number of patterns or ``questions'' that one
 is interested to answer using the data. The sample sizes obtained using our
 bounds are small and can fit into main memory, partially solving the issue of
 analyzing very large datasets. Indeed, the practicality of our results is
-exemplified by the fact that one of our algorithm was adapted and implemented to
-be used at Yahoo.
+exemplified by the fact that one of our algorithms (PARMA) was adapted and
+implemented to be used at Yahoo.
 
-\todo{Limitations:
+Despite the many advantages of using VC-dimension when analyzing sample sizes
+for randomized algorithms, one must not consider it a one-size-fits-all method
+as its wide applicability may be hindered by the following factors:
 \begin{itemize}
-  \item dependency on $\varepsilon$.
-  \item independent sampling
-  \item sampling procedure
-  \item lack of structure in Big Data
-\end{itemize}}
+  \item{\bf Need for an efficient algorithm to compute bounds to the
+    VC-dimension:} Bounding the VC-dimension of a problem is challenging but not
+    impossible. Nevertheless, even if the bound is tight and it is a
+    characteristic quantity of the dataset or of the problem at hand, actually
+    computing this quantity may be computational expensive. We saw an example of
+    this issue in Sect.~\ref{sec:}, when dealing with the computation of the
+    vertex-diameter of a directed or weighted graph. In that case, we were
+    blessed by the presence of the logarithm in the bound of the VC-dimension,
+    which allowed us to use a loose approximation of the vertex diameter, but
+    this may not always be the case. Without a fast procedure to compute the
+    upper bound to the VC-dimension (and therefore the needed sample size), the
+    use of VC-dimension is severely limited.
+  \item{\bf Need for an efficient sampling procedure:}
+  \item{\bf Need of drawing independent sampling:}
+  \item{\bf Dependency on $\varepsilon$:} 
+\end{itemize}
 
-\section*{Future work} VC-dimension is one of many concepts from the broad
-field of statistical learning theory. Other tools and results
-include data-dependent sample complexity bounds, pseudodimension, Rademacher
-averages, Bayesian uniform bounds, just to name a
-few~\citep{BoucheronBL05,AnthonyB99,DevroyeGL96}. We showed that VC-dimension
-can be have a practical impact to speed up algorithms for data analytics, but it
-would be interesting to pursuit the use of these other concepts for the creation
-of new algorithm or to further reduce the number of samples needed to
-approximate. 
+\section*{Future work} 
+In this dissertation we studied the development and analysis of fast and
+efficient algorithms for data analytics by taking into consideration different
+aspects of the problem and different solutions. For each of these, there are a
+number of possible directions for future research.
+
+VC-dimension is one of many concepts from the broad field of statistical
+learning theory. Other tools and results include data-dependent sample
+complexity bounds, pseudodimension, Rademacher averages, Bayesian uniform
+bounds, just to name a few~\citep{BoucheronBL05,AnthonyB99,DevroyeGL96}. We
+showed that VC-dimension can be have a practical impact to speed up algorithms
+for data analytics, but it would be interesting to pursuit the use of these
+other concepts for the creation of new algorithm or to further reduce the number
+of samples needed to approximate. 
 
 In this work we focused on ``one-shot'' sampling, i.e., the algorithms create a
 single sample with size sufficient to obtain an approximation of desired
@@ -67,11 +85,27 @@ Family-Wide Error Rate). There is huge room for improvement and the use of
 VC-dimension to develop statistical tests to avoid the inclusion of false
 positives in the results is only one possible directions. 
 
-In general, research in the field of data analytics seems to have paid only
-limited attention to recent developments in statistics and probability theory. We
+Research in the field of data analytics seems to have paid only limited
+attention to recent developments in statistics and probability theory. We
 believe that there may be room for improvements and significant contributions in
 exploring the literature of these and other fields and adapt results and notions
 that may have been considered only of theoretical interest to develop efficient
 algorithm for practical problems involving the analysis of the ever-growing and
 ever-changing amount of data available today.
+
+In Chapter~\ref{ch:parma} we showed how it is possible to exploit the
+power and scalability of modern computational platforms like MapReduce to create
+algorithms for data analytics that can handle huge datasets that could not be
+processed by a single machine. Technology is one of the driving forces behind
+the development of new algorithms. It is important to leverage on the properties
+of the next-generation of computational platforms and of hardware when
+creating algorithms, in order to achieve the best performances. One particularly
+interesting direction is the use of parallel/distributed platforms for data
+streams. Algorithms for data streams have existed for a long time, but they
+usually consider a single stream processed by a single machine. Platforms like
+Spark or S4\refmissing, where the stream is partitioned across multiple machines
+require new algorithms that exploit their power. We implemented a streaming version
+of PARMA that was integrated in Yahoo SAMOA. Adapting other MapReduce algorithms
+to a distributed streaming setting or creating new algorithms for such platforms
+is a challenging research direction.
 
