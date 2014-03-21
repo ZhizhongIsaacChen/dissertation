@@ -15,28 +15,55 @@ the size of the dataset or on the number of patterns or ``questions'' that one
 is interested to answer using the data. The sample sizes obtained using our
 bounds are small and can fit into main memory, partially solving the issue of
 analyzing very large datasets. Indeed, the practicality of our results is
-exemplified by the fact that one of our algorithms (PARMA) was adapted and
-implemented to be used at Yahoo.
+exemplified by the fact that one of our algorithms (PARMA, see
+Ch.~\ref{ch:parma}) was adapted and implemented to be used at Yahoo.
 
 Despite the many advantages of using VC-dimension when analyzing sample sizes
 for randomized algorithms, one must not consider it a one-size-fits-all method
 as its wide applicability may be hindered by the following factors:
 \begin{itemize}
   \item{\bf Need for an efficient algorithm to compute bounds to the
-    VC-dimension:} Bounding the VC-dimension of a problem is challenging but not
-    impossible. Nevertheless, even if the bound is tight and it is a
+    VC-dimension.} Bounding the VC-dimension of a problem is a challenging but
+    good bounds can be found. Nevertheless, even if the bound is tight and it is a
     characteristic quantity of the dataset or of the problem at hand, actually
     computing this quantity may be computational expensive. We saw an example of
-    this issue in Sect.~\ref{sec:}, when dealing with the computation of the
+    this issue in Sect.~\refmissing, when dealing with the computation of the
     vertex-diameter of a directed or weighted graph. In that case, we were
     blessed by the presence of the logarithm in the bound of the VC-dimension,
     which allowed us to use a loose approximation of the vertex diameter, but
     this may not always be the case. Without a fast procedure to compute the
     upper bound to the VC-dimension (and therefore the needed sample size), the
     use of VC-dimension is severely limited.
-  \item{\bf Need for an efficient sampling procedure:}
-  \item{\bf Need of drawing independent sampling:}
-  \item{\bf Dependency on $\varepsilon$:} 
+  \item{\bf Need for an efficient sampling procedure.} A bound to the
+    VC-dimension is not sufficient: the second necessary component is a sampling
+    procedure to sample points of the domain according to the appropriate
+    probability distribution. We described an example of how to develop such a
+    sampling procedure in Sect.~\refmissing. It is of crucial importance that
+    the sampling procedure is fast, otherwise many advantages of using sampling
+    may be lost.
+  \item{\bf Need of drawing independent samples.} In order to apply
+    Thm.~\ref{thm:vceapprox}, we need \emph{independent} samples from the
+    distribution. At times, this may be a limitation. For example we saw in
+    Sect.~\refmissing that the algorithm from~\citep{BrandesP08} draws multiple
+    shortest paths at each step but they are dependent, as they all originate
+    from the same vertex. By doing this, the algorithm collects more
+    information, resulting in low variance in the estimation. Recent
+    developments extends Thm.~\ref{thm:vceapprox} to the case of\itodo{FIX}
+    sampling, therefore opening the possibility that the independence
+    requirement may be relaxed~\citemissing.
+  \item{\bf Dependency on $\varepsilon$.} If the probability mass of a range $R$ is
+    smaller than $\varepsilon$, then a sample of size as suggested by~\eqref{eq:
+    } may not contain any point in $R$. This is especially annoying when a lot
+    of ranges may have very small probability masses. In this case, a lower
+    $\varepsilon$ should be used in order to compute acceptable approximations
+    of these probability masses. The obvious drawback in using a lower
+    $\varepsilon$ is that it directly corresponds to a larger sample. Given that
+    the sample size depends on $1/\varepsilon^2$, the increase in the number of
+    samples may be substantial for a small decrease in $\varepsilon$. A larger
+    sample means a slower algorithm, and the advantages of using sampling may be
+    lost or hindered. Before using Thm.~\ref{thm:vcapprox} is therefore
+    necessary to assess whether we are interested in good approximations of very
+    small probability masses. If so, sampling may not be the best choice.
 \end{itemize}
 
 \section*{Future work} 
