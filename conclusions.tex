@@ -2,12 +2,11 @@
 
 The major goal of the work that led to this dissertation was to verify whether
 VC-dimension could be used to develop practical sample size bounds for important
-data analytics problems. Before this work, VC-dimension was considered of mostly
-theoretical significance. We showed that it is possible to compute tight upper
+data analytics problems. We showed that it is possible to compute tight upper
 bounds to the VC-dimension of relevant problems from different areas of data
 analytics: knowledge discovery, graph analysis, and database management. 
 
-The upper bounds are characteristic quantities of the dataset or of the
+The upper bounds that we found are characteristic quantities of the dataset or of the
 problem at hands. Not only they can be easy to compute, but they are usually
 small in practice. This means that the sample size needed to obtain high quality
 approximations of the results for the problem at hand may not need to depend on
@@ -19,20 +18,21 @@ exemplified by the fact that one of our algorithms (PARMA, see
 Ch.~\ref{ch:parma}) was adapted and implemented to be used in
 SAMOA~\citep{DFMorales13} at Yahoo (see also \url{http://yahoo.github.io/samoa/}).
 
-Despite the many advantages of using VC-dimension when analyzing sample sizes
-for randomized algorithms, one must not consider it a one-size-fits-all method
-as its wide applicability may be hindered by the following factors:
+Despite the many advantages of using VC-dimension when deriving sample sizes
+for randomized algorithms, it should not be considered a ``one-size-fits-all
+method''. Indeed, its applicability at large may be hindered by the following
+factors:
 \begin{itemize}
   \item{\bf Need for an efficient algorithm to compute bounds to the
-    VC-dimension.} Bounding the VC-dimension of a problem is a challenging but
+    VC-dimension.} Bounding the VC-dimension of a problem is  challenging but
     good bounds can be found. Nevertheless, even if the bound is tight and it is a
     characteristic quantity of the dataset or of the problem at hand, actually
     computing this quantity may be computational expensive. We saw an example of
     this issue in Sect.~\ref{sec:centrsamplallvertapprox}, when dealing with the
     computation of the vertex-diameter of a directed or weighted graph. In that
-    case, we were blessed by the presence of the logarithm in the bound of the
-    VC-dimension, which allowed us to use a loose approximation of the vertex
-    diameter, but this may not always be the case. Without a fast procedure to
+    case, we could use a fast-to-compute loose approximation of the vertex
+    diameter thanks to the presence of the logarithm of the vertex diameter in the bound of the
+    VC-dimension from Lemma~\ref{lem:vcdimuppbound}. Without a fast procedure to
     compute the upper bound to the VC-dimension (and therefore the needed sample
     size), the use of VC-dimension is severely limited.
   \item{\bf Need for an efficient sampling procedure.} A bound to the
@@ -49,9 +49,11 @@ as its wide applicability may be hindered by the following factors:
     from~\citep{BrandesP07} draws multiple shortest paths at each step but they
     are dependent, as they all originate from the same vertex. By doing this,
     the algorithm collects more information, resulting in low variance in the
-    estimation. Recent developments extends Thm.~\ref{thm:eapprox} to the case
-    of ergodic sampling, therefore opening the possibility that the independence
-    requirement may be relaxed~\citep{Catoni04,AdamsN11,AdamsN13,VanHandel13}.
+    estimation, but we were not able to show that it actually computes an
+    $\varepsilon$-approximation to the betweenness of all the vertices. Recent
+    developments extends Thm.~\ref{thm:eapprox} to the case of ergodic sampling,
+    therefore opening the possibility that the independence requirement may be
+    relaxed~\citep{Catoni04,AdamsN11,AdamsN13,VanHandel13}.
   \item{\bf Dependency on $\varepsilon$.} If the probability mass of a range $R$ is
     smaller than $\varepsilon$, then a sample of size as suggested
     by~\eqref{eq:vceapprox} may not contain any point in $R$. This is especially annoying when a lot
@@ -59,12 +61,12 @@ as its wide applicability may be hindered by the following factors:
     $\varepsilon$ should be used in order to compute acceptable approximations
     of these probability masses. The obvious drawback in using a lower
     $\varepsilon$ is that it directly corresponds to a larger sample. Given that
-    the sample size depends on $1/\varepsilon^2$, the increase in the number of
-    samples may be substantial for a small decrease in $\varepsilon$. A larger
+    the sample size depends on $1/\varepsilon^2$, even a small decrease in
+    $\varepsilon$ may lead to a substantial increase in the number of samples. A larger
     sample means a slower algorithm, and the advantages of using sampling may be
-    lost or hindered. Before using Thm.~\ref{thm:eapprox} is therefore
+    lost or hindered. Before considering the use of VC-dimension, it is therefore
     necessary to assess whether we are interested in good approximations of very
-    small probability masses. If so, sampling may not be the best choice.
+    small probability masses. 
 \end{itemize}
 
 \section*{Future work} 
@@ -73,7 +75,8 @@ efficient algorithms for data analytics by taking into consideration different
 aspects of the problem and different solutions. For each of these, there are a
 number of possible directions for future research.
 
-VC-dimension is one of many concepts from the broad field of statistical
+\begin{itemize}
+  \item VC-dimension is one of many concepts from the broad field of statistical
 learning theory. Other tools and results include data-dependent sample
 complexity bounds based on Rademacher averages, pseudodimension, VC-shatter
 coefficients, Bayesian uniform bounds, just to name a
@@ -83,7 +86,7 @@ would be interesting to pursuit the use of these other concepts for the creation
 of new algorithm or to further reduce the number of samples needed to
 approximate. 
 
-In this work we focused on ``one-shot'' sampling, i.e., the algorithms create a
+\item In this work we focused on ``one-shot'' sampling, i.e., the algorithms create a
 single sample with size sufficient to obtain an approximation of desired
 quality. \emph{Data-dependent bounds based on Rademacher averages} can be
 useful to develop \emph{progressive sampling} algorithms that start from a small
@@ -92,7 +95,8 @@ enough to obtain a good approximation~\citep{ElomaaK02,Kaariainen04}. The
 challenge in creating such algorithms is in the development and analysis of a
 stopping condition that can detect when to stop as soon as possible.  
 
-A bound on the VC-dimension allows to estimate the expectation of 0-1 functions
+\item A bound on the VC-dimension allows to estimate the probability masses associated
+to ranges or, equivalently, the expectations of 0-1 functions
 using their empirical averages. \emph{Pseudodimension} instead works for
 \emph{real-valued} functions. Since many datasets are real valued or can be seen
 as collection of real valued functions (e.g., audio and video files and sensor
@@ -100,29 +104,21 @@ signals), investigating the use of pseudodimension to create sampling-based
 randomized algorithms for data analytics problems on real data is an interesting
 research direction.
 
-One issue that we only partially tackle in Chapter~\ref{ch:realfis} is that of
+\item One issue that we only partially tackle in Ch.~\ref{ch:realfis} is that of
 \emph{statistical validation of the results}. We already explained in
-Chapter~\ref{ch:intro} why only recently it started to receive attention in data
+Ch.~\ref{ch:intro} why only recently it started to receive attention in data
 analytics\itodo{DO THIS!}. Although it is of primary importance to go beyond
 simple multi-hypothesis testing corrections like the Union bound (a.k.a.~the
-Bonferroni inequality) and we achieved it in Chapter~\ref{ch:realfis} for the
+Bonferroni inequality) and we achieved it in Ch.~\ref{ch:realfis} for the
 problem of frequent itemsets, there are other options to control false
 positives. One example is controlling the False Discovery
 Rate~\citep{BenjaminiH95} instead of the probability of having a false positive
-(which is what we do in Chapter~\ref{ch:realfis} and is known as controlling the
+(which is what we do in Ch.~\ref{ch:realfis} and is known as controlling the
 Family-Wide Error Rate). There is huge room for improvement and the use of
 VC-dimension to develop statistical tests to avoid the inclusion of false
 positives in the results is only one possible directions. 
 
-Research in the field of data analytics seems to have paid only limited
-attention to recent developments in statistics and probability theory. We
-believe that there may be room for improvements and significant contributions in
-exploring the literature of these and other fields and adapt results and notions
-that may have been considered only of theoretical interest to develop efficient
-algorithm for practical problems involving the analysis of the ever-growing and
-ever-changing amount of data available today.
-
-In Chapter~\ref{ch:parma} we showed how it is possible to exploit the
+\item In Ch.~\ref{ch:parma} we showed how it is possible to exploit the
 power and scalability of modern computational platforms like MapReduce to create
 algorithms for data analytics that can handle huge datasets that could not be
 processed by a single machine. Technology is one of the driving forces behind
@@ -132,10 +128,23 @@ creating algorithms, in order to achieve the best performances. One particularly
 interesting direction is the use of parallel/distributed platforms for data
 streams. Algorithms for data streams have existed for a long time, but they
 usually consider a single stream processed by a single machine. Platforms like
-Spark\citep{ZahariaCFSS13} (see also \url{http://spark.incubator.apache.org/}),
+Spark~\citep{ZahariaCFSS13} (see also \url{http://spark.incubator.apache.org/}),
 where the stream is partitioned across multiple machines require new algorithms
 that exploit their power. We implemented a streaming version of PARMA that was
 integrated in Yahoo SAMOA~\citep{DFMorales13}. Adapting other MapReduce
 algorithms to a distributed streaming setting or creating new algorithms for
 such platforms is a challenging research direction.
+\end{itemize}
+
+
+Research in the field of data analytics seems to have paid only limited
+attention to recent developments in statistics and probability theory. We
+believe that there may be room for improvements and significant contributions in
+exploring the literature of these and other fields and adapt results and notions
+that may have been considered only of theoretical interest to develop efficient
+algorithm for practical problems involving the analysis of the ever-growing and
+ever-changing amount of data available today. At the same time, researchers
+should be aware of advancements in technology and in the computational
+properties of modern platforms, in order to be able to extract the maximum
+amount of information from the data as efficiently and fast as possible. 
 
