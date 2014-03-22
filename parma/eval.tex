@@ -37,7 +37,6 @@ minimum frequency performance comparison in Figure \ref{fig:parmafrequency} and 
 the accuracy comparison in Figures~\ref{fig:parmaabsfreqerr}
 and~\ref{fig:parmaconfintwidth}, $\theta$ was kept constant at 0.1.
 
-\begin{comment}
 We focus on three main aspects in the experimental analysis of PARMA. First is the runtime
 analysis. In this set of experiments we compare PARMA to PFP and DistCount using several
 different datasets of varying size and mined with varying minimum frequency thresholds. We
@@ -49,7 +48,6 @@ cluster size are varied to determine how PARMA scales. Finally, because the outp
 PARMA is an absolute $\varepsilon$-close approximation of the real set of frequent itemsets, we provide
 an accuracy analysis to verify that our results are indeed within the desired quality
 bounds.
-\end{comment}
 
 \begin{table}[tb] \centering
 \begin{tabular}{ l  r } \hline number of items & 1000 \\ 
@@ -92,12 +90,10 @@ associated with each stage of PARMA.
 
 Figure~\ref{fig:parmaperformance} (top) shows the comparison
 between PARMA and DistCount.
-\begin{comment}
 As discussed previously, due to
 limitations in the scalability of DistCount, we were unable to test on
 the larger datasets, so the smaller datasets were generated using
-parameters from Table \ref{table:param1}. 
-\end{comment}
+parameters from Table \ref{tab:param1}. 
 For DistCount,
 longer itemsets affect runtime the most, as
 the number of key/value pairs generated from each transaction is
@@ -106,15 +102,12 @@ transactions does not affect runtime, just that the length of those
 transactions also has a significant impact. Because of this, it is
 possible to have datasets with fewer transactions but with more ``long''
 transactions that take longer to mine. This effect is seen in the first
-three datasets (1-3 million). 
-\begin{comment} 
-Even though the number of transactions
+three datasets (1-3 million). Even though the number of transactions
 significantly increases, the relative length of the longest transactions
 was actually longer in the 1 million transaction dataset. Indeed, upon
 further inspection, we found that the 1 million transaction dataset had
 25 transactions over 20 items in length, while the 2 and 3 million
 transaction dataset had less than 15. 
-\end{comment}
 Of course, since these datasets
 were generated independently and with the same parameters,
 this was purely by chance. However, as the number of transactions continues to
@@ -123,12 +116,9 @@ pairs is seen by the sharp increase in runtime. While we tried to test
 with a dataset with 6 million transaction, DistCount ran out of memory.
 The lack of ability to handle either long individual transactions or a
 large number of transactions in a dataset limits DistCount's
-real-world applicability. 
-\begin{comment}
-The runtime of PARMA is significantly faster
+real-world applicability. The runtime of PARMA is significantly faster
 than that of DistCount and, more importantly, nearly constant across
 dataset sizes. The reasons for this will be discussed in detail later.
-\end{comment}
 
 \begin{figure}[htb]
   \centering
@@ -241,7 +231,6 @@ on an 8 node Elastic MapReduce cluster.}
 \label{fig:parmafrequency}
 \end{figure}
 
-
 \begin{comment}
 In Figure \ref{fig:parmabreakdown2}, a breakdown of total runtimes is shown
 clustered by stage. In this view, it is apparent that most of the
@@ -259,6 +248,14 @@ Figure~\ref{fig:parmabreakdown2} we once again notice that the 5 million
 transaction dataset is an outlier. The longer than expected phase is
 the shuffle phase of stage 2, which again suggests that this dataset
 took longer to mine because more frequent itemsets were found.
+\begin{figure}[htb]
+  \centering
+    \includegraphics[width=0.4\textwidth]{breakdown2}
+  \caption{A Comparison of runtimes of the map/reduce/shuffle phases
+of PARMA, as a function of input dataset size. Clustered by stage. Run
+on an 8 node Elastic MapReduce cluster.}
+\label{fig:parmabreakdown2}
+\end{figure}
 \end{comment}
 
 Figure \ref{fig:parmafrequency} shows the breakdown of PARMA runtimes as
@@ -274,15 +271,6 @@ frequent itemset mining phase (stage 1, reduce), the effects of this
 can be seen in the stage 2 shuffle phase as well, as there is more
 data to move across the network. Still, the added costs of mining with
 lower frequencies are relatively small.
-
-%\begin{figure}[htb]
- % \centering
- %   \includegraphics[width=0.4\textwidth]{breakdown2}
-%  \caption{A Comparison of runtimes of the map/reduce/shuffle phases
-%of PARMA, as a function of input dataset size. Clustered by stage. Run
-%on an 8 node Elastic MapReduce cluster.}
-%\label{fig:parmabreakdown2}
-%\end{figure}
 
 %\vspace{-10pt}
 \subsection{Speedup and Scalability}
@@ -366,7 +354,6 @@ possible. Still, the constant runtime as data is increased
 demonstrates PARMA's potential scalability to real-world cluster and
 dataset sizes. 
 
-\begin{comment}
 A very important aspect of PARMA that should be stressed again
 here is that the size of the sample that will be mined does not depend
 directly on size of the original database, but instead on the
@@ -378,7 +365,6 @@ time spent reading the larger dataset initially during
 sampling). Because of this, clusters do not need to scale
 with the data, and often a relatively modest cluster size will be
 able to mine itemsets in a very reasonable time. 
-\end{comment}
 
 \subsection{Accuracy}
 The output of PARMA is a collection of frequent itemsets which approximates the
