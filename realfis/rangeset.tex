@@ -12,7 +12,7 @@ the itemsets in $\mathcal{C}$:
 \[\range(\mathcal{C})=\{T(A) ~:~ A\in\mathcal{C}\}\enspace.\]
 \end{definition}
 This is a generalization of the range space from Def.~\ref{def:vcrangespace}.
-Given a dataset $\Ds$, Thm.~\ref{thm:} gives a bound to
+Given a dataset $\Ds$, Thm.~\ref{lem:vcdimupperb} gives a bound to
 $\EVC(\Ds,\range(\mathcal{C}))$, the \emph{empirical} VC-dimension of
 $\range(\mathcal{C})$ on $\Ds$ in the following sense.
 
@@ -134,7 +134,6 @@ the empirical VC-dimension of $\mathcal{C}$ on $\Ds$.
   $\EVC(\Ds,\mathcal{C})\le b_j$. %We call $b_j$ the \emph{empirical b-index of
   %$\mathcal{C}$ on $\Ds$} and denote it as $\eb(\mathcal{C},\Ds)$
 \end{lemma}
-\ifarxiv
 \begin{proof}
   If $b_j\le L_j$, then there are at least $b_j$ transactions which can contain
   $2^{b_j-1}$ itemsets from $\mathcal{C}$ and this is the maximum $b_i$ for
@@ -144,7 +143,6 @@ the empirical VC-dimension of $\mathcal{C}$ on $\Ds$.
   $\EVC(\Ds,\mathcal{C})\le b_j$.
   \qed
 \end{proof}
-\fi
 
 \begin{corollary}\label{lem:sukpvc}
   Let $q$ be profit of the SUKP associated to $\mathcal{C}$ with capacity
@@ -182,7 +180,14 @@ $\mathcal{C}$, making this approach practical. %solution practical for our appli
 The range space associated to $2^\Itm$ (seen as a collection of itemsets) is
 particularly interesting for us. It is possible  %It is easy 
 to compute bounds to $\VC(2^\Itm,\range(2^\Itm))$ and
-$\EVC(\Ds,\range(2^\Itm))$ without having to solve a SUKP. Indeed, these are
-both consequences of Thm.~\ref{thm:}. We can bound $\EVC(\Ds,\range(2^\Itm))$
-using the d-index of $\Ds$, while we have $\VC(2^\Itm,\range(2^\Itm))=|\Itm|-1$.
+$\EVC(\Ds,\range(2^\Itm))$ without having to solve a SUKP and using instead the
+d-index. Indeed, these are
+both consequences of Thm.~\ref{lem:vcdimupperb}. 
+\begin{corollary}\label{coroll:empvcdimubfirst}
+  Let $\Ds$ be a dataset with d-index $d$. Then $\EVC(\Ds,\range(2^\Itm))\le d$.
+\end{corollary}
+
+\begin{corollary}\label{coroll:vcdimubfirst}
+$\VC(2^\Itm,\range(2^\Itm))=|\Itm|-1$.
+\end{corollary}
 

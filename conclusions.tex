@@ -27,33 +27,33 @@ as its wide applicability may be hindered by the following factors:
     good bounds can be found. Nevertheless, even if the bound is tight and it is a
     characteristic quantity of the dataset or of the problem at hand, actually
     computing this quantity may be computational expensive. We saw an example of
-    this issue in Sect.~\refmissing, when dealing with the computation of the
-    vertex-diameter of a directed or weighted graph. In that case, we were
-    blessed by the presence of the logarithm in the bound of the VC-dimension,
-    which allowed us to use a loose approximation of the vertex diameter, but
-    this may not always be the case. Without a fast procedure to compute the
-    upper bound to the VC-dimension (and therefore the needed sample size), the
-    use of VC-dimension is severely limited.
+    this issue in Sect.~\ref{sec:centrsamplallvertapprox}, when dealing with the
+    computation of the vertex-diameter of a directed or weighted graph. In that
+    case, we were blessed by the presence of the logarithm in the bound of the
+    VC-dimension, which allowed us to use a loose approximation of the vertex
+    diameter, but this may not always be the case. Without a fast procedure to
+    compute the upper bound to the VC-dimension (and therefore the needed sample
+    size), the use of VC-dimension is severely limited.
   \item{\bf Need for an efficient sampling procedure.} A bound to the
     VC-dimension is not sufficient: the second necessary component is a sampling
     procedure to sample points of the domain according to the appropriate
     probability distribution. We described an example of how to develop such a
-    sampling procedure in Sect.~\refmissing. It is of crucial importance that
-    the sampling procedure is fast, otherwise many advantages of using sampling
-    may be lost.
+    sampling procedure in Sect.~\ref{sec:centrsamplallvertapprox}. It is of
+    crucial importance that the sampling procedure is fast, otherwise many
+    advantages of using sampling may be lost.
   \item{\bf Need of drawing independent samples.} In order to apply
-    Thm.~\ref{thm:vceapprox}, we need \emph{independent} samples from the
+    Thm.~\ref{thm:eapprox}, we need \emph{independent} samples from the
     distribution. At times, this may be a limitation. For example we saw in
-    Sect.~\refmissing that the algorithm from~\citep{BrandesP08} draws multiple
+    Sect.~\refmissing that the algorithm from~\citep{BrandesP07} draws multiple
     shortest paths at each step but they are dependent, as they all originate
     from the same vertex. By doing this, the algorithm collects more
     information, resulting in low variance in the estimation. Recent
-    developments extends Thm.~\ref{thm:vceapprox} to the case of\itodo{FIX}
+    developments extends Thm.~\ref{thm:eapprox} to the case of ergodic
     sampling, therefore opening the possibility that the independence
     requirement may be relaxed~\citemissing.
   \item{\bf Dependency on $\varepsilon$.} If the probability mass of a range $R$ is
-    smaller than $\varepsilon$, then a sample of size as suggested by~\eqref{eq:
-    } may not contain any point in $R$. This is especially annoying when a lot
+    smaller than $\varepsilon$, then a sample of size as suggested
+    by~\eqref{eq:vceapprox} may not contain any point in $R$. This is especially annoying when a lot
     of ranges may have very small probability masses. In this case, a lower
     $\varepsilon$ should be used in order to compute acceptable approximations
     of these probability masses. The obvious drawback in using a lower
@@ -61,7 +61,7 @@ as its wide applicability may be hindered by the following factors:
     the sample size depends on $1/\varepsilon^2$, the increase in the number of
     samples may be substantial for a small decrease in $\varepsilon$. A larger
     sample means a slower algorithm, and the advantages of using sampling may be
-    lost or hindered. Before using Thm.~\ref{thm:vcapprox} is therefore
+    lost or hindered. Before using Thm.~\ref{thm:eapprox} is therefore
     necessary to assess whether we are interested in good approximations of very
     small probability masses. If so, sampling may not be the best choice.
 \end{itemize}
@@ -106,7 +106,7 @@ simple multi-hypothesis testing corrections like the Union bound (a.k.a.~the
 Bonferroni inequality) and we achieved it in Chapter~\ref{ch:realfis} for the
 problem of frequent itemsets, there are other options to control false
 positives. One example is controlling the False Discovery
-Rate~\citep{BenjiaminiH95} instead of the probability of having a false positive
+Rate~\citep{BenjaminiH95} instead of the probability of having a false positive
 (which is what we do in Chapter~\ref{ch:realfis} and is known as controlling the
 Family-Wide Error Rate). There is huge room for improvement and the use of
 VC-dimension to develop statistical tests to avoid the inclusion of false
