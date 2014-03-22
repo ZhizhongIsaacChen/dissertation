@@ -50,7 +50,7 @@ as its wide applicability may be hindered by the following factors:
     information, resulting in low variance in the estimation. Recent
     developments extends Thm.~\ref{thm:eapprox} to the case of ergodic
     sampling, therefore opening the possibility that the independence
-    requirement may be relaxed~\citemissing.
+    requirement may be relaxed~\citep{Catoni04,AdamsN11,AdamsN13,VanHandel13}.
   \item{\bf Dependency on $\varepsilon$.} If the probability mass of a range $R$ is
     smaller than $\varepsilon$, then a sample of size as suggested
     by~\eqref{eq:vceapprox} may not contain any point in $R$. This is especially annoying when a lot
@@ -74,21 +74,22 @@ number of possible directions for future research.
 
 VC-dimension is one of many concepts from the broad field of statistical
 learning theory. Other tools and results include data-dependent sample
-complexity bounds, pseudodimension, Rademacher averages, Bayesian uniform
-bounds, just to name a few~\citep{BoucheronBL05,AnthonyB99,DevroyeGL96}. We
-showed that VC-dimension can be have a practical impact to speed up algorithms
-for data analytics, but it would be interesting to pursuit the use of these
-other concepts for the creation of new algorithm or to further reduce the number
-of samples needed to approximate. 
+complexity bounds based on Rademacher averages, pseudodimension, VC-shatter
+coefficients, Bayesian uniform bounds, just to name a
+few~\citep{BoucheronBL05,AnthonyB99,DevroyeGL96}. We showed that VC-dimension
+can be have a practical impact to speed up algorithms for data analytics, but it
+would be interesting to pursuit the use of these other concepts for the creation
+of new algorithm or to further reduce the number of samples needed to
+approximate. 
 
 In this work we focused on ``one-shot'' sampling, i.e., the algorithms create a
 single sample with size sufficient to obtain an approximation of desired
-quality. \emph{Data-dependent bounds and Rademacher averages} can be
+quality. \emph{Data-dependent bounds based on Rademacher averages} can be
 useful to develop \emph{progressive sampling} algorithms that start from a small
 sample size and check a stopping condition to understand whether they sampled
-enough to obtain a good approximation. The challenge in creating such algorithms
-is in the development and analysis of a stopping condition that can detect when
-to stop as soon as possible.  
+enough to obtain a good approximation~\citep{ElomaaK02,Kaariainen04}. The
+challenge in creating such algorithms is in the development and analysis of a
+stopping condition that can detect when to stop as soon as possible.  
 
 A bound on the VC-dimension allows to estimate the expectation of 0-1 functions
 using their empirical averages. \emph{Pseudodimension} instead works for
