@@ -1,4 +1,14 @@
 \chapter{Introduction}\label{ch:intro}
+
+\noindent {\bf Thesis statement:} Analyzing very large datasets is an expensive
+computational task. We show that it is possible to obtain high-quality
+approximations of the results by analyzing a small random sample of the
+dataset. We use the Vapnik-Chervonenkis (VC) dimension to derive the sample size
+needed to probabilistically guarantee that the approximation is sufficiently
+accurate. This results in very fast algorithms for mining frequent itemsets and
+association rules, computing the betweenness centrality of vertices in a graph,
+and estimating the selectivity of database queries.
+
 \todo{Write introduction.}
 %Analysis of data through the use of inductive reasoning combined with
 %deductive mathematical tools, allowed mankind not to sit still in the dark of a
@@ -102,37 +112,42 @@
 %data generating process. We show that the test has high statistical power and
 %it is competitive with other existing methods.
 %
-%\paragraph*{}
-%Chapter~\ref{ch:prelims} formally presents the settings and the problems of
-%interest, the related works in the scientific literature. It also introduces
-%statistical learning theory and the mathematical tools used in the development
-%and analysis of algorithms in later chapters.
-%
-%Chapter~\ref{ch:vcmine} is concerned with a first algorithm to extract frequent itemsets
-%and association rules from a single static random sample of a very large
-%transactional dataset. The algorithm uses VC-dimension and related techniques to
-%compute the sample size sufficient to guarantee a desired level of accuracy and
-%confidence.
-%
-%Chapter~\ref{ch:parma} expands the results from
-%Chapter~\ref{ch:vcmine} as a building block a parallel/distributed algorithm
-%that exploits the MapReduce platform to achieve higher accuracy and confidence
-%in the results of mining frequent itemsets and association rules from random
-%samples. It combines sampling, optimization, and parallel/distributed execution
-%to use the available computational resources in an optimal way.
-%
+
+\section{Why sampling?}
+
+\section{Overview of Contributions}
+
+\paragraph*{Outline.} This dissertation is organized as follows.
+
+Chapter~\ref{ch:vcdim} introduces the Vapnik-Chervonenkis dimension and the
+related results we use to develop and analyze the algorithms in later
+chapters.  
+
+Chapter~\ref{ch:vcmine} is concerned with a first algorithm to extract frequent itemsets
+and association rules from a single static random sample of a very large
+transactional dataset.
+%We bound the VC-dimension of the problem and show that it
+%is a characteristic quantity of the dataset. This allows us to compute the
+%sample size sufficient to guarantee a desired level of accuracy and confidence.
+
+Chapter~\ref{ch:parma} expands the results from Ch.~\ref{ch:vcmine} as building
+blocks for a parallel/distributed algorithm that exploits the MapReduce platform
+to achieve higher accuracy and confidence when mining frequent
+itemsets and association rules from random samples. 
+%The algorithm combines
+%sampling, optimization, and parallel/distributed execution to use the available
+%computational resources in an optimal way.
+
 %Chapter~\ref{ch:shatterfi} proposes the development of a progressive sampling
 %algorithm to extract frequent itemsets. The algorithm will start from a small
 %sample and enlarge it as it is needed according to a stopping rule developed
 %using the VC shatter coefficient of the dataset. This is proposed work.
-%
-%Chapter~\ref{ch:realfis} presents a statistical test in the multiple hypothesis
-%testing setting to compute the \emph{real frequent itemsets}, that is, itemsets
-%that are frequent according to the unknown distribution generating the data.
-%Mixed integer optimization together with VC-dimension techniques allow for the
-%control of the Family-Wise Error Rate of the test, that is, the probability of
-%mislabelling an itemset as real frequent when it is not.
-%
+
+
+Chapter~\ref{ch:realfis} presents the problem of frequent itemsets mining from a
+statistical point of view and introduces a technique to avoid the inclusion
+of false positives in the collection of frequent itemsets.
+
 %Chapter~\ref{ch:graphmine} deals with the extraction of frequent connected
 %subgraphs from huge graphs using random samples. One of the main challenge in
 %this setting is the design of sampling procedure from a uniform
@@ -140,13 +155,19 @@
 %develop will solve this problem by considering the theory behind branching
 %processes and VC-dimension to compute the sufficient sample size. This is
 %proposed work.
-%
-%Chapter~\ref{ch:vcfreq} shows the application of VC-dimension to solve the
-%important database management problem of query selectivity estimation. We show a
+
+Chapter~\ref{ch:centrsampl} deals with computing high-quality approximations of
+the betweenness centrality, a measure of importance, of all vertices in a large
+graph.
+
+Chapter~\ref{ch:vcfreq} presents a bound bound the VC-dimension of SQL
+queries using their syntax and show that a small sample of the database is
+sufficient to accurately estimate the selectivity of queries.
+% We show a
 %connection between statistical learning theory and the class of SQL database
 %queries and develop an algorithm to estimate the selectivity using a very small
 %sample of the original database.
-%
-%Chapter~\ref{ch:conclusions} contains the conclusions that can be drawn from
-%this body of work.
-%
+
+Chapter~\ref{ch:conclusions} contains the conclusions that can be drawn from
+this body of work and some suggestions for future work.
+
