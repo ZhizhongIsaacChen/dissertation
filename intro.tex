@@ -114,7 +114,57 @@ database queries.
 %
 
 \section{Motivations}
-\todo{Write.}
+
+Frequent itemsets and association rules mining is one of the core tasks of data
+analytics, requiring to find sets of items in a transactional dataset that
+appear in more than a given fraction of the transactions, and use this
+collection to build high-confidence inference rules between sets of items.
+Betweenness centrality is a measure of the
+importance of a vertex in a graph, corresponding to the fraction of shortest
+paths going through that vertex. 
+The selectivity of a database query is the ratio between the size of its output
+and the product of the sizes of the tables in input. Database management systems
+estimate the selectivity of queries to make informed scheduling decisions.
+
+\paragraph*{Why sampling?} The use of random sampling is a natural solution to
+the issue we just described: by analyzing only a small random sample that fits into main
+memory there is no need to access the disk or the network and at the same time.
+This comes at the inevitable price of only having an approximation of the
+results, but the trade-off between the size of the sample and the quality of
+approximation can be studied using techniques from the theory of probability.
+\paragraph*{Why VC-dimension?} There are many mathematical tools that can be
+used to compute a sample size sufficient to extract a high-quality approximation
+of the results: Chernoff/Hoeffding bounds, martingales, tail bound on
+polynomials of random variables, and
+more~\citep{MitzenmacherU05,AlonS08,DubhashiP09}. We choose to focus on
+VC-dimension for the following reasons:
+\begin{itemize}
+  \item Many problems in data analytics, among which those that we are
+    interested in, require the computation of measures of interest (e.g.,
+    frequency, confidence, betweenness centrality, selectivity) for huge number
+    of objects (e.g., patterns, vertices, queries). Classical probabilistic
+    tools like the Azuma inequality work by bounding the probability that the
+    measure of interest for a single object deviates from its expectation by
+    more than a given quantity. In order to have simultaneous bounds on all the
+    objects, one must apply the union bound, resulting in a sample size that
+    depends on the logarithm of the number of objects. Previous works explored
+    the use of these tools to solve the problems we are interested in and indeed
+    fell into this issue. On the other hand, results related to VC-dimension
+    give sample sizes that only depends on this quantity, which can be much
+    smaller and independent from the number of objects.
+  \item The use of VC-dimension is not limited to a specific problem or setting.
+    The results and techniques related to VC-dimension are widely applicable and
+    can be used for many different problems. Moreover, no assumption is made on
+    the distribution of the measure of interest, or on the availability of any
+    previous knowledge about the data.
+\end{itemize}
+
+\paragraph*{Why these tasks?} We choose to focus on important tasks from
+different areas of data analytics, rather than a single tasks or different tasks
+from the same area. This is motivated by our goal of showing that VC-dimension
+is a very flexible and powerful concept that can be used to obtain efficient
+sampling-based randomized algorithms for a variety of problems in data
+analytics.
 
 \section{Overview of contributions}
 This dissertation presents sampling-based algorithms for a number of data
@@ -145,9 +195,7 @@ Problem. This allows us to to find a frequency threshold such that the
 collection of frequent itemsets with respect to this threshold will not include
 false positives with high probability (Ch.~\ref{ch:realfis}).
 
-\paragraph*{Betweenness centrality.} Betweenness centrality is a measure of the
-importance of a vertex in a graph, corresponding to the fraction of shortest
-paths going through that vertex. We show that it is possible to compute very
+\paragraph*{Betweenness centrality.} We show that it is possible to compute very
 accurate estimations of the betweenness centrality (and many of its variants) of
 all vertices by only performing a limited number of shortest paths computation,
 chosen at random. The sample size depends on the VC-dimension of the problem,
@@ -159,10 +207,7 @@ results also allow us to present a tighter analysis of an existing
 sampling-based algorithm for betweenness centrality estimation
 (Ch.~\ref{ch:centrsampl}).
 
-\paragraph*{Query selectivity estimation.} The selectivity of a database query
-is the ratio between the size of its output and the product of the sizes of the
-tables in input. Database management systems estimate the selectivity of
-queries to make informed scheduling decisions. We show that the VC-dimension of
+\paragraph*{Query selectivity estimation.}  We show that the VC-dimension of
 classes of database queries is bounded by the complexity of their SQL
 expression, i.e., by the maximum number of joins and selection predicates
 involved in the queries. We use this bound to show that it is possible to
