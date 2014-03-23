@@ -1601,17 +1601,16 @@ should only occur in artificial datasets, as it should be evident from the
 proof of Thm.~\ref{lem:vcdimlowerb}. It would be very interesting to investigate
 better methods to estimate the actual VC-dimension of the range space associated
 to a dataset, rather than upper-bound it with $d$ or $q$, as this could lead to
-much smaller sample sizes. The problem of estimating the VC-dimension of
-learning machines is a fundamental problem in learning, given that analytical
+much smaller sample sizes. We discussed in Sect.~\ref{sec:vccomputcons} how the
+problem of estimating the VC-dimension of learning machines is a fundamental problem in learning, given that analytical
 computation of the exact value is usually impossible, as it is in our
-case. \citet{VapnikLLC94}~and~\citet{ShaoCL00} presented and refined an
-experimental procedure to estimate the VC-dimension of a learning machines,
-and~\citet{McDonaldSS11} gave concentration results for such an estimate. This
-procedure, although applicable to our case under mild conditions, is not very
-practical. It is very highly time consuming, as it requires the creation and
-analysis of multiple artificial datasets starting from the original one.
-Developing efficient ways to estimate the VC-dimension of a range space is
-an interesting research problem. 
+case. The
+procedure proposed by~\citet{VapnikLLC94}~and~\citet{ShaoCL00} procedure,
+although applicable to our case under mild conditions, is not very practical. It
+is very highly time consuming, as it requires the creation and analysis of
+multiple artificial datasets starting from the original one.  Developing
+efficient ways to estimate the VC-dimension of a range space is an interesting
+research problem. 
 
 We conclude this discussion noting that all the bounds we presented have a
 dependency on $1/\varepsilon^2$. This is due to the use of tail bounds dependent

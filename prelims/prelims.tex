@@ -12,16 +12,16 @@ those involving the \emph{Vapnik-Chervonenkis (VC) dimension} of the problem.
 
 \section{Use of VC-Dimension in computer science}\label{sec:vcliterature}
 VC-Dimension was first introduced in a seminal article~\citep{VapnikC71} on
-the convergence of probability distributions, but it was only with the work
+the convergence of empirical averages to their expectations, but it was only with the work
 of~\citet{HausslerW86} and~\citet{BlumerEHW89} that it was applied to the field
-of learning. \citet{BoucheronBL05} present a good survey of the field with many
-recent advances. Since then, VC-dimension has encountered enormous success and
+of learning. Since then, VC-dimension has encountered enormous success and
 application in the fields of computational
 geometry~\citep{Chazelle00,Matousek02} and machine
-learning~\citep{AnthonyB99,DevroyeGL96}. Other applications include database
-management and graph algorithms.  In the former, it was used in the context of
+learning~\citep{AnthonyB99,DevroyeGL96}. \citet{BoucheronBL05} present a good
+survey and many recent developments. Other applications include database
+management and graph algorithms. In the former, it was used in the context of
 constraint databases to compute good approximations of aggregate
-operators~\citep{BenediktL02}.  VC-dimension-related results were also recently
+operators~\citep{BenediktL02}. VC-dimension-related results were also recently
 applied in the field of database privacy by~\citet{BlumLR08} to show a bound on
 the number of queries needed for an attacker to learn a private concept in a
 database. \citet{Gross11} showed that content with unbounded VC-dimension can
@@ -307,5 +307,25 @@ result on VC-dimension.
   which proves the result.
 \end{proof}
 
-\section{Computational considerations}
-\todo{Write.}
+\section{Computational considerations}\label{sec:vccomputcons}
+An upper bound to the VC-dimension of the range space is needed in order to
+apply Thm.~\ref{thm:eapprox}, Thm.~\ref{thm:eapproxempir}, or
+Thm.~\ref{thm:releapprox}. It is natural to ask whether, rather than a bound, one
+could compute the exact VC-dimension of a range space. \citet{PapadimitriouY96}
+characterized the complexity of computing the VC-dimension. Although in {\sc
+np}, the problem is most likely not {\sc np}-complete, but can it be solved in
+polynomial time?  \citet{PapadimitriouY96} defined a new complexity class {\sc
+lognp} and show that the decision version of the problem of computing the
+VC-dimension is {\sc lognp}-complete. \citet{Schaefer99} showed that in general
+one can not approximate the problem up to a constant factor in polynomial time,
+unless {\sc p}={\sc np}. \citet{MosselU01} gave a refined characterization of
+the approximability of the problem.
+
+\citet{VapnikLLC94}~and~\citet{ShaoCL00} presented and refined an experimental
+procedure to estimate the VC-dimension of a learning machine,
+and~\citet{McDonaldSS11} gave concentration results for such an estimate. This
+procedure is mostly of theoretical interests, as it is computationally very
+expensive. It would not be practical in settings like the one we study in this
+dissertation, as it would defeat the purpose of using sampling to speed up the
+analysis of very large datasets.
+
