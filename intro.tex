@@ -10,6 +10,201 @@ algorithms for mining frequent itemsets and association rules, computing the
 betweenness centrality of vertices in a graph, and estimating the selectivity of
 database queries.
 
+\section{Motivations}
+Advancements in retrieval and storage technologies led to the collection of
+data about many aspects of natural and artificial phenomena.
+Analyzing these datasets to find useful information is a daunting task that
+requires multiple iterations of data cleaning, modeling, and processing. The
+cost of analysis can often be split into two parts. One component of the cost is
+intrinsic to the complexity of extracting the desired information (e.g.,
+dependent on the number of patterns to find, or the number of iterations
+needed). The second component depends on the size of the dataset to be examined.
+Smart algorithms can help reducing the first component, while the second seems
+to be ever increasing as more and more data become available. Indeed the latter
+may reduce any improvement of the intrinsic cost as the dataset grows. Since
+many datasets are too large to fit into the main memory of a single machine,
+analyzing such datasets would require frequent access to disk or even to the
+network, resulting in excessively long processing times.
+
+The use of random sampling is a natural solution to the issue we just described:
+by analyzing only a small random sample that fits into main memory there is no
+need to access the disk or the network. This comes at the inevitable price of
+only being able to extract an approximation of the results, but the trade-off
+between the size of the sample and the quality of approximation can be studied
+using techniques from the theory of probability. 
+
+The intuition behind the use of random sampling also allow us to look at a
+different important issue in data analytics: the statistical validation of the
+results. Algorithms for analytics often make the implicit assumption that the
+available dataset constitutes the entire reality and it contains, in some sense,
+a perfect representation of the phenomena under study. This is indeed not
+usually the case: not only datasets contain errors due to inherently stochastic
+collection procedures, but they also naturally contain only a limited amount of
+information about the phenomena. Indeed a dataset should be seen as a random
+sample from an unknown data generation process, whose study corresponds to the
+study of the phenomena. By looking at the dataset this way, it becomes clear
+that the results of analyzing the dataset are approximated. This leads to the
+need of validating the results to discriminate between real and spurious
+information, which was found to be interesting in the dataset only due to the
+stochastic nature of the data generation process. While the need for statistical
+validations has been since long acknowledged in life and physical sciences
+and it is a central matter of study in statistics, computer science researchers
+have only recently started to pay attention to it and to develop methods to 
+either validate the results of previously available algorithms or to avoid the
+inclusion of spurious information in the results.
+
+The data analytics tasks we deal with are the following:
+\begin{itemize}
+  \item Frequent itemsets and association rules mining is one of the core tasks
+    of data analytics, requiring to find sets of items in a transactional
+    dataset that appear in more than a given fraction of the transactions, and
+    use this collection to build high-confidence inference rules between sets of
+    items.
+  \item Betweenness centrality is a measure of the importance of a vertex in a
+    graph, corresponding to the fraction of shortest paths going through that
+    vertex. 
+  \item The selectivity of a database query is the ratio between the size of its
+    output and the product of the sizes of the tables in input. Database
+    management systems estimate the selectivity of queries to make informed
+    scheduling decisions.
+\end{itemize}
+We choose to focus on important tasks from different areas of data analytics,
+rather than a single task or different tasks from the same area. This is
+motivated by our goal of showing that random sampling can be used to compute
+good approximations for a variety of tasks. Moreover, these tasks share some
+common aspects: they involve the analysis of very large datasets and they
+involve the estimation of a measure of interest (frequency, confidence,
+betweenness centrality, selectivity) for many objects (itemsets, association
+rules, vertices, queries). These aspects are common in many other tasks.
+
+As we said, there exists many mathematical tools that can be used to compute a
+sample size sufficient to extract a high-quality approximation of the results:
+Chernoff/Hoeffding bounds, martingales, tail bound
+on polynomials of random variables, and
+more~\citep{MitzenmacherU05,AlonS08,DubhashiP09}. We choose to focus on
+VC-dimension for the following reasons:
+\begin{itemize}
+  \item Classical probabilistic tools like the Azuma inequality work by bounding
+    the probability that the measure of interest for a single object deviates
+    from its expectation by more than a given quantity. One must then apply the
+    union bound to get simultaneous guarantees for all the objects. This results
+    in a sample size that depends on the logarithm of the number of objects,
+    which may be still too much and too loose. Previous works explored the use
+    of these tools to solve the problems we are interested in and indeed
+    suffered from this drawback. On the other hand, results related to
+    VC-dimension give sample sizes that only depend on this combinatorial
+    quantity, which can be very small and independent from the number of
+    objects.
+  \item The use of VC-dimension is not limited to a specific problem or setting.
+    The results and techniques related to VC-dimension are widely applicable and
+    can be used for many different problems. Moreover, no assumption is made on
+    the distribution of the measure of interest, or on the availability of any
+    previous knowledge about the data.
+\end{itemize}
+
+\section{Overview of contributions}
+This dissertation presents sampling-based algorithms for a number of data
+analytics tasks: frequent itemsets and association rules mining, betweenness
+centrality approximation, and datatabase query selectivity estimation. To
+analyze our algorithms we use the Vapnik-Chervonenkis dimension and related
+results from the field of sor a long timetatistical learning theory (Ch.~\ref{ch:vcdim}). This
+leads to a significant reduction in the sample sizes needed to obtain
+high-quality approximations of the results of the mentioned tasks.
+
+\paragraph*{Mining frequent itemsets and association rules.} We show that the
+VC-dimension of the problem of mining frequent itemsets and association rules is
+tightly bounded by an easy-to-compute characteristic quantity of the dataset.
+This allows us to derive the smallest known bound to the sample size needed to
+compute very accurate approximations of the collections of patterns
+(Ch.~\ref{ch:vcmine}). The combination of the theoretical guarantees offered by
+this results with the computational power and scalability of MapReduce allows us
+to develop PARMA, a fast distributed algorithm that mines many small samples in
+parallel to achieve higher confidence and accuracy. PARMA
+is much more scalable and efficient than existing solutions and uses all the
+available computational resources (Ch.~\ref{ch:parma}). 
+
+\paragraph*{Statistical validation.} A common issue when mining frequent
+itemsets is the inclusion of false positives, i.e., of itemsets that are only
+frequent by chance. We develop a method that computes a bound to the VC-dimension
+of a collection of itemsets by solving a variant of the Set-Union Knapsack
+Problem. This allows us to to find a frequency threshold such that the
+collection of frequent itemsets with respect to this threshold will not include
+false positives with high probability (Ch.~\ref{ch:realfis}).
+
+\paragraph*{Betweenness centrality.} We show that it is possible to compute very
+accurate estimations of the betweenness centrality (and many of its variants) of
+all vertices by only performing a limited number of shortest paths computation,
+chosen at random. The sample size depends on the VC-dimension of the problem,
+which we show to be bounded by the logarithm of the number of vertices in the
+longest shortest path (i.e., by the logarithm of the diameter in an unweighted
+graph). The bound is tight and interestingly collapses to a small constant when
+there is a unique shortest path between every pair of connected vertices. Our
+results also allow us to present a tighter analysis of an existing
+sampling-based algorithm for betweenness centrality estimation
+(Ch.~\ref{ch:centrsampl}).
+
+\paragraph*{Query selectivity estimation.}  We show that the VC-dimension of
+classes of database queries is bounded by the complexity of their SQL
+expression, i.e., by the maximum number of joins and selection predicates
+involved in the queries. We use this bound to show that it is possible to
+obtain very accurate estimations of the selectivities by running the queries on
+a very small sample of the database. 
+
+%\paragraph*{Outline.} This dissertation is organized as follows.
+%
+%Chapter~\ref{ch:vcdim} introduces the Vapnik-Chervonenkis dimension and the
+%related results we use to develop and analyze the algorithms in later
+%chapters.  
+%
+%Chapter~\ref{ch:vcmine} is concerned with a first algorithm to extract frequent itemsets
+%and association rules from a single static random sample of a very large
+%transactional dataset.
+%%We bound the VC-dimension of the problem and show that it
+%%is a characteristic quantity of the dataset. This allows us to compute the
+%%sample size sufficient to guarantee a desired level of accuracy and confidence.
+%
+%Chapter~\ref{ch:parma} expands the results from Ch.~\ref{ch:vcmine} as building
+%blocks for a parallel/distributed algorithm that exploits the MapReduce platform
+%to achieve higher accuracy and confidence when mining frequent
+%itemsets and association rules from random samples. 
+%%The algorithm combines
+%%sampling, optimization, and parallel/distributed execution to use the available
+%%computational resources in an optimal way.
+%
+%%Chapter~\ref{ch:shatterfi} proposes the development of a progressive sampling
+%%algorithm to extract frequent itemsets. The algorithm will start from a small
+%%sample and enlarge it as it is needed according to a stopping rule developed
+%%using the VC shatter coefficient of the dataset. This is proposed work.
+%
+%
+%Chapter~\ref{ch:realfis} presents the problem of frequent itemsets mining from a
+%statistical point of view and introduces a technique to avoid the inclusion
+%of false positives in the collection of frequent itemsets.
+%
+%%Chapter~\ref{ch:graphmine} deals with the extraction of frequent connected
+%%subgraphs from huge graphs using random samples. One of the main challenge in
+%%this setting is the design of sampling procedure from a uniform
+%%distribution among connected subgraphs of a given size. The algorithm we aim to
+%%develop will solve this problem by considering the theory behind branching
+%%processes and VC-dimension to compute the sufficient sample size. This is
+%%proposed work.
+%
+%Chapter~\ref{ch:centrsampl} deals with computing high-quality approximations of
+%the betweenness centrality, a measure of importance, of all vertices in a large
+%graph.
+%
+%Chapter~\ref{ch:vcfreq} presents a bound bound the VC-dimension of SQL
+%queries using their syntax and show that a small sample of the database is
+%sufficient to accurately estimate the selectivity of queries.
+%% We show a
+%%connection between statistical learning theory and the class of SQL database
+%%queries and develop an algorithm to estimate the selectivity using a very small
+%%sample of the original database.
+%
+%Chapter~\ref{ch:conclusions} contains the conclusions that can be drawn from
+%this body of work and some suggestions for future work.
+
+
 %Analysis of data through the use of inductive reasoning combined with
 %deductive mathematical tools, allowed mankind not to sit still in the dark of a
 %cave. Whether science actually helped in giving mankind a direction to move
@@ -112,159 +307,3 @@ database queries.
 %data generating process. We show that the test has high statistical power and
 %it is competitive with other existing methods.
 %
-
-\section{Motivations}
-
-Frequent itemsets and association rules mining is one of the core tasks of data
-analytics, requiring to find sets of items in a transactional dataset that
-appear in more than a given fraction of the transactions, and use this
-collection to build high-confidence inference rules between sets of items.
-Betweenness centrality is a measure of the
-importance of a vertex in a graph, corresponding to the fraction of shortest
-paths going through that vertex. 
-The selectivity of a database query is the ratio between the size of its output
-and the product of the sizes of the tables in input. Database management systems
-estimate the selectivity of queries to make informed scheduling decisions.
-
-\paragraph*{Why sampling?} The use of random sampling is a natural solution to
-the issue we just described: by analyzing only a small random sample that fits into main
-memory there is no need to access the disk or the network and at the same time.
-This comes at the inevitable price of only having an approximation of the
-results, but the trade-off between the size of the sample and the quality of
-approximation can be studied using techniques from the theory of probability.
-\paragraph*{Why VC-dimension?} There are many mathematical tools that can be
-used to compute a sample size sufficient to extract a high-quality approximation
-of the results: Chernoff/Hoeffding bounds, martingales, tail bound on
-polynomials of random variables, and
-more~\citep{MitzenmacherU05,AlonS08,DubhashiP09}. We choose to focus on
-VC-dimension for the following reasons:
-\begin{itemize}
-  \item Many problems in data analytics, among which those that we are
-    interested in, require the computation of measures of interest (e.g.,
-    frequency, confidence, betweenness centrality, selectivity) for huge number
-    of objects (e.g., patterns, vertices, queries). Classical probabilistic
-    tools like the Azuma inequality work by bounding the probability that the
-    measure of interest for a single object deviates from its expectation by
-    more than a given quantity. In order to have simultaneous bounds on all the
-    objects, one must apply the union bound, resulting in a sample size that
-    depends on the logarithm of the number of objects. Previous works explored
-    the use of these tools to solve the problems we are interested in and indeed
-    fell into this issue. On the other hand, results related to VC-dimension
-    give sample sizes that only depends on this quantity, which can be much
-    smaller and independent from the number of objects.
-  \item The use of VC-dimension is not limited to a specific problem or setting.
-    The results and techniques related to VC-dimension are widely applicable and
-    can be used for many different problems. Moreover, no assumption is made on
-    the distribution of the measure of interest, or on the availability of any
-    previous knowledge about the data.
-\end{itemize}
-
-\paragraph*{Why these tasks?} We choose to focus on important tasks from
-different areas of data analytics, rather than a single tasks or different tasks
-from the same area. This is motivated by our goal of showing that VC-dimension
-is a very flexible and powerful concept that can be used to obtain efficient
-sampling-based randomized algorithms for a variety of problems in data
-analytics.
-
-\section{Overview of contributions}
-This dissertation presents sampling-based algorithms for a number of data
-analytics tasks: frequent itemsets and association rules mining, betweenness
-centrality approximation, and datatabase query selectivity estimation. To
-analyze our algorithms we use the Vapnik-Chervonenkis dimension and related
-results from the field of statistical learning theory (Ch.~\ref{ch:vcdim}). This
-leads to a significant reduction in the sample sizes needed to obtain
-high-quality approximations of the results of the mentioned tasks.
-
-\paragraph*{Mining frequent itemsets and association rules.} We show that the
-VC-dimension of the problem of mining frequent itemsets and association rules is
-tightly bounded by an easy-to-compute characteristic quantity of the dataset.
-This allows us to derive the smallest known bound to the sample size needed to
-compute very accurate approximations of the collections of patterns
-(Ch.~\ref{ch:vcmine}). The combination of the theoretical guarantees offered by
-this results with the computational power and scalability of MapReduce allows us
-to develop PARMA, a fast distributed algorithm that mines many small samples in
-parallel to achieve higher confidence and accuracy. PARMA
-is much more scalable and efficient than existing solutions and uses all the
-available computational resources (Ch.~\ref{ch:parma}). 
-
-\paragraph*{Avoiding false positives.} A common issue when mining frequent
-itemsets is the inclusion of false positives, i.e., of itemsets that are only
-frequent by chance. We develop a method that computes a bound to the VC-dimension
-of a collection of itemsets by solving a variant of the Set-Union Knapsack
-Problem. This allows us to to find a frequency threshold such that the
-collection of frequent itemsets with respect to this threshold will not include
-false positives with high probability (Ch.~\ref{ch:realfis}).
-
-\paragraph*{Betweenness centrality.} We show that it is possible to compute very
-accurate estimations of the betweenness centrality (and many of its variants) of
-all vertices by only performing a limited number of shortest paths computation,
-chosen at random. The sample size depends on the VC-dimension of the problem,
-which we show to be bounded by the logarithm of the number of vertices in the
-longest shortest path (i.e., by the logarithm of the diameter in an unweighted
-graph). The bound is tight and interestingly collapses to a small constant when
-there is a unique shortest path between every pair of connected vertices. Our
-results also allow us to present a tighter analysis of an existing
-sampling-based algorithm for betweenness centrality estimation
-(Ch.~\ref{ch:centrsampl}).
-
-\paragraph*{Query selectivity estimation.}  We show that the VC-dimension of
-classes of database queries is bounded by the complexity of their SQL
-expression, i.e., by the maximum number of joins and selection predicates
-involved in the queries. We use this bound to show that it is possible to
-obtain very accurate estimations of the selectivities by running the queries on
-a very small sample of the database. 
-
-%\paragraph*{Outline.} This dissertation is organized as follows.
-%
-%Chapter~\ref{ch:vcdim} introduces the Vapnik-Chervonenkis dimension and the
-%related results we use to develop and analyze the algorithms in later
-%chapters.  
-%
-%Chapter~\ref{ch:vcmine} is concerned with a first algorithm to extract frequent itemsets
-%and association rules from a single static random sample of a very large
-%transactional dataset.
-%%We bound the VC-dimension of the problem and show that it
-%%is a characteristic quantity of the dataset. This allows us to compute the
-%%sample size sufficient to guarantee a desired level of accuracy and confidence.
-%
-%Chapter~\ref{ch:parma} expands the results from Ch.~\ref{ch:vcmine} as building
-%blocks for a parallel/distributed algorithm that exploits the MapReduce platform
-%to achieve higher accuracy and confidence when mining frequent
-%itemsets and association rules from random samples. 
-%%The algorithm combines
-%%sampling, optimization, and parallel/distributed execution to use the available
-%%computational resources in an optimal way.
-%
-%%Chapter~\ref{ch:shatterfi} proposes the development of a progressive sampling
-%%algorithm to extract frequent itemsets. The algorithm will start from a small
-%%sample and enlarge it as it is needed according to a stopping rule developed
-%%using the VC shatter coefficient of the dataset. This is proposed work.
-%
-%
-%Chapter~\ref{ch:realfis} presents the problem of frequent itemsets mining from a
-%statistical point of view and introduces a technique to avoid the inclusion
-%of false positives in the collection of frequent itemsets.
-%
-%%Chapter~\ref{ch:graphmine} deals with the extraction of frequent connected
-%%subgraphs from huge graphs using random samples. One of the main challenge in
-%%this setting is the design of sampling procedure from a uniform
-%%distribution among connected subgraphs of a given size. The algorithm we aim to
-%%develop will solve this problem by considering the theory behind branching
-%%processes and VC-dimension to compute the sufficient sample size. This is
-%%proposed work.
-%
-%Chapter~\ref{ch:centrsampl} deals with computing high-quality approximations of
-%the betweenness centrality, a measure of importance, of all vertices in a large
-%graph.
-%
-%Chapter~\ref{ch:vcfreq} presents a bound bound the VC-dimension of SQL
-%queries using their syntax and show that a small sample of the database is
-%sufficient to accurately estimate the selectivity of queries.
-%% We show a
-%%connection between statistical learning theory and the class of SQL database
-%%queries and develop an algorithm to estimate the selectivity using a very small
-%%sample of the original database.
-%
-%Chapter~\ref{ch:conclusions} contains the conclusions that can be drawn from
-%this body of work and some suggestions for future work.
-
