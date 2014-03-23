@@ -6,27 +6,27 @@ approximations of the results of many analytics tasks by processing only a small
 random sample of the data. We use the Vapnik-Chervonenkis (VC) dimension to
 derive the sample size needed to guarantee that the approximation is
 sufficiently accurate with high probability. This results in very fast
-algorithms for mining frequent itemsets and association rules, computing the
-betweenness centrality of vertices in a graph, and estimating the selectivity of
-database queries.
+algorithms for mining frequent itemsets and association rules, avoiding the
+inclusion of false positives in mining, computing the betweenness centrality of
+vertices in a graph, and estimating the selectivity of database queries.
 
 \section{Motivations}
 Advancements in retrieval and storage technologies led to the collection of
-data about many aspects of natural and artificial phenomena.
+large amounts of data about many aspects of natural and artificial phenomena.
 Analyzing these datasets to find useful information is a daunting task that
 requires multiple iterations of data cleaning, modeling, and processing. The
-cost of analysis can often be split into two parts. One component of the cost is
-intrinsic to the complexity of extracting the desired information (e.g.,
-dependent on the number of patterns to find, or the number of iterations
+cost of the analysis can often be split into two parts. One component of the
+cost is intrinsic to the complexity of extracting the desired information (e.g.,
+it is proportional to the number of patterns to find, or the number of iterations
 needed). The second component depends on the size of the dataset to be examined.
 Smart algorithms can help reducing the first component, while the second seems
 to be ever increasing as more and more data become available. Indeed the latter
-may reduce any improvement of the intrinsic cost as the dataset grows. Since
+may reduce any improvement in the intrinsic cost as the dataset grows. Since
 many datasets are too large to fit into the main memory of a single machine,
 analyzing such datasets would require frequent access to disk or even to the
 network, resulting in excessively long processing times.
 
-The use of random sampling is a natural solution to the issue we just described:
+The use of random sampling is a natural solution to this issue:
 by analyzing only a small random sample that fits into main memory there is no
 need to access the disk or the network. This comes at the inevitable price of
 only being able to extract an approximation of the results, but the trade-off
@@ -40,20 +40,21 @@ available dataset constitutes the entire reality and it contains, in some sense,
 a perfect representation of the phenomena under study. This is indeed not
 usually the case: not only datasets contain errors due to inherently stochastic
 collection procedures, but they also naturally contain only a limited amount of
-information about the phenomena. Indeed a dataset should be seen as a random
-sample from an unknown data generation process, whose study corresponds to the
-study of the phenomena. By looking at the dataset this way, it becomes clear
-that the results of analyzing the dataset are approximated. This leads to the
-need of validating the results to discriminate between real and spurious
-information, which was found to be interesting in the dataset only due to the
-stochastic nature of the data generation process. While the need for statistical
-validations has been since long acknowledged in life and physical sciences
-and it is a central matter of study in statistics, computer science researchers
-have only recently started to pay attention to it and to develop methods to 
-either validate the results of previously available algorithms or to avoid the
-inclusion of spurious information in the results.
+information about the phenomena. Indeed a dataset should be seen as a collection
+of random samples from an unknown data generation process, whose study
+corresponds to the study of the phenomena. By looking at the dataset this way,
+it becomes clear that the results of analyzing the dataset are approximated and
+not ``perfect''. This leads to the need of validating the results to
+discriminate between real and spurious information, which was found to be
+interesting in the dataset only due to the stochastic nature of the data
+generation process. While the need for statistical validations has since long
+been acknowledged in the life and physical sciences and it is a central matter of
+study in statistics, computer science researchers have only recently started to
+pay attention to it and to develop methods to either validate the results of
+previously available algorithms or to avoid the inclusion of spurious
+information in the results.
 
-The data analytics tasks we deal with are the following:
+We study the use of sampling in the following data analytics tasks:
 \begin{itemize}
   \item Frequent itemsets and association rules mining is one of the core tasks
     of data analytics, requiring to find sets of items in a transactional
@@ -62,7 +63,8 @@ The data analytics tasks we deal with are the following:
     items.
   \item Betweenness centrality is a measure of the importance of a vertex in a
     graph, corresponding to the fraction of shortest paths going through that
-    vertex. 
+    vertex. By ranking vertices according to their betweenness centrality one
+    can find which ones are most important, for example for marketing purposes.
   \item The selectivity of a database query is the ratio between the size of its
     output and the product of the sizes of the tables in input. Database
     management systems estimate the selectivity of queries to make informed
@@ -73,9 +75,8 @@ rather than a single task or different tasks from the same area. This is
 motivated by our goal of showing that random sampling can be used to compute
 good approximations for a variety of tasks. Moreover, these tasks share some
 common aspects: they involve the analysis of very large datasets and they
-involve the estimation of a measure of interest (frequency, confidence,
-betweenness centrality, selectivity) for many objects (itemsets, association
-rules, vertices, queries). These aspects are common in many other tasks.
+involve the estimation of a measure of interest (e.g., the frequency) for many
+objects (e.g., all itemsets). These aspects are common in many other tasks.
 
 As we said, there exists many mathematical tools that can be used to compute a
 sample size sufficient to extract a high-quality approximation of the results:
@@ -105,11 +106,11 @@ VC-dimension for the following reasons:
 \section{Overview of contributions}
 This dissertation presents sampling-based algorithms for a number of data
 analytics tasks: frequent itemsets and association rules mining, betweenness
-centrality approximation, and datatabase query selectivity estimation. To
-analyze our algorithms we use the Vapnik-Chervonenkis dimension and related
-results from the field of sor a long timetatistical learning theory (Ch.~\ref{ch:vcdim}). This
-leads to a significant reduction in the sample sizes needed to obtain
-high-quality approximations of the results of the mentioned tasks.
+centrality approximation, and datatabase query selectivity estimation. We use
+the Vapnik-Chervonenkis dimension and related results from the field of
+statistical learning theory (Ch.~\ref{ch:vcdim}) to analyze our algorithms .
+This leads to significant reductions in the sample sizes needed to obtain
+high-quality approximations of the results. 
 
 \paragraph*{Mining frequent itemsets and association rules.} We show that the
 VC-dimension of the problem of mining frequent itemsets and association rules is
@@ -117,11 +118,11 @@ tightly bounded by an easy-to-compute characteristic quantity of the dataset.
 This allows us to derive the smallest known bound to the sample size needed to
 compute very accurate approximations of the collections of patterns
 (Ch.~\ref{ch:vcmine}). The combination of the theoretical guarantees offered by
-this results with the computational power and scalability of MapReduce allows us
+these results with the computational power and scalability of MapReduce allows us
 to develop PARMA, a fast distributed algorithm that mines many small samples in
-parallel to achieve higher confidence and accuracy. PARMA
-is much more scalable and efficient than existing solutions and uses all the
-available computational resources (Ch.~\ref{ch:parma}). 
+parallel to achieve higher confidence and accuracy in the output collection of
+patterns. PARMA scales much better than existing solutions as the dataset grows
+and uses all the available computational resources (Ch.~\ref{ch:parma}). 
 
 \paragraph*{Statistical validation.} A common issue when mining frequent
 itemsets is the inclusion of false positives, i.e., of itemsets that are only
@@ -146,9 +147,9 @@ sampling-based algorithm for betweenness centrality estimation
 \paragraph*{Query selectivity estimation.}  We show that the VC-dimension of
 classes of database queries is bounded by the complexity of their SQL
 expression, i.e., by the maximum number of joins and selection predicates
-involved in the queries. We use this bound to show that it is possible to
-obtain very accurate estimations of the selectivities by running the queries on
-a very small sample of the database. 
+involved in the queries. Leveraging on this bound, it is possible to obtain very
+accurate estimations of the selectivities by running the queries on a very small
+sample of the database. 
 
 %\paragraph*{Outline.} This dissertation is organized as follows.
 %
