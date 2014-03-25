@@ -3,6 +3,8 @@ TODO
 
 * Mention PAC learning in prelims 
 
+* Strive for more consistency in bibliography
+
 * Wait for comments from committee
 
 * Write draft nomination letter Eli
