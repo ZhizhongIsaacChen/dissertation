@@ -46,7 +46,7 @@ that will be followed in the future.
 
 A natural and general model to describe these concepts %settings 
 is to assume that the transactions in the dataset $\Ds$ are \emph{independent
-identically distributed} (i.i.d) samples from an \emph{unknown} probability
+identically distributed} (i.i.d.) samples from an \emph{unknown} probability
 distribution $\prob$ defined on all possible transactions built on a set of
 items. %with items appearing in $\Ds$. %built on the sets of items appearing $\Ds$. 
 Since $\prob$ is fixed, each itemset $A$ has a fixed \emph{probability} $\tfreq(A)$
@@ -121,7 +121,7 @@ at the same time find as many TFIs as possible. These are somewhat contrasting
 goals, and care must be taken to achieve a good balance between them.
 A na\"ive but \emph{overly conservative} method to avoid false positives
 involves the use of \emph{Chernoff and union bounds}~\citep{MitzenmacherU05}.
-The frequency $f_\Ds(A)$ of an itemset $A$ in $\Ds$ is a random variable with
+Given an itemset $A$ in $\Ds$, the quantity $|\Ds|f_\Ds(A)$ is a random variable with
 Binomial distribution $\mathcal{B}(|\Ds|,\tfreq(A))$. It is possible to use
 standard methods like the Chernoff and the union bounds to bound the deviation
 of the frequencies in the dataset of \emph{all} itemsets from their
@@ -171,7 +171,7 @@ significance of a pattern. When %Moreover, when %On the other hand, if
 additional information about the distribution $\prob$ is available, it can be
 incorporated in our method to obtain even higher accuracy.
 \item %mathematical tools 
-We analyse our algorithm using results from \emph{statistical learning theory} and \emph{optimization}. %to develop and analyze our algorithm. 
+We analyze our algorithm using results from \emph{statistical learning theory} and \emph{optimization}. %to develop and analyze our algorithm. 
 We define a range space associated to a collection of itemsets and give an upper
 bound to its (empirical) VC-dimension and a procedure to compute this bound,
 showing an interesting connection with the Set-Union

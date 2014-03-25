@@ -19,7 +19,7 @@ how to compute $\varepsilon$.
 Let $\delta_1$ and $\delta_2$ be such that $(1-\delta_1)(1-\delta_2)\ge
 1-\delta$. Let $(2^\Itm,\range(2^\Itm)$ be the range space of all itemsets.
 We use Corol.~\ref{coroll:vcdimubfirst} (resp.~Thm.~\ref{coroll:empvcdimubfirst}) to
-compute an upper bound $d'$ to $\VC\left((2^\Itm,\range(2^\Itm))\right)$ (resp.~ $d''$ to
+compute an upper bound $d'$ to $\VC\left((2^\Itm,\range(2^\Itm))\right)$ (resp.~$d''$ to
 $\EVC(\Ds,\range(2^\Itm)$). Then we can use $d'$ in Thm.~\ref{thm:eapprox} (resp.~$d''$ in
 Thm~\ref{thm:eapproxempir}) to compute an $\varepsilon_1'$ (resp.~an
 $\varepsilon_1''$) such that $\Ds$ is, with probability at
@@ -67,9 +67,10 @@ f_\Ds(A)<\theta+\varepsilon_1\}$, and $\mathcal{F}=\mathcal{G}\cup\mathcal{W}$.
   that $\Ds$ is an $\varepsilon_1$-approximation to $(\range(2^\Itm),\prob)$, %From the definition of $\varepsilon_1$ this happens
   %with probability at least $1-\delta$. 
   then %Then
-  $\TFI(\prob,\Itm,\theta)\subseteq\mathcal{G}\cup\mathcal{C}_1$. From this and
+  $\TFI(\prob,\Itm,\theta)\subseteq\mathcal{G}$. %\cup\mathcal{C}_1$. 
+  From this and
   the definition of negative border and of $\mathcal{F}$, we have that
-  $\range(\mathcal{B})\subseteq\mathcal{F}$. Since $\mathcal{B}$ is a maximal
+  $\mathcal{B}\subseteq\mathcal{F}$. Since $\mathcal{B}$ is a maximal
   antichain, then $\mathcal{B}\in\mathcal{Y}$. Hence the thesis.
   \qed
 \end{proof}
@@ -153,7 +154,7 @@ some wide sense. Other examples are possible. All these pieces of information
 can be used to compute better (i.e., stricter) upper bounds to the VC-dimension
 $\VC\left((2^\Itm,\range(2^\Itm))\right)$. For example, if we know that $\prob$ will never generate
 transactions with more than $\ell$ items, we can safely say that
-$\VC\left((2^\Itm,\range(2^\Itm))\right)\le \ell-1$, a much stricter bound than $|\Itm|-1$ from
+$\VC\left((2^\Itm,\range(2^\Itm))\right)\le \ell$, a much stricter bound than $|\Itm|-1$ from
 Corol.~\ref{coroll:vcdimubfirst}. This may result in a smaller $\varepsilon_1$, a smaller 
 $\varepsilon$, and a smaller $\hat\theta$, which allows to produce
 more TFIs in the output collection. In the experimental evaluation, we show the

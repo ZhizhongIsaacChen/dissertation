@@ -1,9 +1,10 @@
 \section{Finding the True Frequent Itemsets}\label{sec:main}
-In this section we present an algorithm to identify a threshold $\hat{\theta}$ such
-that, with probability at least $\delta$ for some user-specified parameter
-$\delta\in(0,1)$, all itemsets with frequency at least $\hat{\theta}$ in $\Ds$
-are True Frequent Itemsets with respect to a fixed minimum true frequency
-threshold $\theta\in(0,1]$. %In other words, we present an algorithm 
+In this section we present an algorithm that receives in input a dataset $\Ds$,
+a minimum frequency threshold $\theta$, and a confidence parameter
+$\delta\in(0,1)$ and identifies a threshold $\hat{\theta}$ such
+that, with probability at least $\delta$, all itemsets with frequency at least
+$\hat{\theta}$ in $\Ds$ are True Frequent Itemsets with respect to $\theta$. %
+%In other words, we present an algorithm 
 The threshold $\hat{\theta}$ can be used to find a collection
 $\mathcal{C}=\FI(\Ds,\Itm,\hat\theta)$ of itemsets such that $\Pr(\exists
 A\in\mathcal{C} \mbox{ s.t.~} \tfreq(A)<\theta)<\delta$.
