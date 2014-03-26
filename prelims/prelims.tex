@@ -10,13 +10,12 @@ therefore much more efficient algorithms, by using concepts and results from
 \emph{statistical learning theory}~\citep{Vapnik99,Vapnik98}, in particular
 those involving the \emph{Vapnik-Chervonenkis (VC) dimension} of the problem.
 
-\todo{We never mention PAC, and we probably should.}
-
 \section{Use of VC-Dimension in computer science}\label{sec:vcliterature}
 VC-Dimension was first introduced in a seminal article~\citep{VapnikC71} on
 the convergence of empirical averages to their expectations, but it was only with the work
 of~\citet{HausslerW86} and~\citet{BlumerEHW89} that it was applied to the field
-of learning. Since then, VC-dimension has encountered enormous success and
+of learning. It became a core component of Valiant's Probably Approximately
+Correct (PAC) Framework~\citep{KearnsV94} and has enjoyed enormous success and
 application in the fields of computational
 geometry~\citep{Chazelle00,Matousek02} and machine
 learning~\citep{AnthonyB99,DevroyeGL96}. \citet{BoucheronBL05} present a good
@@ -142,8 +141,10 @@ $\varepsilon$-approximation to $(D,\range)$.
 A great result by~\citet{VapnikC71} showed that it is possible
 to compute a $\varepsilon$-approximation with a limited number samples from
 $\nu$, provided an upper bound to the VC-dimension of $(D,\range)$ or to its
-empirical VC-dimension on a subset of $D$ is known. The original result was
-improved multiple times.  Here we present the most recent improvement.
+empirical VC-dimension on a subset of $D$ is known. This result is one of the
+reasons why VC-dimension gained fundamental importance in the PAC
+framework~\citep{KearnsV94}. The original bound to the number of samples was
+improved multiple times. Here we present the most recent improvement.
 
 \begin{theorem}[Thm.~2.12~\citep{HarPS11}, see also~\citep{LiLS01}]\label{thm:eapprox}
   Let $(D,\range)$ be a range space with $\VC(\range)\le d$, and let $\nu$ be a
