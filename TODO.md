@@ -1,8 +1,6 @@
 TODO
 ====
 
-* Mention PAC learning in prelims 
-
 * Strive for more consistency in bibliography
 
 * Wait for comments from committee
