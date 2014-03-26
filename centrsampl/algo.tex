@@ -579,14 +579,14 @@ algorithm by~\citet{BrandesP07} and~\citet{JacobKLPT05}.
   We will show that the above quantity is greater than or equal to 0, proving
   the thesis.
   Since
-  $\exp[\tilde\betw(w)]=\exp[\tilde\betw_\mathsf{BF}(w)]=\betw(w)$
+  $\expectation[\tilde\betw(w)]=\expectation[\tilde\betw_\mathsf{BF}(w)]=\betw(w)$
   and using the definition of variance, we only need to show 
   \begin{equation}\label{eq:centrsamplinequal}
-    \exp[(\tilde\betw(w))^2]-\exp[(\tilde\betw_\mathsf{BF}(w))^2]\ge
+    \expectation[(\tilde\betw(w))^2]-\expectation[(\tilde\betw_\mathsf{BF}(w))^2]\ge
     0\enspace.
   \end{equation}
 
-  Let start from computing $\exp[(\tilde\betw_\mathsf{BF}(w))^2]$. For every
+  Let start from computing $\expectation[(\tilde\betw_\mathsf{BF}(w))^2]$. For every
   vertex $v$, we define $\alpha_v$ as
   \[
   \alpha_v=\frac{1}{n-1}\sum_{\substack{u\in V
@@ -602,8 +602,8 @@ algorithm by~\citet{BrandesP07} and~\citet{JacobKLPT05}.
   is a random variable that takes value $\alpha_v$ with probability $1/n$, for
   all $v\in V$. We have
   \begin{equation}\label{eq:centrsamplxiexpvar}
-    \exp[X_i]=\sum_{v\in V}\frac{1}{n}\alpha_v=\betw(w) \mbox{ and }
-    \exp[X_i^2]=\frac{1}{n}\sum_{v\in V}\alpha_v^2, \forall 1\le i\le r\enspace.
+    \expectation[X_i]=\sum_{v\in V}\frac{1}{n}\alpha_v=\betw(w) \mbox{ and }
+    \expectation[X_i^2]=\frac{1}{n}\sum_{v\in V}\alpha_v^2, \forall 1\le i\le r\enspace.
   \end{equation}
   Clearly
   \[
@@ -611,18 +611,19 @@ algorithm by~\citet{BrandesP07} and~\citet{JacobKLPT05}.
   \]
   The variables $X_i$'s are independent and identically distributed so
   \begin{align}\label{eq:centrsamplexpxisquared}
-    \exp[(\tilde\betw_\mathsf{BP}(w))^2]&=\frac{1}{r^2}\exp\left[\left(\sum_{i=1}^rX_i\right)^2\right]=\frac{1}{r^2}\sum_{i=1}^r\left(\exp[X_i^2]+\sum_{j=i+1}^r(\exp[X_i]\exp[X_j])\right)=\frac{1}{r}\frac{1}{n}\sum_{v\in
-    V}\alpha_v^2+\frac{r-1}{r}(\betw(w))^2,
+    \expectation[(\tilde\betw_\mathsf{BP}(w))^2]&=\frac{1}{r^2}\expectation\left[\left(\sum_{i=1}^rX_i\right)^2\right]=\frac{1}{r^2}\sum_{i=1}^r\left(\expectation[X_i^2]+\sum_{j=i+1}^r(\expectation[X_i]\expectation[X_j])\right)
+    \nonumber\\
+    &=\frac{1}{r}\frac{1}{n}\sum_{v\in V}\alpha_v^2+\frac{r-1}{r}(\betw(w))^2,
 \end{align}
 where we used~\eqref{eq:centrsamplxiexpvar}.
 
-We now compute $\exp[(\tilde\betw(w))^2]$. 
+We now compute $\expectation[(\tilde\betw(w))^2]$. 
 Consider the contribution $Y_i$ to $\tilde\betw(w)$ of the
 $i$\textsuperscript{th} sampled path by Algorithm 1, for $1\le i\le r$. $Y_i$ is a random variable that takes value
 $\mathds{1}_{\mathsf{Int}(p)}(w)$ with probability $\pi(p)$, for every shortest
 path $p\in\mathbb{S}_G$. We have
 \begin{equation}\label{eq:centrsamplyiexpvar}
-  \exp[Y_i]=\exp[Y_i^2]=\betw(w), \forall 1\le i \le r\enspace.
+  \expectation[Y_i]=\expectation[Y_i^2]=\betw(w), \forall 1\le i \le r\enspace.
 \end{equation}
 By definition, 
 \[
@@ -630,19 +631,20 @@ By definition,
 \]
 The random variables $Y_i$ are independent and identically distributed so
 \begin{align}\label{eq:centrsamplexpyisquared}
-  \exp[(\tilde\betw(w))^2]&=\frac{1}{r^2}\exp\left[\left(\sum_{i=1}^r
-  Y_i\right)^2\right]=\frac{1}{r^2}\sum_{i=1}^r\left(\exp[Y_i^2]+\sum_{j=i+1}^r\exp[Y_i]\exp[Y_j]\right)=\frac{1}{r}\betw(w)+\frac{r-1}{r}(\betw(w))^2,
+  \expectation[(\tilde\betw(w))^2]&=\frac{1}{r^2}\expectation\left[\left(\sum_{i=1}^r
+  Y_i\right)^2\right]=\frac{1}{r^2}\sum_{i=1}^r\left(\expectation[Y_i^2]+\sum_{j=i+1}^r\expectation[Y_i]\expectation[Y_j]\right)\nonumber\\
+  &=\frac{1}{r}\betw(w)+\frac{r-1}{r}(\betw(w))^2,
 \end{align}
 where we used~\eqref{eq:centrsamplyiexpvar}.
 
 We can now rewrite the left side of~\eqref{eq:centrsamplinequal} using
 ~\eqref{eq:centrsamplbetwalpha},~\eqref{eq:centrsamplexpxisquared},~and~\eqref{eq:centrsamplexpyisquared}:
 \begin{align*}
-  \exp[(\tilde\betw(w))^2]-\exp[(\tilde\betw_\mathsf{BF}(w))^2] &=
+  \expectation[(\tilde\betw(w))^2]-\expectation[(\tilde\betw_\mathsf{BF}(w))^2] &=
   \frac{1}{r}\betw(w)+\frac{r-1}{r}(\betw(w))^2 - \frac{1}{r}\frac{1}{n}\sum_{v\in
     V}\alpha_v^2
-   -\frac{r-1}{r}(\betw(w))^2 =
-    \frac{1}{r}\frac{1}{n}\sum_{v\in V}(\alpha_v - \alpha_v^2)\enspace. 
+   -\frac{r-1}{r}(\betw(w))^2 \\
+   &= \frac{1}{r}\frac{1}{n}\sum_{v\in V}(\alpha_v - \alpha_v^2)\enspace. 
 \end{align*}
 Since $\alpha_v\in[0,1]$, we have $\alpha_v-\alpha_v^2\ge 0$ for all $v$, and our proof
 is complete.
@@ -653,27 +655,27 @@ The following lemma is an easy consequence of the above.
 \begin{lemma}\label{lem:MSE}
   \textsf{BP} has lower expected Mean Squared Error than Algorithm~1:
   \[
-  \exp[\mse_\mathsf{BP}]\le \exp[\mse]\enspace.
+  \expectation[\mse_\mathsf{BP}]\le \expectation[\mse]\enspace.
   \]
 \end{lemma}
 
 \begin{proof}
   We have
   \[ 
-  \exp[\mse_\mathsf{BP}] = \exp\left[\frac{1}{n}\sum_{v\in
+  \expectation[\mse_\mathsf{BP}] = \expectation\left[\frac{1}{n}\sum_{v\in
   V}\left(\tilde\betw_\mathsf{BP}(w)-\betw(v)\right)^2\right]=\frac{1}{n}\sum_{v\in
-  V}\exp\left[\left(\tilde\betw_\mathsf{BP}(w)-\betw(v)\right)^2\right]=\frac{1}{n}\sum_{v\in
+  V}\expectation\left[\left(\tilde\betw_\mathsf{BP}(w)-\betw(v)\right)^2\right]=\frac{1}{n}\sum_{v\in
   V}\var[\tilde\betw_\mathsf{BP}(w)],
   \]
   where we used the linearity of expectation and the fact that the estimator
-  $\tilde\betw_\mathsf{BP}(w)$ is unbiased for $\betw(w)$ ($\exp[\tilde\betw_\mathsf{BP}(w)]=\betw(w)]$).
+  $\tilde\betw_\mathsf{BP}(w)$ is unbiased for $\betw(w)$ ($\expectation[\tilde\betw_\mathsf{BP}(w)]=\betw(w)]$).
   Analogously for Algorithm~1:
   \[
-  \exp[\mse] = \frac{1}{n}\sum_{v\in V}\var[\tilde\betw(w)]\enspace.
+  \expectation[\mse] = \frac{1}{n}\sum_{v\in V}\var[\tilde\betw(w)]\enspace.
   \]
   Hence
   \[
-  \exp[\mse]-\exp[\mse_\mathsf{BP}]=\frac{1}{n}\sum_{v\in
+  \expectation[\mse]-\expectation[\mse_\mathsf{BP}]=\frac{1}{n}\sum_{v\in
   V}\left(\var[\tilde\betw(w)]-\var[\tilde\betw_\mathsf{BP}(w)]\right),
   \]
   and from Lemma~\ref{lem:variance} we have that each addend of the sum is
