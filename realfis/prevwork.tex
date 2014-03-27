@@ -96,8 +96,10 @@ idea is to swap items in a given dataset while keeping the length of the
 transactions and the sum over the columns constant. This method is only
 applicable if one can actually derive a procedure to perform the swapping in
 such a way that the generated datasets are indeed random samples from the assumed
-distribution. For the problem we are interested in there such 
-procedure is not available. Considering the same generative model,
+distribution. For the problem we are interested in, such procedure is not
+available and indeed it would be difficult to obtain a procedure that is
+valid for any distribution, given our goal to develop a method that makes
+no assumption on the distribution. Considering the same generative model,
 \citet{Hanhijarvi11} presents a direct adjustment method to bound the
 probability of false discoveries by %FWER while
 taking into consideration the actual number of hypotheses to be tested.
