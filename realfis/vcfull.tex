@@ -134,6 +134,61 @@ $\FI(\Ds,\Itm,\hat\theta)$ contains no false positives:
   \qed
 \end{proof}
 
+The pseudocode of our method is presented in Alg.~\ref{alg:vcfull}.
+
+\begin{algorithm}[ht]
+  \SetKwInOut{Input}{Input}
+  \SetKwInOut{Output}{Output}
+  \SetKwComment{Comment}{\quad// }{}
+  \SetKwFunction{SolveAntichainSUKP}{solveAntichainSUKP}
+   \DontPrintSemicolon
+   \Input{Dataset $\Ds$, freq.~threshold $\theta\in(0,1)$, confidence
+   $\delta\in(0,1)$}
+  \Output{Freq.~threshold $\hat{\theta}$
+  s.~t.~$\FI(\Ds,\Itm,\hat{\theta})$ contains only TFIs with prob.~at least
+  $1-\delta$.}
+  $\delta_1,\delta_2\leftarrow 1-\sqrt{1-\delta}$ \Comment{$\delta_1$ and $\delta_2$ do not need to have the same value}
+  $d_1'\leftarrow$ upper bound to $\VC(\range(2^\Itm))$ (e.g., $|\Itm|-1$)\;
+  $\varepsilon_1' \leftarrow \sqrt{\frac{c}{|\Ds|}\left(d_1' + \log\frac{1}{\delta_1}\right)}$\; 
+  $d_1''\leftarrow$ upper bound to $\EVC(\range(2^\Itm),\Ds)$ \Comment{i.e., d-index of
+  $\Ds$ (see Ch.~\ref{ch:vcmine})}
+  $\varepsilon_1'' \leftarrow 2\sqrt{\frac{2d_1''\log(|\Ds|+1)}{|\Ds|}}+\sqrt{\frac{2\log\frac{2}{\delta}}{|\Ds|}}$\;
+  $\varepsilon_1\leftarrow\min\{\varepsilon_1',\varepsilon_1''\}$\;
+  $\mathcal{C}_1=\FI(\Ds,\Itm,\theta-\varepsilon_1)$\;
+  $\mathcal{G}=\{A\subseteq\Itm ~:~ \theta-\varepsilon_1\le
+f_\Ds(A)<\theta+\varepsilon_1\}$\;
+  $\mathcal{W}\leftarrow$ negative border of $\mathcal{C}_1$\;
+  $\mathcal{F}=\mathcal{G}\cup\mathcal{W}$\;
+  $U\leftarrow\{a\in\Itm : \exists A\in\mathcal{F} \mbox{ s.t. } a\in A\}$\;
+  $b_2'\leftarrow$ \SolveAntichainSUKP{$U,\mathcal{F},|U|$}\;
+  $d_2'\leftarrow\lfloor\log_2b_2'\rfloor+1$\;
+  $\varepsilon_2' \leftarrow \sqrt{\frac{c}{|\Ds|}\left(d_2' + \log\frac{2}{\delta_2}\right)}$\; 
+  $\ell_1,\dotsc,\ell_w\leftarrow$ transaction lengths of $\Ds$ \Comment{see
+  Sect.~\ref{sec:computvc}}
+  $L_1,\dotsc,L_w\leftarrow$ the maximum number of
+transactions in $\Ds$ that have length at least $\ell_i$, $1\le i\le w$, and
+such that for no two $\tau'$, $\tau''$ of them we have either
+$\tau'\subseteq\tau''$ or $\tau''\subseteq\tau'$\;
+  $i\leftarrow 0$\;
+  \While{True}
+  {
+  $b_2''\leftarrow$ \SolveAntichainSUKP{$U,\mathcal{F},\ell_i$}\;
+  $d_2''\leftarrow\lfloor\log_2b_2''\rfloor+1$\;
+  \uIf{$d_2''< L_i$}
+  {
+  break\;
+  }\Else{
+  $i\leftarrow i+1$\;
+  }
+  }
+  $\varepsilon_2'' \leftarrow 2\sqrt{\frac{2d_2''\log(|\Ds|+1)}{|\Ds|}}+\sqrt{\frac{2\log\frac{2}{\delta}}{|\Ds|}}$\;
+  $\varepsilon_2\leftarrow\min\{\varepsilon_2',\varepsilon_2''\}$\;
+  \Return{$\theta+\varepsilon_2$}
+  \caption{Compute freq.~threshold $\hat{\theta}$
+  s.~t.~$\FI(\Ds,\Itm,\hat{\theta})$ contains only TFIs with prob.~at least
+  $1-\delta$.}
+  \label{alg:vcfull}
+\end{algorithm}
 \paragraph{Exploiting additional knowledge about $\prob$.} 
 Our algorithm is completely \emph{distribution-free}, i.e., it does not require
 any assumption about the unknown distribution $\prob$. On the other hand, when
