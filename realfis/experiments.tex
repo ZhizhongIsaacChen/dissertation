@@ -15,8 +15,9 @@ and the fraction of TFIs that were found.
 %including evaluations of the computational efficiency of the methods is
 %available in the full version of the paper~\citep{RiondatoV13}.
 
-\begin{table*}[tbp]
+\begin{table}[tbp]
   \centering
+    \small
   \begin{tabular}{llrrr}
 \toprule
 Dataset & Freq.~$\theta$ & TFIs & Times FPs & Times FNs\\
@@ -95,7 +96,7 @@ Dataset & Freq.~$\theta$ & TFIs & Times FPs & Times FNs\\
 \caption{Fractions of times that $\FI(\Ds,\Itm,\theta)$ contained false positives
 and missed TFIs (false negatives) over 20 datasets from the same ground truth.}
 \label{table:fp}
-\end{table*}
+\end{table}
 
 
 %\subsection{Implementation.}\label{sec:implementation}
@@ -131,7 +132,7 @@ these enlarged datasets in our experiments, and use the original name of the
 datasets in the FIMI repository to annotate the results for the datasets we generated.
 
 \iffalse
-\begin{table*}[tbp]
+\begin{table}[tbp]
   \centering
   \begin{tabular}{llrcccccc}
     \toprule
@@ -213,10 +214,11 @@ datasets in the FIMI repository to annotate the results for the datasets we gene
   fraction). The two rightmost columns report the value of
   $\varepsilon_2$ computed by our algorithm in the two cases.}
 \label{table:power}
-\end{table*}
+\end{table}
 \fi
 
-\begin{table*}[tbp]
+\begin{table}[tbp]
+  \small
   \centering
   \begin{tabular}{llrcccc}
     \toprule
@@ -295,8 +297,8 @@ datasets in the FIMI repository to annotate the results for the datasets we gene
   in the original FIMI dataset. In bold, the best result (highest reported
   fraction).}
 \label{table:power}
-\end{table*}
-%\begin{table*}[tb]
+\end{table}
+%\begin{table}[tb]
 %\centering
 %\begin{tabular}{llrcccccc}
 %\toprule
@@ -398,7 +400,7 @@ datasets in the FIMI repository to annotate the results for the datasets we gene
 %Itemsets while controlling the FWER ($\delta=0.1$). In bold the best result for
 %each setting (split or full dataset).}
 %\label{table:power}
-%\end{table*}
+%\end{table}
 
 \paragraph*{False positives and false negatives in
 $\FI(\Ds,\Itm,\theta)$.}
