@@ -43,7 +43,7 @@ line~\ref{algline:shortestpaths} is a call to a modified Dijkstra's (or BFS)
 algorithm to compute the set $\mathcal{S}_{uv}$, with the same modifications
 as~\citep{Brandes01}. The \texttt{getDiameterApprox()} procedure computes an approximation for $\VD(G)$. % (see Sect.~\ref{sec:centrsampldiam} for details).
 
-\paragraph{Unique shortest paths} 
+\paragraph{Unique shortest paths.} 
 When, for each pair $(u,v)$ of vertices of $G$, either there is a unique
 shortest path from $u$ to $v$ or $v$ is unreachable from $u$, 
 %When each pair $(u,v)$ of vertices of $G$ has a unique shortest path connecting them or
@@ -62,7 +62,7 @@ extremely fast on graphs with this property. Unique shortest paths are common or
 even enforced in road networks by slightly perturbing the edge weights or having
 a deterministic tie breaking policy~\citep{GeisbergerSS08}.
 
-\paragraph{Sampling a shortest path}
+\paragraph{Sampling a shortest path.}
 Our procedure to select a random shortest path from $\mathcal{S}_{uv}$ is
 inspired by the dependencies accumulation procedure used in Brandes' exact
 algorithm~\citep{Brandes01}. Let $u$ and $v$ be the vertices sampled by our algorithm
@@ -147,7 +147,7 @@ $p^*$.
   \label{alg:algorithm}
 \end{algorithm}
 
-\paragraph{Approximating the vertex-diameter}%\label{sec:centrsampldiam}
+\paragraph{Approximating the vertex-diameter.}%\label{sec:centrsampldiam}
 The algorithm presented in the previous section requires the value of the
 vertex-diameter $\VD(G)$ of the graph $G$ (line
 \ref{alg:diamcomp} of Alg.~\ref{alg:algorithm}). 
@@ -243,7 +243,7 @@ details). In practice, it is possible that the nature of the network suggests a
 much better upper bound to the vertex-diameter of the graph, resulting in a
 smaller sample size. %than what suggested by the worst case we just presented.  
 
-\paragraph{Analysis}\label{sec:centrsamplanalysis}
+\paragraph{Analysis.}\label{sec:centrsamplanalysis}
 %The algorithm we described and presented in 
 Algorithm~\ref{alg:algorithm} offers
 probabilistic guarantees on the quality of all approximations of the betweenness
@@ -400,7 +400,7 @@ The pseudocode of the algorithm is presented in Algorithm~\ref{alg:topk}.
   \label{alg:topk}
 \end{algorithm}
 
-\paragraph{Analysis}
+\paragraph{Analysis.}
 The following lemma shows the properties of the collection $\widetilde\TOPK(K,G)$.
 \fi
 
