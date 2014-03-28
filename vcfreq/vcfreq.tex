@@ -91,7 +91,7 @@ Sect.~\ref{sec:vcfreqvcdimqueries}.  The application of these results for
 selectivity estimation is given in Sect.~\ref{sec:vcfreqapplications}.
 Experiments are presented in Sect.~\ref{sec:vcfreqexperiments}. 
 
-\section{Related Work}\label{sec:vcfreqprevwork}
+\section{Related work}\label{sec:vcfreqprevwork}
 Methods to estimate the selectivity (or cardinality of the output) of queries
 have been extensively studied in the database literature primarily due to the
 importance of this task to query plan optimization and resource allocation. A
@@ -185,7 +185,7 @@ provide explicit bounds on the VC-dimension of SQL queries and to apply the
 results to query selectivity estimation.
 
 
-\section{Database Queries and Selectivity}\label{sec:vcfreqprelim}
+\section{Database queries and selectivity}\label{sec:vcfreqprelim}
 We outline here some basic definitions about databases, queries, and
 selectivity. We refer the reader to complete textbooks for additional
 information~\citep{GarciaMolinaUW02}.
@@ -339,7 +339,7 @@ the database $\Db$ such that an execution of a query on the sample $\Sam$ will
 provide an accurate estimate for the selectivity of
 each operation in the query plan when executed on the database $\Db$. 
 
-\section{The VC-dimension of Classes of Queries}\label{sec:vcfreqvcdimqueries}
+\section{The VC-dimension of classes of queries}\label{sec:vcfreqvcdimqueries}
 In this section we develop a general bound to the VC-dimension of classes of
 queries. We define appropriate range spaces $(D,\range)$ as follows. For a class
 of select queries $Q$ on a table $\Tab$, $D$ is the set of all tuples in the
@@ -366,7 +366,7 @@ column and then move to more complex queries (multi-attributes select
 queries, join queries). We then extend our bounds to general queries that are
 combinations of multiple select and join operations.
 
-\subsection{Select Queries}\label{sec:vcfreqvcdimselqueries}
+\subsection{Select queries}\label{sec:vcfreqvcdimselqueries}
 Let $\Tab$ be a table with $m$ columns $\Tab.C_1,\dotsc,\Tab.C_m$, and $n$
 tuples. For a fixed column $\Tab.C$, consider the set $\Sigma_C$ of the
 selection queries in the form 
@@ -488,7 +488,7 @@ different technique.
  the outputs. The thesis follows by applying Lemma~\ref{lem:genboolcomp}.
 \end{proof}
 
-\subsection{Join Queries}\label{sec:vcfreqvcdimjoinqueries}
+\subsection{Join queries}\label{sec:vcfreqvcdimjoinqueries}
 Let $\Tab_1$ and $\Tab_2$ be two distinct tables, and let $R_1$ and $R_2$
 be two families of (outputs of) select queries on the tuples of $\Tab_1$ and
 $\Tab_2$ respectively. Let $S_1=(\Tab_1,R_1)$, $S_2=(\Tab_2,R_2)$ and let
@@ -661,7 +661,7 @@ then it is sufficient to have
 which holds for $v> 4u\left(\sum_i v_i\right)\log (u\sum_i v_i)$.
 \end{proof}
 
-\subsection{General Queries}\label{sec:vcfreqvcdimgenqueries}
+\subsection{Generic queries}\label{sec:vcfreqvcdimgenqueries}
 Combining the above results we prove:
 \begin{theorem}\label{thm:vcfreqvcdimgenqueries}
 Consider a class $Q_{u,m,b}$ of all queries with up to $u-1$ join and $u$ select
@@ -676,7 +676,7 @@ Note that Thm.~\ref{thm:vcfreqvcdimgenqueries} gives an upper bound to the
 VC-dimension. Our experiments suggest that in most cases the VC-dimension and
 the corresponding minimum sample size are even smaller.
 
-\section{Estimating Query Selectivity}\label{sec:vcfreqapplications}
+\section{Estimating query selectivity}\label{sec:vcfreqapplications}
 We apply the theoretical result on the VC-dimension of queries 
 to constructing a concrete
 algorithm for selectivity estimation and query plan optimization.
@@ -821,7 +821,7 @@ the total execution time on the sample. The significant improvement in the
 selectivity estimates in complex queries well compensates for the extra work in
 computing the selectivity estimates.
 
-\section{Experiments}\label{sec:vcfreqexperiments}
+\section{Experimental evaluation}\label{sec:vcfreqexperiments}
 This section presents the results of the experiments we run to validate our
 theoretical results and to compare our selectivity estimation
 method with standard techniques implemented in PostgreSQL and in
@@ -844,7 +844,7 @@ histograms might be, as soon as the inter-column and intra-bucket assumptions
 are no longer satisfied, our approach gives better selectivity
 estimates.
 
-\subsection{Selectivity Estimation with Histograms}\label{sec:vcfreqselhist}
+\subsection{Selectivity estimation with histograms}\label{sec:vcfreqselhist}
 In many modern database systems, the query optimizer relies on
 histograms for computing data distribution statistics to help determine the most
 efficient query plans. In particular, PostgreSQL 

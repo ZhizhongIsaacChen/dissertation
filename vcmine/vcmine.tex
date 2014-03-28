@@ -178,7 +178,7 @@ through sampling are in Sect.~\ref{sec:vcmineapprox}. Section~\ref{sec:vcmineexp
 an extensive experimental evaluation of our techniques. A discussion of our
 results and the conclusions can be found in Sect.~\ref{sec:vcmineconcl}.
 
-\section{Related Work}\label{sec:vcmineprevwork}
+\section{Related work}\label{sec:vcmineprevwork}
 \citet{AgrawalIS93} introduced the problem of mining association
 rules in the basket data model, formalizing a fundamental task of information
 extraction in large datasets. Almost any known algorithm for the problem starts
@@ -427,7 +427,7 @@ of the frequencies (and confidences) in addition to the approximation of
 the collection of itemsets or association rules (Property 3 in Def.~\ref{def:vcmineapproxfi} and properties
 3 and 5 in Def.~\ref{def:vcmineapproxar}).
 
-\section{The Dataset's Range Space and its VC-dimension}\label{sec:vcminevcdimar}
+\section{The dataset's range space and its VC-dimension}\label{sec:vcminevcdimar}
 Our next step is to define a range space of the dataset and the itemsets. We
 will use this space together with Theorem~\ref{thm:eapprox} to compute the bounds to
 sample sizes sufficient to compute approximate solutions for the various tasks
@@ -1103,7 +1103,7 @@ need to add a dependency on $\theta$ as shown in the following Lemma.
   Property 3 from Def.\ref{def:vcmineapproxfi}.
 \end{proof}
 
-\subsection{Mining Top-$K$ Frequent Itemsets}\label{sec:vcmineminingtopk}
+\subsection{Mining top-$K$ Frequent Itemsets}\label{sec:vcmineminingtopk}
 Given the equivalence
 $\TOPK(\Ds,\Itm,K)=\FI(\Ds,\Itm,f^{(K)}_\Ds)$, we could use the above
 FIs sampling algorithms if we had a good approximation of $f^{(K)}_\Ds$, the
@@ -1620,7 +1620,7 @@ bound~\eqref{eq:vceapprox} is in general tight up to a constant~\citep{LiLS01},
 there seems to be little room for improvement of the bounds we presented as
 function of $\varepsilon$.
 
-\section{Experimental Evaluation}\label{sec:vcmineexp}
+\section{Experimental evaluation}\label{sec:vcmineexp}
 In this section we present an extensive experimental evaluation of
 our methods to extract approximations of $\FI(\Ds,\Itm,\theta)$, $\TOPK(\Ds,\Itm,K)$, and
 $\AR(\Ds,\Itm,\theta,\gamma)$.
