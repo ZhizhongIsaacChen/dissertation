@@ -1956,6 +1956,16 @@ VC-dimension for a given dataset, or that other measures of sample complexity
 like the triangular rank~\citep{NewmanR12}, shatter coefficients, or Rademacher
 inequalities~\citep{BoucheronBL05}, can suggest smaller samples sizes. 
 
+In the next chapter we build on the results presented here to develop and
+analyze a fast and scalable algorithm for approximate FIs and ARs mining that
+leverages on the power of the MapReduce distributed/parallel framework to
+achieve very high accuracy and confidence while exploiting the available
+computational resources.
+
+In Ch.~\ref{ch:realfis} we flip the way we look at the itemsets mining problem
+and present a method to avoid the inclusion of \emph{false positives} (itemsets
+that are frequent only by chance) in the output.
+
 %\paragraph{Acknowledgements.} The authors are thankful to Luc De Raedt for
 %suggesting the connection between itemsets and monotone monomials. We also thank
 %the anonymous reviewers for their many suggestions and comments for the
