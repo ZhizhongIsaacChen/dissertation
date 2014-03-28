@@ -256,10 +256,40 @@ that $\VC\left(\mathbb{S}_{G_d},R_{G_d})\right)=d$.
     \includegraphics[width=0.3\textwidth,keepaspectratio]{centrsampl/figures/eps/tight}
     }
   \hfill
-  \subcaptionbox{An example of the $\mathsf{r}$ map for $G_3$. The set next to
-  each top and bottom vertex $u$ is the set $s$ such that
-  $\mathsf{r}(s)=u$.\label{fig:centrsamplmapexample}}{
-    \includegraphics[width=0.3\textwidth,keepaspectratio]{centrsampl/figures/eps/tight-mapexample}
+  \subcaptionbox{Example of the $\mathsf{r}$ map for $G_3$. The set next to
+  each top and bottom vertex $u$ is the set $s$
+  s.~t.~$\mathsf{r}(s)=u$.\label{fig:centrsamplmapexample}}{
+    %\includegraphics[width=0.3\textwidth,keepaspectratio]{centrsampl/figures/eps/tight-mapexample}
+    \begin{tikzpicture}[scale=.45]
+      \GraphInit[vstyle=Classic]
+      \tikzset{VertexStyle/.append style = { minimum size = 2 pt }}
+      \Vertex[Lpos=180,L={$v_\ell$}]{vl}
+      \EA[NoLabel](vl){no1}
+      \NOEA[Lpos=90,L={$\{ a\}$}](no1){a}
+      \SOEA[Lpos=-90,L={$\{b,c\}$}](no1){bc}
+      \SOEA[NoLabel](a){no2}
+      \NOEA[Lpos=90,L={$\{b\}$}](no2){b}
+      \SOEA[Lpos=-90,L={$\{a,c\}$}](no2){ac}
+      \SOEA[NoLabel](b){no3}
+      \NOEA[Lpos=90,L={$\{c\}$}](no3){c}
+      \SOEA[Lpos=-90,L={$\{a,b\}$}](no3){ab}
+      \SOEA[NoLabel](c){no4}
+      \EA[L={$v_\mathrm{r}$}](no4){vr}
+      \Edge(vl)(no1)
+      \Edge(no1)(a)
+      \Edge(no1)(bc)
+      \Edge(a)(no2)
+      \Edge(bc)(no2)
+      \Edge(no2)(b)
+      \Edge(no2)(ac)
+      \Edge(b)(no3)
+      \Edge(ac)(no3)
+      \Edge(no3)(c)
+      \Edge(no3)(ab)
+      \Edge(c)(no4)
+      \Edge(ab)(no4)
+      \Edge(no4)(vr)
+    \end{tikzpicture}
     }
   \hfill
   \subcaptionbox{Graph $G$ with $\VC\left((\mathbb{S}_G,\range_G)\right)=
