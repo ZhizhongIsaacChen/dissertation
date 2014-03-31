@@ -28,7 +28,7 @@
 
 @inproceedings{MorettiSTC08,
 	Abstract = {As the size of available datasets has grown from Megabytes to Gigabytes and now into Terabytes, machine learning algorithms and computing infrastructures have continuously evolved in an effort to keep pace. But at large scales, mining for useful patterns still presents challenges in terms of data management as well as computation. These issues can be addressed by dividing both data and computation to build ensembles of classifiers in a distributed fashion, but trade-offs in cost, performance, and accuracy must be considered when designing or selecting an appropriate architecture. In this paper, we present an abstraction for scalable data mining that allows us to explore these trade-offs. Data and computation are distributed to a computing cloud with minimal effort from the user, and multiple models for data management are available depending on the workload and system configuration. We demonstrate the performance and scalability characteristics of our ensembles using a wide variety of datasets and algorithms on a Condor-based pool with Chirp to handle the storage.},
-	Author = {Moretti, C. and Steinhaeuser, K. and Thain, D. and Chawla, N.V.},
+	Author = {Moretti, Cristopher and Steinhaeuser, Karsten and Thain, Douglas and Chawla, Nitesh V.},
 	Booktitle = {Eighth IEEE International Conference on Data Mining},
 	Date-Added = {2012-01-11 09:40:51 +0100},
 	Date-Modified = {2014-03-25 08:57:14 -0400},
@@ -44,12 +44,12 @@
 
 @article{OzkuralUA11,
 	Abstract = {We introduce a transaction database distribution scheme that divides the frequent item set mining task in a top-down fashion. Our method operates on a graph where vertices correspond to frequent items and edges correspond to frequent item sets of size two. We show that partitioning this graph by a vertex separator is sufficient to decide a distribution of the items such that the subdatabases determined by the item distribution can be mined independently. This distribution entails an amount of data replication, which may be reduced by setting appropriate weights to vertices. The data distribution scheme is used in the design of two new parallel frequent item set mining algorithms. Both algorithms replicate the items that correspond to the separator. NoClique replicates the work induced by the separator and NoClique2 computes the same work collectively. Computational load balancing and minimization of redundant or collective work may be achieved by assigning appropriate load estimates to vertices. The experiments show favorable speedups on a system with small-to-medium number of processors for synthetic and real-world databases.},
-	Author = {Ozkural, E. and Ucar, B. and Aykanat, C.},
+	Author = {\"{O}zkural, Eray and U\c{c}ar, Bora and Aykanat, Cevdet},
 	Date-Added = {2012-01-11 09:38:07 +0100},
 	Date-Modified = {2014-03-25 08:57:26 -0400},
 	Doi = {10.1109/TPDS.2011.32},
 	Issn = {1045-9219},
-	Journal = {IEEE Transactions on Parallel and Distributed Systems, },
+	Journal = {IEEE Transactions on Parallel and Distributed Systems},
 	Keywords = {NoClique;NoClique2;computational load balancing;graph partitioning;parallel frequent item set mining;selective item replication;subdatabases;transaction database distribution scheme;vertex separator;data mining;database management systems;graph theory;resource allocation;},
 	Month = oct,
 	Number = {10},
@@ -61,7 +61,7 @@
 
 @article{JinYA05,
 	Abstract = { With recent technological advances, shared memory parallel machines have become more scalable, and offer large main memories and high bus bandwidths. They are emerging as good platforms for data warehousing and data mining. In This work, we focus on shared memory parallelization of data mining algorithms. We have developed a series of techniques for parallelization of data mining algorithms, including full replication, full locking, fixed locking, optimized full locking, and cache-sensitive locking. Unlike previous work on shared memory parallelization of specific data mining algorithms, all of our techniques apply to a large number of popular data mining algorithms. In addition, we propose a reduction-object-based interface for specifying a data mining algorithm. We show how our runtime system can apply any of the techniques we have developed starting from a common specification of the algorithm. We have carried out a detailed evaluation of the parallelization techniques and the programming interface. We have experimented with apriori and fp-tree-based association mining, k-means clustering, k-nearest neighbor classifier, and decision tree construction. The main results from our experiments are as follows: 1) Among full replication, optimized full locking, and cache-sensitive locking, there is no clear winner. Each of these three techniques can outperform others depending upon machine and dataset parameters. These three techniques perform significantly better than the other two techniques. 2) Good parallel efficiency is achieved for each of the four algorithms we experimented with, using our techniques and runtime system. 3) The overhead of the interface is within 10 percent in almost all cases. 4) In the case of decision tree construction, combining different techniques turned out to be crucial for achieving high performance.},
-	Author = {Ruoming, Jin and Ge, Yang and Agrawal, G.},
+	Author = {Ruoming, Jin and Ge, Yang and Agrawal, Gagan},
 	Date-Added = {2012-01-01 12:24:55 +0100},
 	Date-Modified = {2014-03-25 08:56:16 -0400},
 	Doi = {10.1109/TKDE.2005.18},
@@ -116,8 +116,8 @@
 
 @inproceedings{EHZaiane06,
 	Abstract = {When computationally feasible, mining extremely large databases produces tremendously large numbers of frequent patterns. In many cases, it is impractical to mine those datasets due to their sheer size; not only the extent of the existing patterns, but mainly the magnitude of the search space. Many approaches have been suggested such as sequential mining for maximal patterns or searching for all frequent patterns in parallel. So far, those approaches are still not genuinely effective to mine extremely large datasets. In this work we propose a method that combines both strategies efficiently, i.e. mining in parallel for the set of maximal patterns which, to the best of our knowledge, has never been proposed efficiently before. Using this approach we could mine significantly large datasets; with sizes never reported in the literature before. We are able to effectively discover frequent patterns in a database made of billion transactions using a 32 processors cluster in less than 2 hours},
-	Author = {El-Hajj, M. and Zaiane, O.R.},
-	Booktitle = {Parallel and Distributed Systems, 2006. ICPADS 2006. 12th International Conference on},
+	Author = {El-hajj, Mohammad and Za\"{i}ane, Osmar R.},
+	Booktitle = {12th International Conference on Parallel and Distributed Systems},
 	Date-Added = {2011-12-30 17:41:50 +0100},
 	Date-Modified = {2014-03-25 08:55:27 -0400},
 	Doi = {10.1109/ICPADS.2006.77},
@@ -125,6 +125,7 @@
 	Keywords = {database frequent pattern;database mining;distributed environment;large dataset mining;maximal pattern mining;parallel mining;processor cluster;search space;data mining;parallel processing;pattern clustering;very large databases;},
 	Pages = {8 pp.},
 	Title = {Parallel leap: large-scale maximal pattern mining in a distributed environment},
+	Series = {ICPADS '06}
 	Volume = {1},
 	Year = {2006},
 	Bdsk-Url-1 = {http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=1655657}}
@@ -147,7 +148,7 @@
 
 @inproceedings{ZaianeEHL01,
 	Abstract = {In this paper we introduce a new parallel algorithm MLFPT (multiple local frequent pattern tree) for parallel mining of frequent patterns, based on FP-growth mining, that uses only two full I/O scans of the database, eliminating the need for generating candidate items, and distributing the work fairly among processors. We have devised partitioning strategies at different stages of the mining process to achieve near optimal balancing between processors. We have successfully tested our algorithm on datasets larger than 50 million transactions },
-	Author = {Zaiane, O.R. and El-Hajj, M. and Lu, P.},
+	Author = {Za\"{i}ane, Oosmar R. and El-hajj, Mohammad and Lu, Paul},
 	Booktitle = {Proceedings IEEE International Conference on Data Mining},
 	Date-Added = {2011-12-30 17:41:50 +0100},
 	Date-Modified = {2014-03-25 08:58:04 -0400},
@@ -187,7 +188,7 @@
 
 @inproceedings{CryansRC10,
 	Author = {Cryans, J.-D. and Ratt{\'e}, S. and Champagne, R.},
-	Booktitle = {Advances in Databases Knowledge and Data Applications (DBKDA), 2010 Second International Conference on},
+	Booktitle = {Second International Conference on Advances in Databases Knowledge and Data Applications (DBKDA), 2010},
 	Date-Added = {2011-12-21 16:04:59 +0100},
 	Date-Modified = {2014-03-25 08:55:18 -0400},
 	Doi = {10.1109/DBKDA.2010.34},
@@ -200,7 +201,7 @@
 
 @inproceedings{ZhouZCLF10,
 	Author = {Zhou, Le and Zhong, Zhiyong and Chang, Jin and Li, Junjie and Huang, J.Z. and Feng, Shengzhong},
-	Booktitle = {Information Computing and Telecommunications (YC-ICT), 2010 IEEE Youth Conference on},
+	Booktitle = {IEEE Youth Conference on Information Computing and Telecommunications (YC-ICT), 2010},
 	Date-Added = {2011-12-21 15:45:37 +0100},
 	Date-Modified = {2014-03-25 08:58:36 -0400},
 	Doi = {10.1109/YCICT.2010.5713090},
@@ -213,7 +214,7 @@
 
 @inproceedings{LiZ11,
 	Author = {Li, Lingjuan and Zhang, Min},
-	Booktitle = {Business Computing and Global Informatization (BCGIN), 2011 International Conference on},
+	Booktitle = {International Conference on Business Computing and Global Informatization (BCGIN), 2011},
 	Date-Added = {2011-12-21 15:44:39 +0100},
 	Date-Modified = {2014-03-25 08:56:41 -0400},
 	Doi = {10.1109/BCGIn.2011.125},
@@ -226,7 +227,7 @@
 
 @inproceedings{YangLF10,
 	Author = {Yang, Xin Yue and Liu, Zhen and Fu, Yan},
-	Booktitle = {Information Sciences and Interaction Sciences (ICIS), 2010 3rd International Conference on},
+	Booktitle = {3rd International Conference on Information Sciences and Interaction Sciences (ICIS), 2010},
 	Date-Added = {2011-12-21 15:43:29 +0100},
 	Date-Modified = {2014-03-25 08:57:37 -0400},
 	Doi = {10.1109/ICICIS.2010.5534718},
