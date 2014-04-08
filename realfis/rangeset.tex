@@ -157,13 +157,19 @@ the empirical VC-dimension of $\mathcal{C}$ on $\Ds$.
 
 Solving the SUKP optimally is NP-hard in the general case, although there are
 known restrictions for which it can be solved in polynomial time using dynamic
-programming~\citep{GoldschmidtNY94}. 
+programming~\citep{GoldschmidtNY94}. Since we have unit weights and unit
+profits, our SUKP is equivalent to the \emph{densest $k$-subhypergraph} problem,
+which can not be approximated within a factor of $2^{O(\log n)^\delta}$ for any
+$\delta>0$ unless $3STA \in
+DTIME(2^{n^{3/4+\varepsilon}})$~\citep{HajiaghayiJKLMRSV06}. A greedy algorithm
+by~\citet{Arulselvan14} allows a constant factor approximation if each
+items only appear in a constant fraction of itemsets of $\mathcal{C}$. 
 %It is not clear whether our case falls into
 %one of these restrictions but we found that 
 For our case, it is actually \emph{not necessary to compute the optimal
 solution} to the SUKP: any upper bound solution for which we can prove that
 there is no power of two between that solution and the optimal solution would
-result in the \emph{same upper bound} to the (empirical) VC dimension, while
+result in the \emph{same upper bound} to the (empirical) VC-dimension, while
 substantially speeding up the computation. This property can be specified in
 currently available optimization problem solvers (e.g., CPLEX), which can then
 can compute the bound to the (empirical) VC-dimension very fast even for very
