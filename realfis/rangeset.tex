@@ -122,10 +122,10 @@ the $\ell_i$'s are labelled in decreasing order:
 $\ell_1>\ell_2>\dotsb>\ell_w$. Let now $L_i$, $1\le i\le w$ be the maximum number of
 transactions in $\Ds$ that have length at least $\ell_i$ and such that
 for no two $\tau'$, $\tau''$ of them we have either $\tau'\subseteq\tau''$ or
-$\tau''\subseteq\tau'$. The sequences $(\ell_i)_1^w$ and a sequence $(L_i^*)^w$
-of upper bounds to $(L_i)_1^w$ can be computed efficiently with a scan of the
-dataset. Let now $q_i$ be the optimal profit of the SUKP associated to
-$\mathcal{C}$ with capacity $\ell_i$, and let $b_i=\lfloor \log_2q_i\rfloor +1$.
+$\tau''\subseteq\tau'$. Let now $q_i$ be the optimal profit of the SUKP associated to
+$\mathcal{C}$ with capacity $L_i$, and let $b_i=\lfloor \log_2q_i\rfloor +1$.
+The sequences $(\ell_i)_1^w$ and a sequence $(L_i^*)^w$ of upper bounds to
+$(L_i)_1^w$ can be computed efficiently with a scan of the dataset. 
 The following lemma uses these sequences to show how to obtain an upper bound to
 the empirical VC-dimension of $\mathcal{C}$ on $\Ds$.
 
@@ -176,13 +176,27 @@ can compute the bound to the (empirical) VC-dimension very fast even for very
 large instances with thousands of items and hundred of thousands of itemsets in
 $\mathcal{C}$, making this approach practical. %solution practical for our applications.
 
+\paragraph{Refinements.} It is possible to make some refinements to our
+computation of the \emph{empirical} VC-dimension of a collection $\mathcal{C}$ of
+itemsets on a dataset $\Ds$. First of all, one can remove from $\mathcal{C}$ all
+itemsets that never appear in $\Ds$, as the corresponding ranges can not help
+shattering any set of transactions in $\Ds$. Identifying which itemsets to
+remove requires a single linear scan of $\Ds$. Secondly, when computing the
+capacities $L_i$ (i.e., their upper bounds $L_i^*$), we can ignore all the
+transactions that do not contain \emph{any} of the itemsets in $\mathcal{C}$ (or
+the filtered version of $\mathcal{C}$), as there is no way of shatter them using
+the ranges corresponding to itemsets in $\mathcal{C}$. Both refinements aim at
+reducing the optimal value of the SUKP associated to $\mathcal{C}$, and
+therefore at computing a smaller bound to the empirical VC-dimension of
+$\mathcal{C}$ on $\Ds$.
+
 %Moreover, it is actually
 %not necessary to compute the optimal solution to the SUKP: any upper bound
 %solution for which we can prove that there is no power of two between that
 %solution and the optimal solution would result in the same upper bound to the
 %(empirical) VC dimension, while substantially speeding up the computation. % of the bound.
 
-%\paragraph{The range space of all itemsets.}
+\paragraph{The range space of all itemsets.}
 The range space associated to $2^\Itm$ (seen as a collection of itemsets) is
 particularly interesting for us. It is possible  %It is easy 
 to compute bounds to $\VC(2^\Itm,\range(2^\Itm))$ and
