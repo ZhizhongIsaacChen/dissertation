@@ -67,7 +67,7 @@ f_\Ds(A)<\theta+\varepsilon_1\}$, and $\mathcal{F}=\mathcal{G}\cup\mathcal{W}$.
   that $\Ds$ is an $\varepsilon_1$-approximation to $(\range(2^\Itm),\prob)$, %From the definition of $\varepsilon_1$ this happens
   %with probability at least $1-\delta$. 
   then %Then
-  $\TFI(\prob,\Itm,\theta)\subseteq\mathcal{G}$. %\cup\mathcal{C}_1$. 
+  $\TFI(\prob,\Itm,\theta)\subseteq\mathcal{G}\cup\mathcal{C}_1$. 
   From this and
   the definition of negative border and of $\mathcal{F}$, we have that
   $\mathcal{B}\subseteq\mathcal{F}$. Since $\mathcal{B}$ is a maximal
@@ -141,12 +141,12 @@ any assumption about the unknown distribution $\prob$. On the other hand, when
 information about $\prob$ is available, our method can exploit it to achieve
 better performances in terms of running time, practicality, and accuracy. 
 For example, in most applications $\prob$ will not generate any transaction
-longer than some upper bound $\ell\ll|\Itm|$, and this is know. 
+longer than some known upper bound $\ell\ll|\Itm|$. 
 Consider for example an online
 marketplace like Amazon: it is extremely unlikely (if not humanly impossible)
 that a single customer buys one of each available product. Indeed, given the
 hundred of thousands of items on sale, it is safe to assume that all the
-transactions will contains at most $\ell$ items, for $\ell\ll|\Itm|$. Other
+transactions will contains at most $\ell$ items, for some $\ell\ll|\Itm|$. Other
 times, like in an online survey, it is the nature of the process that limits the
 number of items in a transaction, in this case the number of questions. A
 different kind of information about the generative process may consists in
