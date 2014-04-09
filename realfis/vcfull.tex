@@ -85,9 +85,8 @@ antichain}. Lemma~\ref{lem:sukpevc} still holds even for the solutions of these
 modified SUKPs. Using these bounds in Thms.~\ref{thm:eapprox}
 and~\ref{thm:eapproxempir}, we compute an $\varepsilon_2$ such that, with
 probability at least $1-\delta_2$, $\Ds$ is an $\varepsilon_2$-approximation to
-$(\range(\mathcal{B}),\prob)$. Let 
-\[
-\hat{\theta}=\theta+\varepsilon_2\enspace.\]
+$(\range(\mathcal{B}),\prob)$. Let $\hat{\theta}=\theta+\varepsilon_2$. The
+following Theorem shows that $\hat{\theta}$ has the desired properties.
 
 %The method returns the collection of itemsets
 %$\FI(\Ds,\Itm,\theta+\varepsilon_2)$, and we prove the following. %(proof in the full version~\citep{RiondatoV13}).
@@ -110,7 +109,7 @@ $\FI(\Ds,\Itm,\hat\theta)$ contains no false positives:
 \begin{proof}
   Consider the two events $\mathsf{E}_1$=``$\Ds$ is an
   $\varepsilon_1$-approximation for $(\range(2^\Itm),\prob)$'' and
-  $\mathsf{E}_2=$``$\Ds$ is an
+  $\mathsf{E}_2$=``$\Ds$ is an
   $\varepsilon_2$-approximation for $(\range(\mathcal{B}),\prob)$''. From
   the above discussion and the definition of $\delta_1$ and $\delta_2$ it
   follows that the event $\mathsf{E}=\mathsf{E}_1\cap\mathsf{E}_1$ occurs with
