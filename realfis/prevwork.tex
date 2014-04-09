@@ -1,5 +1,4 @@
 \section{Previous work}\label{sec:prevwork}
-\iffalse
 Given a sufficiently low minimum frequency threshold, traditional itemsets
 mining algorithms can return a collection of frequent patterns so large to
 become almost uninformative to the human user. The quest for reducing the number
@@ -8,25 +7,19 @@ directions suggesting non-mutually-exclusive approaches. One of these lines of
 research starts from the observation that the information contained in a
 set of patterns can be compressed with or without loss to a much smaller
 collection. This lead to the definition of concepts like \emph{closed},
-\emph{maximal}, \emph{non-derivable} itemsets. This is not the approach taken in
-this work and we refer the interested reader to the survey by~\citet{CaldersRB06}.
+\emph{maximal}, \emph{non-derivable} itemsets. This approach is orthogonal to
+the one we take and we refer the interested reader to the survey by~\citet{CaldersRB06}.
 
-The intuition at the basis of the second approach to reduce the number of
-patterns given in output by traditional itemsets mining algorithms consists in
+The intuition at the basis of the second approach to reduce the number of output
+patterns consists in
 observing that a large portion of the patterns may be \emph{spurious}, i.e., not
 actually \emph{interesting} but only a consequence of the fact that the dataset
 is just a sample from the underlying process that generates the data, the
 understanding of which is the ultimate goal of data mining. This observation led
 to a prolification of interestingness measures. In this work we are interested
 in a very specific definition of interestingness that is based on statistical
-properties of the patterns. We refer the reader to~\citep[Sect.~3]{HanCXY07}
-and~\citep{GengH06} for surveys on different measures.
-\fi
-
-While the problem of identifying the TFIs has received scant attention in the literature, a number 
-of approaches have been proposed to filter the FIs of \emph{spurious patterns}, i.e., patterns that are not
-actually \emph{interesting} according to some measure of interestingness. We refer the reader to~\citep[Sect.~3]{HanCXY07}
-and~\citep{GengH06} for surveys on different measures.
+properties of the patterns. We refer the reader to the surveys on different
+readers by~\citet[Sect.~3]{HanCXY07} and~\citet{GengH06}. %
 We remark that, as noted by~\citet{LiuZW11}, that the use of the minimum
 support threshold $\theta$, reflecting the level of domain significance, is complementary to the
 use of interestingness measures, and that ``statistical significance measures and domain significance
