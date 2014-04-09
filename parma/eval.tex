@@ -189,29 +189,27 @@ other datasets, even if it has less transactions. This is the case with
 the 5 million transaction dataset, which takes longer to run mine for both PARMA and PFP
 due to the relatively greater number of frequent itemsets. 
 
-\begin{comment}
-To see that this is indeed what is
-happening, we refer again to Figure \ref{fig:parmabreakdown1}. As expected,
-the sample generation phase (stage 1, map) is smaller relative to the
-larger datasets. However, the local frequent itemset mining phase (stage
-1, reduce) is longer than any of the larger datasets. This is because
-there are more frequent itemsets in that dataset. This can also be seen
-in the relatively larger shuffle phase of stage 2, which is in charge of
-sending all equivalent local frequent itemsets to the same reducer for
-aggregation. Because there are more local itemsets present, this shuffle
-stage is larger than for the other datasets. Because the same dataset
-was used for the runtime of analysis of PFP and PARMA, and the overall
-runtimes of both should increase in a dataset with more frequent
-itemsets, we should see a higher runtime on the 5 million transaction
-dataset for PFP relative to its the other datasets, which is indeed the
-case. The runtime of PFP increases with both the size of the dataset as
-well as the number of frequent itemsets present, but it is not until a
-dataset of 25 million transactions that the runtime exceeds the runtime
-for the 5 million transaction dataset. This outlier is not a flaw with
-PARMA or PFP, but is a result of one of the inherent aspects of frequent
-itemset mining: it takes longer to mine datasets with more frequent
-itemsets.
-\end{comment}
+%To see that this is indeed what is
+%happening, we refer again to Figure \ref{fig:parmabreakdown1}. As expected,
+%the sample generation phase (stage 1, map) is smaller relative to the
+%larger datasets. However, the local frequent itemset mining phase (stage
+%1, reduce) is longer than any of the larger datasets. This is because
+%there are more frequent itemsets in that dataset. This can also be seen
+%in the relatively larger shuffle phase of stage 2, which is in charge of
+%sending all equivalent local frequent itemsets to the same reducer for
+%aggregation. Because there are more local itemsets present, this shuffle
+%stage is larger than for the other datasets. Because the same dataset
+%was used for the runtime of analysis of PFP and PARMA, and the overall
+%runtimes of both should increase in a dataset with more frequent
+%itemsets, we should see a higher runtime on the 5 million transaction
+%dataset for PFP relative to its the other datasets, which is indeed the
+%case. The runtime of PFP increases with both the size of the dataset as
+%well as the number of frequent itemsets present, but it is not until a
+%dataset of 25 million transactions that the runtime exceeds the runtime
+%for the 5 million transaction dataset. This outlier is not a flaw with
+%PARMA or PFP, but is a result of one of the inherent aspects of frequent
+%itemset mining: it takes longer to mine datasets with more frequent
+%itemsets.
 
 \begin{figure}[htb]
 \centering
@@ -231,32 +229,30 @@ on an 8 node Elastic MapReduce cluster.}
 \label{fig:parmafrequency}
 \end{figure}
 
-\begin{comment}
-In Figure \ref{fig:parmabreakdown2}, a breakdown of total runtimes is shown
-clustered by stage. In this view, it is apparent that most of the
-phases of the algorithm are nearly constant across data sizes. The
-obvious increase is the map of stage 1, which was discussed
-above. Another slight runtime increase as data increases occurs in the
-shuffle phase of stage 2. Because there are more transactions in the
-larger datasets, there will be more frequent itemsets on average. In
-stage 2, an identity mapper sends each frequent itemset to the
-appropriate reducer for counting. Thus, all this data is being moved
-across the network, which is manifested in the shuffle phase of stage
-2. The more frequent itemsets, the more data there is to shuffle
-across the network, which results in longer runtimes. Also, in
-Figure~\ref{fig:parmabreakdown2} we once again notice that the 5 million
-transaction dataset is an outlier. The longer than expected phase is
-the shuffle phase of stage 2, which again suggests that this dataset
-took longer to mine because more frequent itemsets were found.
-\begin{figure}[htb]
-  \centering
-    \includegraphics[width=0.4\textwidth]{breakdown2}
-  \caption{A Comparison of runtimes of the map/reduce/shuffle phases
-of PARMA, as a function of input dataset size. Clustered by stage. Run
-on an 8 node Elastic MapReduce cluster.}
-\label{fig:parmabreakdown2}
-\end{figure}
-\end{comment}
+%In Figure \ref{fig:parmabreakdown2}, a breakdown of total runtimes is shown
+%clustered by stage. In this view, it is apparent that most of the
+%phases of the algorithm are nearly constant across data sizes. The
+%obvious increase is the map of stage 1, which was discussed
+%above. Another slight runtime increase as data increases occurs in the
+%shuffle phase of stage 2. Because there are more transactions in the
+%larger datasets, there will be more frequent itemsets on average. In
+%stage 2, an identity mapper sends each frequent itemset to the
+%appropriate reducer for counting. Thus, all this data is being moved
+%across the network, which is manifested in the shuffle phase of stage
+%2. The more frequent itemsets, the more data there is to shuffle
+%across the network, which results in longer runtimes. Also, in
+%Figure~\ref{fig:parmabreakdown2} we once again notice that the 5 million
+%transaction dataset is an outlier. The longer than expected phase is
+%the shuffle phase of stage 2, which again suggests that this dataset
+%took longer to mine because more frequent itemsets were found.
+%\begin{figure}[htb]
+%  \centering
+%    \includegraphics[width=0.4\textwidth]{breakdown2}
+%  \caption{A Comparison of runtimes of the map/reduce/shuffle phases
+%of PARMA, as a function of input dataset size. Clustered by stage. Run
+%on an 8 node Elastic MapReduce cluster.}
+%\label{fig:parmabreakdown2}
+%\end{figure}
 
 Figure \ref{fig:parmafrequency} shows the breakdown of PARMA runtimes as
 the minimum frequency at which the data is mined at is changed. Data
