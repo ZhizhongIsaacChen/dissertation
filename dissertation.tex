@@ -2,9 +2,14 @@
 \documentclass[final]{brownthesis}
 \usepackage{lmodern}
 \usepackage[T1]{fontenc} 
-%\usepackage{textcomp}
-\usepackage[utf8x]{inputenc}
+\usepackage{textcomp}
+\usepackage{CJKutf8}
+\usepackage{ucs}
+\usepackage[encapsulated]{CJK} 
+%\usepackage[utf8x]{inputenc}
 \usepackage[ruled,linesnumbered]{algorithm2e}
+\usepackage[greek,english]{babel}
+\AtBeginDvi{\input{zhwinfonts}}
 %\usepackage{amsfonts}
 %\usepackage{amsmath}
 \usepackage{amssymb}
@@ -30,6 +35,7 @@ Databases},pdfdisplaydoctitle=true]{hyperref}
 
 %\usepackage[show]{notes-alt}
 
+%\newcommand{\textgreek}[1]{\begingroup\fontencoding{LGR}\selectfont#1\endgroup}
 
 \newcommand\nomarkfootnote[1]{%
   \begingroup
