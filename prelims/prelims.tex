@@ -56,7 +56,7 @@ and~\citet{Vapnik99,Vapnik98} for more details on the VC-dimension theory.
 \section{Range spaces, VC-dimension, and sampling}
 A {\em range space} is a pair $(D,\range)$ where $D$ is a (finite or infinite)
 domain and $\range$ is a (finite or infinite) family of subsets of $D$. The
-members of $D$ are called {\em points} and those of $R$ are called {\em ranges}.
+members of $D$ are called {\em points} and those of $\range$ are called {\em ranges}.
 The Vapnik-Chernovenkis (VC) Dimension of $(D,\range)$ is a measure of the
 \emph{complexity} or \emph{expressiveness} of $\range$~\citep{VapnikC71}.
 Knowning (an upper bound) to the VC-dimension of a range space can be very
@@ -72,7 +72,7 @@ to be {\em shattered by $\range$}.
 
 \begin{definition}\label{def:vcdim}
   Given a set $B\subseteq D$, the \emph{empirical Vapnik-Chervonenkis (VC)
-  dimension of $\mathcal{R}$ on $B$}, denoted as $\EVC(\range,B)$ is the
+  dimension of $\range$ on $B$}, denoted as $\EVC(\range,B)$ is the
   cardinality of the \emph{largest} subset of $B$ that is shattered by $\range$. If
   there are arbitrary large shattered subsets, then $\EVC()=\infty$. The
   \emph{VC-dimension of $(D,\range)$} is defined as
@@ -330,14 +330,15 @@ An upper bound to the VC-dimension of the range space is needed in order to
 apply Thm.~\ref{thm:eapprox}, Thm.~\ref{thm:eapproxempir}, or
 Thm.~\ref{thm:releapprox}. It is natural to ask whether, rather than a bound, one
 could compute the exact VC-dimension of a range space. \citet{PapadimitriouY96}
-characterized the complexity of computing the VC-dimension. Although in {\sc
-np}, the problem is most likely not {\sc np}-complete, but can it be solved in
-polynomial time?  \citet{PapadimitriouY96} defined a new complexity class {\sc
-lognp} and show that the decision version of the problem of computing the
-VC-dimension is {\sc lognp}-complete. \citet{Schaefer99} showed that in general
-one can not approximate the problem up to a constant factor in polynomial time,
-unless {\sc p}={\sc np}. \citet{MosselU01} gave a refined characterization of
-the approximability of the problem.
+characterized the complexity of computing the VC-dimension. The problem is in
+{\sc np}, although it is most probably not {\sc np}-complete. The question is is
+whether it can  be solved in polynomial time? \citet{PapadimitriouY96} defined a
+new complexity class {\sc lognp} and show that the decision version of the
+problem of computing the VC-dimension is {\sc lognp}-complete.
+\citet{Schaefer99} showed that in general one can not approximate the problem up
+to a constant factor in polynomial time, unless {\sc p}={\sc np}.
+\citet{MosselU01} gave a refined characterization of the approximability of the
+problem.
 
 \citet{VapnikLLC94}~and~\citet{ShaoCL00} presented and refined an experimental
 procedure to estimate the VC-dimension of a learning machine,
